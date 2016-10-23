@@ -36,6 +36,10 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 		}
 		if (doAdjust)
 		{
+			if (DEBUG_TRIANGLE)
+			{
+				Debug.Log( "Modded" );
+			}
 			Adjust( );
 		}
 	}
@@ -47,10 +51,12 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 
 	protected override void PostAwake()
 	{
+#if UNITY_EDITOR
 		for (int i = 0; i<3; i++)
 		{
 			modVertices[i] = vertices_[i];
 		}
+#endif
 	}
 
 	private void Update ()
@@ -60,7 +66,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 #endif
 	}
 
-	public void Init(Field f, Vector2[] vs, float d)
+	public void Init(Field f, float d, Vector2[] vs)
 	{
 		if (vs.Length != 3)
 		{
@@ -133,7 +139,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		sb.Append( "Triangle '" ).Append( gameObject.name ).Append( "': " );
-		for (int i = 0; i<3; i++)
+		for (int i = 0; i<vertices_.Count; i++)
 		{
 			sb.Append( vertices_[i] ).Append( " " );
 		}

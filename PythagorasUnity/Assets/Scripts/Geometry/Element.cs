@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent( typeof( MeshFilter ) )]
+[RequireComponent( typeof( MeshRenderer ) )]
 public abstract class Element : MonoBehaviour
 {
 	#region private hooks

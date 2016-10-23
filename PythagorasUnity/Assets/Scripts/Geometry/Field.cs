@@ -56,6 +56,7 @@ public class Field : MonoBehaviour, RJWard.Core.IDebugDescribable
 
 	private void Awake()
 	{
+		cachedTransform_ = transform;
 		Init( );
 	}
 
