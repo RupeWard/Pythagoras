@@ -2,24 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[ RequireComponent ( typeof( MeshFilter ))]
-[ RequireComponent ( typeof( MeshRenderer ) )]
+/*
+	Triangle element
+
+	Defined by its 3 vertices
+
+	TODO: handle co-linear case (not bothering with yet as not expecting to encounter it)
+*/
+
 public class Triangle : Element, RJWard.Core.IDebugDescribable
 {
 	public static readonly bool DEBUG_TRIANGLE = true;
 
-	#region inspector hooks
-	#endregion inspector hooks
-
-	#region private hooks
-
-	#endregion private hooks
-
 	#region private data
 
-	private List< Vector2 > vertices_ = new List<Vector2>( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero };
+	private List< Vector2 > vertices_ = new List<Vector2>( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero }; // the vertices
 
 #if UNITY_EDITOR
+	// for in-editor modification
 
 	public Vector2[] modVertices = new Vector2[3];
 
@@ -38,9 +38,9 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 		{
 			if (DEBUG_TRIANGLE)
 			{
-				Debug.Log( "Modded" );
+				Debug.Log( "Modded "+gameObject.name );
 			}
-			Adjust( );
+			AdjustMesh( );
 		}
 	}
 #endif
@@ -66,7 +66,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 #endif
 	}
 
-	public void Init(Field f, float d, Vector2[] vs)
+	public void Init(Field f, float d, Vector2[] vs, Color c)
 	{
 		if (vs.Length != 3)
 		{
@@ -85,14 +85,16 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 			Debug.Log( "Init() " + this.DebugDescribe( ) );
 		}
 
-		Adjust( );
+		AdjustMesh( );
+		SetColour( c );
 	}
 
 	#endregion MB Flow
 
 	#region Mesh
 
-	public void Adjust()
+	// Call this when the definition changes
+	public void AdjustMesh()
 	{
 		if (field == null) // Don't make mesh if not initialised
 		{
@@ -148,4 +150,18 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 
 	#endregion IDebugDescribable
 
+	#region Non-geometrical Appaarance
+
+	public void SetColour( Color c )
+	{
+		SetColour( c, 1f );
+	}
+
+	public void SetColour(Color c, float a)
+	{
+		cachedMaterial.SetColor( "_Color", c );
+		cachedMaterial.SetFloat( "_Alpha", a );
+	}
+
+	#endregion Non-geometrical Appaarance
 }

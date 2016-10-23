@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+	Defines an atrea within which geometric elements appear
+*/
 public class Field : MonoBehaviour, RJWard.Core.IDebugDescribable
 {
+	// TODO: Add a scaling to make definition of elements simpler (thinking about different screen sizes here)
+
 	public static readonly bool DEBUG_FIELD = true;
 
 	#region inspector data
 
-	public float depth = 0f;
+	public float depth = 0f; // position in world space
 
-	private Rect viewRect_ = new Rect( 0f, 0f, 1f, 1f );
-	private Rect rect_ = new Rect( );
+	private Rect viewRect_ = new Rect( 0f, 0f, 1f, 1f );	// defines the field extent relative to screen size
+	private Rect rect_ = new Rect( );						// field extent in world coords
 
 	public Rect rect
 	{
@@ -58,15 +63,6 @@ public class Field : MonoBehaviour, RJWard.Core.IDebugDescribable
 	{
 		cachedTransform_ = transform;
 		Init( );
-	}
-
-	private void Start ()
-	{
-	}
-
-	private void Update ()
-	{
-	
 	}
 
 	#endregion Flow

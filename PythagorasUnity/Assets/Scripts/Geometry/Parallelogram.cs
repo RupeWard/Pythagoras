@@ -2,16 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+	Parallelogram element
+
+	Defined by a baseline, the height, and one of the internal angles
+
+	TODO: explain the winding order stuff
+	TODO: handle co-linear case (not bothering with yet as not expecting to encounter it)
+*/
 public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 {
 	public static readonly bool DEBUG_PARALLELOGRAM = true;
-
-	#region inspector hooks
-	#endregion inspector hooks
-
-	#region private hooks
-
-	#endregion private hooks
 
 	#region private data
 
@@ -20,19 +21,20 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 	private float angle_ = 90f;
 
 #if UNITY_EDITOR
+	// for in-editor modification
 
-	public Vector2[] modVertices = new Vector2[2];
+	public Vector2[] modBaseVertices = new Vector2[2]; 
 	public float modHeight = 0f;
 	public float modAngle = 0f;
 
-	private void AdjustIfModded()
+	private void AdjustMeshIfModded()
 	{
 		bool doAdjust = false;
 		for (int i = 0; i<2; i++)
 		{
-			if (modVertices[i] != baseVertices_[i])
+			if (modBaseVertices[i] != baseVertices_[i])
 			{
-				baseVertices_[i] = modVertices[i];
+				baseVertices_[i] = modBaseVertices[i];
 				doAdjust = true;
 			}
 		}
@@ -50,9 +52,9 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		{
 			if (DEBUG_PARALLELOGRAM)
 			{
-				Debug.Log( "Modded" );
+				Debug.Log( "Modded "+gameObject.name );
 			}
-			Adjust( );
+			AdjustMesh( );
 		}
 	}
 #endif
@@ -66,7 +68,7 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 #if UNITY_EDITOR
 		for (int i = 0; i < 2; i++)
 		{
-			modVertices[i] = baseVertices_[i];
+			modBaseVertices[i] = baseVertices_[i];
 		}
 		modHeight = height_;
 		modAngle = angle_;
@@ -77,22 +79,22 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 	private void Update ()
 	{
 #if UNITY_EDITOR
-		AdjustIfModded( );
+		AdjustMeshIfModded( );
 #endif
 	}
 
-	public void Init(Field f, float d, Vector2[] vs, float h, float a)
+	public void Init(Field f, float d, Vector2[] bl, float h, float a, Color c)
 	{
-		if (vs.Length != 2)
+		if (bl.Length != 2)
 		{
-			throw new System.Exception( "vs.Length should be 3" );
+			throw new System.Exception( "bl.Length should be 2, not "+bl.Length.ToString() );
 		}
 
 		base.Init( f, d );
 
 		for (int i = 0; i<2; i++)
 		{
-			baseVertices_[i] = vs[i];
+			baseVertices_[i] = bl[i];
 		}
 		height_ = h;
 		angle_ = a;
@@ -102,19 +104,24 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 			Debug.Log( "Init() " + this.DebugDescribe( ) );
 		}
 
-		Adjust( );
+		AdjustMesh( );
+
+		SetColour( c );
 	}
 
 	#endregion MB Flow
 
 	#region Mesh
 
-	private Vector2[] GetPoints()
+	// Computes the 4 vertices from the baseline, height, and angle
+	private Vector2[] GetVertices()
 	{
 		Vector2[] pts = new Vector2[4];
 
 		pts[0] = baseVertices_[0];
 		pts[1] = baseVertices_[1];
+
+		// TODO: is this the simplest way...?
 
 		Vector2 baseLine = pts[1] - pts[0];
 		Vector3 perp = Vector3.Cross( baseLine, s_normal ).normalized;
@@ -132,7 +139,7 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		return pts; 
 	}
 
-	private static readonly Vector2[] s_uvs = new Vector2[]
+	private static readonly Vector2[] s_uvs = new Vector2[] // UVs for the 4 vertices (for if/when texture is added to the material/shader)
 		{
 			new Vector2(0f, 0f),
 			new Vector2(1f, 0f),
@@ -140,7 +147,8 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 			new Vector2(0f, 1f),
 		};
 
-	public void Adjust()
+	// Call this when the definition changes
+	public void AdjustMesh()
 	{
 		if (field == null) // Don't make mesh if not initialised
 		{
@@ -150,12 +158,12 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 #if UNITY_EDITOR
 		for (int i = 0; i < 2; i++)
 		{
-			modVertices[i] = baseVertices_[i];
+			modBaseVertices[i] = baseVertices_[i];
 		}
 		modHeight = height_;
 		modAngle = angle_;
 #endif
-		Vector2[] pts = GetPoints( );
+		Vector2[] pts = GetVertices( );
 		
 		Mesh mesh = GetMesh( );
 		
@@ -186,6 +194,22 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 
 	#endregion Mesh
 
+	#region Non-geometrical Appaarance
+
+	// TODO should this go into base class? Postponing because element-specific shader params may end up varying 
+	public void SetColour( Color c )
+	{
+		SetColour( c, 1f );
+	}
+
+	public void SetColour( Color c, float a )
+	{
+		cachedMaterial.SetColor( "_Color", c );
+		cachedMaterial.SetFloat( "_Alpha", a );
+	}
+
+	#endregion Non-geometrical Appaarance
+
 	#region IDebugDescribable
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
@@ -201,7 +225,7 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		sb.Append( " d=" ).Append( depth );
 
 		sb.Append( " pts=" );
-		Vector2[] pts = GetPoints( );
+		Vector2[] pts = GetVertices( );
 		for (int i = 0; i<pts.Length; i++)
 		{
 			sb.Append( pts[i].ToString( ) );

@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+	Handles creation & placement of elements in fields
+*/
 public class GeometryManager : MonoBehaviour
 {
-	public bool testMode = true;
+	public bool testMode = true; // set to true to create some elements to play around with for testing
 
 	#region prefabs
 
@@ -14,7 +17,7 @@ public class GeometryManager : MonoBehaviour
 
 	#region private data
 
-	private Field mainField_ = null;
+	private Field mainField_ = null; // currently only using the one Field
 
 	#endregion private data
 
@@ -25,7 +28,7 @@ public class GeometryManager : MonoBehaviour
 		mainField_ = new GameObject( "MainField" ).AddComponent<Field>( );
 	}
 
-	void Start ()
+	private void Start ()
 	{
 		if (testMode)
 		{
@@ -38,8 +41,10 @@ public class GeometryManager : MonoBehaviour
 				new Vector2(-1f, -2f),
 				new Vector2(1f, -2f),
 				new Vector2(1f, 0f)
-				}
+				},
+				Color.blue
 				);
+
 			AddParallelogramToField(
 				"TestPar",
 				mainField_,
@@ -50,38 +55,35 @@ public class GeometryManager : MonoBehaviour
 				new Vector2(1f, 1f)
 				},
 				1f,
-				90f
+				90f,
+				Color.green
 				);
 		}
 	}
 	
-	void Update ()
-	{
-	
-	}
-
 	#endregion Flow
 
 	#region creating elements
 
-	private Triangle AddTriangleToField( string n, Field f, float d, Vector2[] v)
+	// Instantiate a Triangle in a Field and set it up
+	private Triangle AddTriangleToField( string n, Field f, float d, Vector2[] v, Color c)
 	{
 		GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
 		triangleGO.name = n;
 		Triangle triangle = triangleGO.GetComponent<Triangle>( );
-		triangle.Init( f, d, v );
+		triangle.Init( f, d, v, c );
 		return triangle;
 	}
 
-	private Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a )
+	// Instantiate a Parallelogram in a Field and set it up
+	private Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a, Color c )
 	{
 		GameObject parallelogramGO = GameObject.Instantiate<GameObject>( parallelogramPrefab ) as GameObject;
 		parallelogramGO.name = n;
 		Parallelogram parallelogram = parallelogramGO.GetComponent<Parallelogram>( );
-		parallelogram.Init( f, d, bl, h, a );
+		parallelogram.Init( f, d, bl, h, a, c );
 		return parallelogram;
 	}
-
 
 	#endregion creating elements
 
