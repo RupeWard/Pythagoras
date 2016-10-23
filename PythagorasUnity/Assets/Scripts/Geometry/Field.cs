@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Field : MonoBehaviour
+public class Field : MonoBehaviour, RJWard.Core.IDebugDescribable
 {
 	public static readonly bool DEBUG_FIELD = true;
 
@@ -50,7 +50,7 @@ public class Field : MonoBehaviour
 
 		if (DEBUG_FIELD)
 		{
-			Debug.Log( "Field.Init(): viewRect = " + viewRect_.ToString( ) + ", rect = " + rect_.ToString( ) );
+			Debug.Log( "Init(): "+this.DebugDescribe());
 		}
 	}
 
@@ -69,5 +69,18 @@ public class Field : MonoBehaviour
 	}
 
 	#endregion Flow
+
+	#region IDebugDescribable
+
+	public void DebugDescribe( System.Text.StringBuilder sb )
+	{
+		sb.Append( "Field '" ).Append( gameObject.name ).Append( "':" );
+		sb.Append( " viewRect=" ).Append( viewRect_.ToString( ) );
+		sb.Append( " rect = " ).Append( rect_.ToString( ) );
+		sb.Append( " d=" ).Append( depth );
+	}
+
+	#endregion IDebugDescribable
+
 
 }

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class GeometryManager : MonoBehaviour
 {
+	public bool testMode = true;
+
 	#region prefabs
 
 	public GameObject trianglePrefab;
@@ -24,16 +26,19 @@ public class GeometryManager : MonoBehaviour
 
 	void Start ()
 	{
-		AddTriangleToField( 
-			"TestTri", 
-			mainField_,
-			new Vector2[]
-			{
+		if (testMode)
+		{
+			AddTriangleToField(
+				"TestTri",
+				mainField_,
+				new Vector2[]
+				{
 				new Vector2(-1f, -1f),
 				new Vector2(1f, -1f),
 				new Vector2(1f, 1f)
-			},
-			0f );
+				},
+				0f );
+		}
 	}
 	
 	void Update ()
