@@ -12,20 +12,28 @@ public class Triangle : MonoBehaviour
 	#region private hooks
 
 	private Transform cachedTransform_ = null;
+	public Transform cachedTransform
+	{
+		get { return cachedTransform_; }
+	}
 	private Material cachedMaterial_ = null;
 	private MeshRenderer cachedMeshRenderer_ = null;
 	private MeshFilter cachedMeshFilter_ = null;
+
+	private Field field_ = null; // TODO do we need this? If removing, need another way to check if initialised
+
+	private float depth_ = 0f;
 
 	#endregion private hooks
 
 	#region private data
 
-	private float depth_ = 0f;
 	private List< Vector2 > vertices_ = new List<Vector2>( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero };
 
 	private static readonly Vector3 s_normal = new Vector3( 0f, 0f, -1f );
 
 #if UNITY_EDITOR
+
 	public Vector2[] modVertices = new Vector2[3];
 
 	private void AdjustIfModded()
@@ -50,7 +58,7 @@ public class Triangle : MonoBehaviour
 
 	#region MB Flow
 
-	void Awake()
+	private void Awake()
 	{
 		cachedTransform_ = transform;
 		cachedMeshFilter_ = GetComponent<MeshFilter>( );
@@ -64,16 +72,38 @@ public class Triangle : MonoBehaviour
 		}
 	}
 
-	void Start ()
+	private void Start ()
 	{
 	
 	}
 	
-	void Update ()
+	private void Update ()
 	{
 #if UNITY_EDITOR
 		AdjustIfModded( );
 #endif
+	}
+
+	public void Init(Field f, Vector2[] vs, float d)
+	{
+		if (vs.Length != 3)
+		{
+			throw new System.Exception( "vs.Length should be 3" );
+		}
+
+		field_ = f;
+
+		cachedTransform_.SetParent( field_.cachedTransform );
+		cachedTransform_.localScale = Vector3.one;
+		cachedTransform_.localRotation = Quaternion.identity;
+
+		depth_ = d;
+		for (int i = 0; i<3; i++)
+		{
+			vertices_[i] = vs[i];
+		}
+
+		Adjust( );
 	}
 
 	#endregion MB Flow
@@ -82,6 +112,17 @@ public class Triangle : MonoBehaviour
 
 	public void Adjust()
 	{
+		if (field_ == null) // Don't make mesh if not initialised
+		{
+			return;
+		}
+
+#if UNITY_EDITOR
+		for (int i = 0; i < 3; i++)
+		{
+			modVertices[i] = vertices_[i];
+		}
+#endif
 		Mesh mesh = cachedMeshFilter_.sharedMesh;
 		if (mesh == null)
 		{
