@@ -182,26 +182,55 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 
 	#region geometry helpers
 
+	public Vector2[] GetSideInternal(int n)
+	{
+		return GetSide( n, false );
+	}
+
+	public Vector2[] GetSideExternal( int n )
+	{
+		return GetSide( n, true);
+	}
+
+	private Vector2[] GetSide(int n, bool flip ) // n = 0 is between vertices 0 & 1, n = 1 is between 1 & 2, n = 2 is between 2 & 0. flip reverses order
+	{
+		if (n < 0 || n > 2)
+		{
+			throw new System.Exception( "For side, n must be in [0,2], not " + n.ToString( ) );
+		}
+		Vector2[] result = new Vector2[2];
+		switch (n)
+		{
+			case 0:
+				result[0] = vertices_[0];
+				result[1] = vertices_[1];
+				break;
+			case 1:
+				result[0] = vertices_[1];
+				result[1] = vertices_[2];
+				break;
+			case 2:
+				result[0] = vertices_[2];
+				result[1] = vertices_[0];
+				break;
+		}
+		if (flip)
+		{
+			Vector2 tmp = result[0];
+			result[0] = result[1];
+			result[1] = tmp;
+		}
+		return result;
+	}
+
 	public float GetSideLength(int n) // n = 0 is between vertices 0 & 1, n = 1 is between 1 & 2, n = 2 is between 2 & 0
 	{
 		if (n < 0 || n > 2)
 		{
 			throw new System.Exception( "For side length, n must be in [0,2], not " + n.ToString( ) );
 		}
-		float sideLength = 0f;
-		switch (n)
-		{
-			case 0:
-				sideLength = Vector2.Distance( vertices_[0], vertices_[1] );
-				break;
-			case 1:
-				sideLength = Vector2.Distance( vertices_[1], vertices_[2] );
-				break;
-			case 2:
-				sideLength = Vector2.Distance( vertices_[2], vertices_[0] );
-				break;
-		}
-		return sideLength;
+		Vector2[] side = GetSideInternal( n );
+		return Vector2.Distance( side[0], side[1] );
 	}
 
 	public float GetInternalAngleDegrees(int n) // n is the vertex index 

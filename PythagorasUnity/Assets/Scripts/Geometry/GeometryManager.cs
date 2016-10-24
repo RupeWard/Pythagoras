@@ -10,6 +10,14 @@ public class GeometryManager : MonoBehaviour
 #if UNITY_EDITOR
 	public bool testMode = true; // set to true to create some elements to play around with for testing
 	private List<Element> testElements = new List<Element>( );
+	public void ClearTestElements()
+	{
+		for (int i = 0; i<testElements.Count; i++)
+		{
+			GameObject.Destroy( testElements[i].gameObject );
+		}
+		testElements.Clear( );
+	}
 #endif
 	   
 	#region prefabs
@@ -99,6 +107,12 @@ public class GeometryManager : MonoBehaviour
 		return triangle;
 	}
 
+	// Instantiate a Triangle in main Field and set it up
+	public Triangle AddTriangleToMainField( string n, float d, Vector2[] v, Color c )
+	{
+		return AddTriangleToField( n, mainField_, d, v, c );
+	}
+
 	// Instantiate a right-angled Triangle (with base defined by v and height h) in a Field and set it up
 	private Triangle AddRightTriangleToField( string n, Field f, float d, Vector2[] hypotenuse, float angle, Color c )
 	{
@@ -109,6 +123,11 @@ public class GeometryManager : MonoBehaviour
 		return triangle;
 	}
 
+	// Instantiate a right-angled Triangle (with base defined by v and height h) in main Field and set it up
+	public Triangle AddRightTriangleToMainField( string n, float d, Vector2[] hypotenuse, float angle, Color c )
+	{
+		return AddRightTriangleToField( n, mainField_, d, hypotenuse, angle, c );
+	}
 
 	// Instantiate a Parallelogram in a Field and set it up
 	private Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a, Color c )
@@ -118,6 +137,12 @@ public class GeometryManager : MonoBehaviour
 		Parallelogram parallelogram = parallelogramGO.GetComponent<Parallelogram>( );
 		parallelogram.Init( f, d, bl, h, a, c );
 		return parallelogram;
+	}
+
+	// Instantiate a Parallelogram in a Field and set it up
+	public Parallelogram AddParallelogramToMainField( string n, float d, Vector2[] bl, float h, float a, Color c )
+	{
+		return AddParallelogramToField( n, mainField_, d, bl, h, a, c );
 	}
 
 	#endregion creating elements

@@ -210,6 +210,19 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 
 	#endregion Non-geometrical Appaarance
 
+	#region shapeChangers
+
+	public void SetHeight(float h)
+	{
+		if (h != height_)
+		{
+			height_ = h;
+			AdjustMesh( );
+		}
+	}
+
+	#endregion
+
 	#region IDebugDescribable
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
