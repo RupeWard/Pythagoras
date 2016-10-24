@@ -12,7 +12,16 @@ public class SceneControllerProof : SceneController_Base
 
 	public GeometryManager geometryManager;
 
+	public Sprite fastForwardButtonSprite_Go;
+	public Sprite fastForwardButtonSprite_Stop;
+
 	#endregion inspector hooks
+
+	#region private data
+
+	bool fastForward_ = false;
+
+	#endregion private data
 
 	#region private elements
 
@@ -55,6 +64,12 @@ public class SceneControllerProof : SceneController_Base
 		else
 		{
 			forwardButtonAction_( );
+			if (fastForward_)
+			{
+				Debug.LogWarning( "Forward button pressed when fastForward is on" );
+			}
+			fastForward_ = false;
+			EnableFastForwardButton( );
 		}
 	}
 
@@ -62,11 +77,6 @@ public class SceneControllerProof : SceneController_Base
 	{
 		forwardButtonAction_ = null;
 		forwardButton.gameObject.SetActive( false );
-	}
-
-	private void DisableFastForwardButton( )
-	{
-		fastForwardButton.gameObject.SetActive( false );
 	}
 
 	private void EnableForwardButton(System.Action action)
@@ -77,7 +87,59 @@ public class SceneControllerProof : SceneController_Base
 
 	#endregion ForwardButton
 
+	#region FastForwardButton
+
+	public void HandleFastForwardButton()
+	{
+		fastForward_ = !fastForward_;
+		SetFastForwardButtonSprite( );
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "FastForward is now " + fastForward_ );
+		}
+	}
+
+	private void DisableFastForwardButton( )
+	{
+		fastForwardButton.gameObject.SetActive( false );
+	}
+
+	private void EnableFastForwardButton( )
+	{
+		SetFastForwardButtonSprite( );
+		fastForwardButton.gameObject.SetActive( true );
+	}
+
+	private void SetFastForwardButtonSprite()
+	{
+		Sprite s = (fastForward_) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
+		fastForwardButton.GetComponent<UnityEngine.UI.Image>( ).sprite = s;
+	}
+
+	#endregion FastForwardButton
+
 	#region proof
+
+	private void HandleEndOfSequence(System.Action nextSequence)
+	{
+		if (nextSequence == null)
+		{
+			throw new System.Exception( "null nextSequence!" );
+		}
+		if (fastForward_)
+		{
+			if (DEBUG_PROOF)
+			{
+				Debug.Log( "Fast-forwarding" );
+			}
+			nextSequence( );
+		}
+		else
+		{
+			DisableFastForwardButton( );
+			EnableForwardButton( nextSequence );
+		}
+	}
 
 	public float createTriangleDuration = 3f;
 	public Color mainTriangleColour = Color.blue;
@@ -123,7 +185,7 @@ public class SceneControllerProof : SceneController_Base
 		}
 		mainTriangle_.SetColour( colour, 1f );
 		yield return null;
-		EnableForwardButton( CreateSquare0 );
+		HandleEndOfSequence( CreateSquare0 );
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "CreateTriangleCR: END" );
@@ -171,7 +233,7 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[0].SetHeight( targetHeight );
 		yield return null;
 
-		EnableForwardButton( CreateSquare1 );
+		HandleEndOfSequence( CreateSquare1 );
 
 		yield return null;
 
@@ -219,7 +281,7 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[1].SetHeight( targetHeight );
 		yield return null;
 
-		EnableForwardButton( ShearSquare0 );
+		HandleEndOfSequence( ShearSquare0 );
 
 		yield return null;
 
@@ -281,8 +343,8 @@ public class SceneControllerProof : SceneController_Base
 
 		parallelograms[0].SetAlpha( 1f );
 		shadowParallelograms[0].SetAlpha( 0f );
-		
-		EnableForwardButton( ShearSquare1 );
+
+		HandleEndOfSequence( ShearSquare1 );
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[0].gameObject );
@@ -339,7 +401,7 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[1].SetAlpha( 1f );
 		shadowParallelograms[1].SetAlpha( 0f );
 
-		EnableForwardButton( ShearParallelogram0 );
+		HandleEndOfSequence( ShearParallelogram0 );
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[1].gameObject );
@@ -398,7 +460,7 @@ public class SceneControllerProof : SceneController_Base
 //		parallelograms[0].SetAlpha( 1f );
 		shadowParallelograms[0].SetAlpha( 0f );
 
-		EnableForwardButton( ShearParallelogram1);
+		HandleEndOfSequence( ShearParallelogram1);
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[0].gameObject );
