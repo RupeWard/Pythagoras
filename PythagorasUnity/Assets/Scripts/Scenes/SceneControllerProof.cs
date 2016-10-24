@@ -75,6 +75,7 @@ public class SceneControllerProof : SceneController_Base
 	public float createTriangleDuration = 3f;
 	public Color mainTriangleColour = Color.blue;
 
+	public float initialAngle = 30f;
 	
 	private void CreateTriangle()
 	{
@@ -98,10 +99,10 @@ public class SceneControllerProof : SceneController_Base
 					0f,
 					new Vector2[]
 					{
-						new Vector2(-1f, -2f),
-						new Vector2(1f, -2f)
+						new Vector2(-1f, 0f),
+						new Vector2(1f, 0f)
 					},
-					30f,
+					initialAngle,
 					colour
 			);
 		mainTriangle_.SetColour( colour, 0f );
