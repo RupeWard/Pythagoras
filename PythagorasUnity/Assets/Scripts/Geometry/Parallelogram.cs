@@ -12,7 +12,8 @@ using System.Collections.Generic;
 */
 public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 {
-	public static readonly bool DEBUG_PARALLELOGRAM = true;
+	public static bool DEBUG_PARALLELOGRAM = true;
+	public static bool DEBUG_PARALLELOGRAM_VERBOSE = false;
 
 	#region private data
 
@@ -27,43 +28,38 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 	public float modHeight = 0f;
 	public float modAngle = 0f;
 
-	private void AdjustMeshIfModded()
+	override protected void CheckIfModded()
 	{
-		bool doAdjust = false;
+		bool modded = false;
 		for (int i = 0; i<2; i++)
 		{
 			if (modBaseVertices[i] != baseVertices_[i])
 			{
 				baseVertices_[i] = modBaseVertices[i];
-				doAdjust = true;
+				modded = true;
 			}
 		}
 		if (modHeight != height_)
 		{
 			height_ = modHeight;
-			doAdjust = true;
+			modded = true;
 		}
 		if (modAngle != angle_)
 		{
 			angle_ = modAngle;
-			doAdjust = true;
+			modded = true;
 		}
-		if (doAdjust)
+		if (modded)
 		{
 			if (DEBUG_PARALLELOGRAM)
 			{
 				Debug.Log( "Modded "+gameObject.name );
 			}
-			AdjustMesh( );
+			SetDirty( );
 		}
 	}
-#endif
 
-	#endregion private data
-
-	#region MB Flow
-
-	protected override void PostAwake( )
+	protected override void SetModdingValues( )
 	{
 #if UNITY_EDITOR
 		for (int i = 0; i < 2; i++)
@@ -75,19 +71,51 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 #endif
 	}
 
-
-	private void Update ()
-	{
-#if UNITY_EDITOR
-		AdjustMeshIfModded( );
 #endif
+
+	#endregion private data
+
+	#region geometric properties
+
+	public float BaseLength()
+	{
+		return Vector2.Distance( baseVertices_[0], baseVertices_[1] );
+	}
+
+	public float Area()
+	{
+		return BaseLength( ) * height_;
+	}
+
+	#endregion geometric properties
+
+	/*
+	#region MB/Element Flow
+
+	protected override void PostAwake( )
+	{
+	}
+
+	#endregion MB/Element Flow
+	*/
+
+	#region Setup
+
+	protected override void OnClone<T>( T src )
+	{
+		Parallelogram p = src as Parallelogram;
+		if (p == null)
+		{
+			throw new System.Exception( gameObject.name + ": Parallelograms ("+this.GetType().ToString()+") can currently only be cloned from Parallelograms, not "+src.GetType().ToString() );
+		}
+		Init( p.field, p.depth , p.baseVertices_.ToArray(), p.height_, p.angle_, p.cachedMaterial.GetColor("_Color"));
 	}
 
 	public void Init(Field f, float d, Vector2[] bl, float h, float a, Color c)
 	{
 		if (bl.Length != 2)
 		{
-			throw new System.Exception( "bl.Length should be 2, not "+bl.Length.ToString() );
+			throw new System.Exception( "bl.Length should be 2, not "+bl.Length.ToString()+" when trying to init "+gameObject.name );
 		}
 
 		base.Init( f, d );
@@ -104,12 +132,50 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 			Debug.Log( "Init() " + this.DebugDescribe( ) );
 		}
 
-		AdjustMesh( );
-
 		SetColour( c );
+		SetDirty( );
+	}
+	
+	public void ChangeBaseline(int n) // n = 1,2,3 for the 3 other sides (in order retrieved by GetVertices)
+	{ 
+		if (n < 0 || n > 3)
+		{
+			throw new System.Exception( "In ChangeBaseline on "+gameObject.name+", n should be in [0,3], not " + n );
+		}
+		if (n == 0)
+		{
+			if (DEBUG_PARALLELOGRAM)
+			{
+				Debug.Log( "ChangeBaseline to " + n + " on " + gameObject.name + " does nothing" );
+			}
+			return;
+		}
+		Vector2[] vertices = GetVertices( );
+		if ( n == 2 )
+		{
+			baseVertices_[0] = vertices[2];
+			baseVertices_[1] = vertices[3];
+		}
+		else
+		{
+			float area = Area( );
+			if (n == 1)
+			{
+				baseVertices_[0] = vertices[1];
+				baseVertices_[1] = vertices[2];
+			}
+			else
+			{
+				baseVertices_[0] = vertices[3];
+				baseVertices_[1] = vertices[0];
+			}
+			angle_ = 180f - angle_;
+			height_ = area / BaseLength( );
+		}
+		SetDirty( );
 	}
 
-	#endregion MB Flow
+	#endregion Setup
 
 	#region Mesh
 
@@ -148,7 +214,7 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		};
 
 	// Call this when the definition changes
-	public void AdjustMesh()
+	override protected void DoAdjustMesh()
 	{
 		if (field == null) // Don't make mesh if not initialised
 		{
@@ -186,9 +252,9 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		mesh.RecalculateBounds( );
 		mesh.Optimize( );
 
-		if (DEBUG_PARALLELOGRAM)
+		if (DEBUG_PARALLELOGRAM_VERBOSE)
 		{
-			Debug.Log( "Adjust() " + this.DebugDescribe( ) );
+			Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );
 		}
 	}
 
@@ -208,6 +274,11 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		cachedMaterial.SetFloat( "_Alpha", a );
 	}
 
+	public void SetAlpha( float a )
+	{
+		cachedMaterial.SetFloat( "_Alpha", a );
+	}
+
 	#endregion Non-geometrical Appaarance
 
 	#region shapeChangers
@@ -217,7 +288,16 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 		if (h != height_)
 		{
 			height_ = h;
-			AdjustMesh( );
+			SetDirty( );
+		}
+	}
+
+	public void SetAngle(float a)
+	{
+		if (a != angle_)
+		{
+			angle_ = a;
+			SetDirty( );
 		}
 	}
 

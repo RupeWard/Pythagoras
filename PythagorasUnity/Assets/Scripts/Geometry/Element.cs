@@ -9,6 +9,9 @@ using System.Collections;
 [RequireComponent( typeof( MeshRenderer ) )]
 public abstract class Element : MonoBehaviour
 {
+	public readonly static bool DEBUG_ELEMENT = true;
+	public readonly static bool DEBUG_ELEMENT_VERBOSE = true;
+
 	#region private hooks
 
 	private Transform cachedTransform_ = null;
@@ -42,9 +45,33 @@ public abstract class Element : MonoBehaviour
 		get { return depth_;  }
 	}
 
+	private bool isDirty_ = false;
+	protected void SetDirty()
+	{
+		isDirty_ = true;
+	}
+
 	#endregion private data
 
-	#region Flow
+	#region in-editor modding 
+
+#if UNITY_EDITOR
+	// for in-editor modification
+
+	abstract protected void CheckIfModded( );
+	abstract protected void SetModdingValues( );
+
+#endif
+
+	#endregion in-editor modding 
+
+	#region interface
+
+	abstract protected void DoAdjustMesh( );
+	
+	#endregion interface
+
+	#region MB Flow
 
 	private void Awake()
 	{
@@ -57,21 +84,56 @@ public abstract class Element : MonoBehaviour
 		PostAwake( );
 	}
 
+	private void Update( )
+	{
+		if (isDirty_)
+		{
+			AdjustMesh( );
+		}
+#if UNITY_EDITOR
+		CheckIfModded( );
+#endif
+	}
+
+
+	#endregion MB Flow
+
+	#region Setup
+
+	private void AdjustMesh()
+	{
+		DoAdjustMesh( );
+		SetModdingValues( );
+		isDirty_ = false;
+	}
+
 	// Call this from derived classes' Init functions
 	protected void Init( Field f, float d )
 	{
-		field_ = f;
+		SetField( f );
 		depth_ = d;
+		SetDirty( );
+	}
 
+	private void SetField(Field f)
+	{
+		field_ = f;
 		cachedTransform_.SetParent( field_.cachedTransform );
 		cachedTransform_.localScale = Vector3.one;
 		cachedTransform_.localRotation = Quaternion.identity;
+		SetDirty( );
 	}
 
 	// Called from Awake(), override in derived classes for additional functionality
 	protected virtual void PostAwake( ) { }
 
-	#endregion Flow
+	public void SetDepth(float d)
+	{
+		depth_ = d;
+		SetDirty( );
+	}
+
+	#endregion Setup
 
 	#region Mesh
 
@@ -88,4 +150,36 @@ public abstract class Element : MonoBehaviour
 	}
 
 	#endregion
-}
+
+	#region Creation
+
+	public T Clone<T>( string name, float d ) where T :Element
+	{
+		GameObject go = GameObject.Instantiate( this.gameObject ) as GameObject;
+		go.name = name;
+		T component = go.GetComponent<T>( );
+		if (component == null)
+		{
+			throw new System.Exception( "Attempt to clone " + gameObject.name + ", which is a " + this.GetType( ).ToString( ) + " as a " + typeof( T ).ToString( ) );
+		}
+		if (DEBUG_ELEMENT)
+		{
+			Debug.Log( "Cloned  "+this.GetType().ToString()+" '" + gameObject.name + "' as a " + typeof( T ).ToString( ) + " called '" + name +"'");
+		}
+		component.cachedMeshFilter_.mesh = Mesh.Instantiate( cachedMeshFilter_.sharedMesh );
+		component.SetField( field_ );
+		component.SetDepth( d );
+		component.OnClone( this );
+		return component;
+	}
+
+	public T Clone<T>( string name ) where T : Element
+	{
+		return Clone<T>( name, depth_ );
+	}
+
+	// Note - have done it this way tp leave possibility of cloning from other types (eg Quadrilateral from parallelogram from square, etc)
+	protected abstract void OnClone<T>( T src) where T :Element;
+
+	#endregion Creation
+	}

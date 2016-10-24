@@ -13,64 +13,74 @@ using System.Collections.Generic;
 public class Triangle : Element, RJWard.Core.IDebugDescribable
 {
 	public static readonly bool DEBUG_TRIANGLE = true;
+	public static readonly bool DEBUG_TRIANGLE_VERBOSE = false;
 
 	#region private data
 
 	private List< Vector2 > vertices_ = new List<Vector2>( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero }; // the vertices
 
-#if UNITY_EDITOR
+	#endregion private data
+
+	#region in-editor modding 
+
+	#if UNITY_EDITOR
 	// for in-editor modification
 
 	public Vector2[] modVertices = new Vector2[3];
 
-	private void AdjustIfModded()
+	override protected void CheckIfModded()
 	{
-		bool doAdjust = false;
+		bool modded = false;
 		for (int i = 0; i<3; i++)
 		{
 			if (modVertices[i] != vertices_[i])
 			{
 				vertices_[i] = modVertices[i];
-				doAdjust = true;
+				modded = true;
 			}
 		}
-		if (doAdjust)
+		if (modded)
 		{
 			if (DEBUG_TRIANGLE)
 			{
 				Debug.Log( "Modded "+gameObject.name );
 			}
-			AdjustMesh( );
+			SetDirty( );
 		}
 	}
-#endif
 
-	#endregion private data
-
-	#region MB Flow
-
-	protected override void PostAwake()
+	protected override void SetModdingValues( )
 	{
 #if UNITY_EDITOR
-		for (int i = 0; i<3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			modVertices[i] = vertices_[i];
 		}
 #endif
 	}
 
-	private void Update ()
-	{
-#if UNITY_EDITOR
-		AdjustIfModded( );
 #endif
+
+	#endregion in-editor modding 
+
+	/*
+	#region MB/Element Flow
+
+	protected override void PostAwake()
+	{
 	}
+
+	#endregion MB/Element Flow
+	*/
+
+
+	#region Setup
 
 	public void Init(Field f, float d, Vector2[] vs, Color c)
 	{
 		if (vs.Length != 3)
 		{
-			throw new System.Exception( "vs.Length should be 3, not "+vs.Length );
+			throw new System.Exception( "vs.Length should be 3, not "+vs.Length+" on trying to Init "+gameObject.name );
 		}
 
 		base.Init( f, d );
@@ -85,20 +95,20 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 			Debug.Log( "Init() " + this.DebugDescribe( ) );
 		}
 
-		AdjustMesh( );
 		SetColour( c );
+		SetDirty( );
 	}
 
 	public void InitRightAngled( Field f, float d, Vector2[] hypotenuseEnds, float angle, Color c )
 	{
 		if (hypotenuseEnds.Length != 2)
 		{
-			throw new System.Exception( "baseline.Length should be 2, not "+hypotenuseEnds.Length );
+			throw new System.Exception( "baseline.Length should be 2, not "+hypotenuseEnds.Length+" on trying to Init (right-angled) "+gameObject.name );
 		}
 
 		if (angle >= 90f)
 		{
-			throw new System.Exception( "angle in right triangle should be <90, not " + angle );
+			throw new System.Exception( "angle in right triangle should be <90, not " + angle + " on trying to Init (right-angled) " + gameObject.name );
 		}
 
 		base.Init( f, d );
@@ -128,17 +138,26 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 			Debug.Log( "Init() " + this.DebugDescribe( ) );
 		}
 
-		AdjustMesh( );
 		SetColour( c );
+		SetDirty( );
 	}
 
+	protected override void OnClone<T>( T src ) 
+	{
+		Triangle t = src as Triangle;
+		if (t == null)
+		{
+			throw new System.Exception( gameObject.name + ": Triangles can currently only be cloned as Triangles" );
+		}
+		Init( t.field, t.depth, t.vertices_.ToArray( ), t.cachedMaterial.GetColor( "_Color" ) );
+	}
 
-	#endregion MB Flow
+	#endregion Setup
 
 	#region Mesh
 
 	// Call this when the definition changes
-	public void AdjustMesh()
+	override protected void DoAdjustMesh()
 	{
 		if (field == null) // Don't make mesh if not initialised
 		{
@@ -172,9 +191,9 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 		mesh.RecalculateBounds( );
 		mesh.Optimize( );
 
-		if (DEBUG_TRIANGLE)
+		if (DEBUG_TRIANGLE_VERBOSE)
 		{
-			Debug.Log( "Adjust() " + this.DebugDescribe( ) );
+			Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );
 		}
 	}
 
@@ -196,7 +215,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 	{
 		if (n < 0 || n > 2)
 		{
-			throw new System.Exception( "For side, n must be in [0,2], not " + n.ToString( ) );
+			throw new System.Exception( "For side of "+gameObject.name+", n must be in [0,2], not " + n.ToString( ) );
 		}
 		Vector2[] result = new Vector2[2];
 		switch (n)
@@ -227,7 +246,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 	{
 		if (n < 0 || n > 2)
 		{
-			throw new System.Exception( "For side length, n must be in [0,2], not " + n.ToString( ) );
+			throw new System.Exception( "For side length of "+gameObject.name+", n must be in [0,2], not " + n.ToString( ) );
 		}
 		Vector2[] side = GetSideInternal( n );
 		return Vector2.Distance( side[0], side[1] );
@@ -237,7 +256,7 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 	{
 		if (n < 0 || n > 2)
 		{
-			throw new System.Exception( "For internal angle, n must be in [0,2], not " + n.ToString( ) );
+			throw new System.Exception( "For internal angle of "+gameObject.name+", n must be in [0,2], not " + n.ToString( ) );
 		}
 		float angle = 0f;
 
