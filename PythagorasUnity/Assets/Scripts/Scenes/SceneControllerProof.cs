@@ -47,6 +47,7 @@ public class SceneControllerProof : SceneController_Base
 	protected override void PostStart( )
 	{
 		EnableForwardButton( CreateTriangle );
+		EnableTriangleSettings( );
 	}
 
 	#endregion SceneController_Base
@@ -93,6 +94,18 @@ public class SceneControllerProof : SceneController_Base
 	{
 		fastForward_ = !fastForward_;
 		SetFastForwardButtonSprite( );
+		if (fastForward_)
+		{
+			DisableTriangleSettings( );
+		}
+		else
+		{
+			if (parallelograms[0] == null)
+			{
+				// Not yet made first square, so can change triangle
+				EnableTriangleSettings( );
+			}
+		}
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "FastForward is now " + fastForward_ );
@@ -152,16 +165,12 @@ public class SceneControllerProof : SceneController_Base
 		StartCoroutine( CreateTriangleCR( ) );
 	}
 
-	private IEnumerator CreateTriangleCR()
+	private void CreateMainTriangle()
 	{
-#if UNITY_EDITOR
-		geometryManager.ClearTestElements( );
-#endif
-		if (DEBUG_PROOF)
+		if (mainTriangle_ != null)
 		{
-			Debug.Log( "CreateTriangleCR: START" );
+			GameObject.Destroy( mainTriangle_.gameObject );
 		}
-		Color colour = mainTriangleColour;
 
 		mainTriangle_ = geometryManager.AddRightTriangleToMainField(
 					"MainTriangle",
@@ -172,18 +181,31 @@ public class SceneControllerProof : SceneController_Base
 						new Vector2(1f, 0f)
 					},
 					initialAngle,
-					colour
+					mainTriangleColour
 			);
-		mainTriangle_.SetColour( colour, 0f );
+	}
+
+	private IEnumerator CreateTriangleCR()
+	{
+#if UNITY_EDITOR
+		geometryManager.ClearTestElements( );
+#endif
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "CreateTriangleCR: START" );
+		}
+
+		CreateMainTriangle( );
+		mainTriangle_.SetAlpha( 0f );
 
 		float elapsed = 0f;
 		while (elapsed < createTriangleDuration)
 		{
 			elapsed += Time.deltaTime;
-			mainTriangle_.SetColour( colour, Mathf.Lerp( 0f, 1f, elapsed / createTriangleDuration ) );
+			mainTriangle_.SetAlpha( Mathf.Lerp( 0f, 1f, elapsed / createTriangleDuration ) );
 			yield return null;
 		}
-		mainTriangle_.SetColour( colour, 1f );
+		mainTriangle_.SetAlpha( 1f );
 		yield return null;
 		HandleEndOfSequence( CreateSquare0 );
 		if (DEBUG_PROOF)
@@ -199,6 +221,7 @@ public class SceneControllerProof : SceneController_Base
 	private void CreateSquare0()
 	{
 		AssertMainTriangle( "CreateSquare0");
+		DisableTriangleSettings( );
 		DisableForwardButton( );
 		StartCoroutine( CreateSquare0CR( ) );
 	}
@@ -567,6 +590,58 @@ public class SceneControllerProof : SceneController_Base
 	}
 
 	#endregion proof
+
+	#region triangleSettings
+
+	private Vector2 minMaxTriangleAngle = new Vector2( 5f, 85f );
+
+	// Inspector hooks
+	public GameObject triangleSettingsPanel;
+	public UnityEngine.UI.InputField triangleAngleInputField;
+
+	private void EnableTriangleSettings()
+	{
+		triangleSettingsPanel.SetActive( true );
+		SetTriangleAngleText( );
+	}
+
+	private void SetTriangleAngleText()
+    {
+		triangleAngleInputField.text = initialAngle.ToString( );
+	}
+
+	private void DisableTriangleSettings( )
+	{
+		triangleSettingsPanel.SetActive( false );
+	}
+
+	public void OnTriangleAngleInputFieldEndEdit()
+	{
+		float f;
+		if (float.TryParse( triangleAngleInputField.text, out f))
+		{
+			if (f >= minMaxTriangleAngle.x && f <= minMaxTriangleAngle.y)
+			{
+				initialAngle = f;
+				if (mainTriangle_ != null)
+				{
+					CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
+				}
+			}
+			else
+			{
+				// TODO Display warning
+				Debug.LogWarning( "Angle out of range at " + f );
+			}
+		}
+		else
+		{
+			// TODO Display warning
+		}
+		SetTriangleAngleText( );
+	}
+
+	#endregion triangleSettings
 
 }
 

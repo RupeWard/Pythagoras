@@ -275,13 +275,13 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 	// TODO should this go into base class? Postponing because element-specific shader params may end up varying 
 	public void SetColour( Color c )
 	{
-		SetColour( c, 1f );
+		cachedMaterial.SetColor( "_Color", c );
 	}
 
 	public void SetColour( Color c, float a )
 	{
-		cachedMaterial.SetColor( "_Color", c );
-		cachedMaterial.SetFloat( "_Alpha", a );
+		SetColour( c );
+		SetAlpha( a );
 	}
 
 	public void SetAlpha( float a )

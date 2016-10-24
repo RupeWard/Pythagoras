@@ -294,12 +294,33 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 
 	#endregion geometry helpers
 
+	#region Non-geometrical Appaarance
+
+	public void SetColour( Color c )
+	{
+		cachedMaterial.SetColor( "_Color", c );
+	}
+
+	public void SetColour(Color c, float a)
+	{
+		SetColour( c );
+		SetAlpha( a );
+	}
+
+	public void SetAlpha( float a )
+	{
+		cachedMaterial.SetFloat( "_Alpha", a );
+	}
+
+
+	#endregion Non-geometrical Appaarance
+
 	#region IDebugDescribable
 
-	public void DebugDescribe(System.Text.StringBuilder sb)
+	public void DebugDescribe( System.Text.StringBuilder sb )
 	{
 		sb.Append( "Triangle '" ).Append( gameObject.name ).Append( "': " );
-		for (int i = 0; i<vertices_.Count; i++)
+		for (int i = 0; i < vertices_.Count; i++)
 		{
 			sb.Append( vertices_[i] ).Append( " " );
 		}
@@ -308,18 +329,5 @@ public class Triangle : Element, RJWard.Core.IDebugDescribable
 
 	#endregion IDebugDescribable
 
-	#region Non-geometrical Appaarance
 
-	public void SetColour( Color c )
-	{
-		SetColour( c, 1f );
-	}
-
-	public void SetColour(Color c, float a)
-	{
-		cachedMaterial.SetColor( "_Color", c );
-		cachedMaterial.SetFloat( "_Alpha", a );
-	}
-
-	#endregion Non-geometrical Appaarance
 }
