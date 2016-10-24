@@ -8,6 +8,7 @@ public class SceneControllerProof : SceneController_Base
 	#region inspector hooks
 
 	public UnityEngine.UI.Button forwardButton;
+	public UnityEngine.UI.Button fastForwardButton;
 
 	public GeometryManager geometryManager;
 
@@ -15,13 +16,13 @@ public class SceneControllerProof : SceneController_Base
 
 	#region private elements
 
-	#region SceneController_Base
-
 	private Triangle mainTriangle_ = null;
 	private Parallelogram[] parallelograms = new Parallelogram[2];
 	private Parallelogram[] shadowParallelograms = new Parallelogram[2];
 
-	#endregion SceneController_Base
+	#endregion private elements
+
+	#region SceneController_Base
 
 	override public SceneManager.EScene Scene ()
 	{
@@ -31,6 +32,7 @@ public class SceneControllerProof : SceneController_Base
 	protected override void PostAwake( )
 	{
 		DisableForwardButton( );
+		DisableFastForwardButton( );
 	}
 
 	protected override void PostStart( )
@@ -60,6 +62,11 @@ public class SceneControllerProof : SceneController_Base
 	{
 		forwardButtonAction_ = null;
 		forwardButton.gameObject.SetActive( false );
+	}
+
+	private void DisableFastForwardButton( )
+	{
+		fastForwardButton.gameObject.SetActive( false );
 	}
 
 	private void EnableForwardButton(System.Action action)
