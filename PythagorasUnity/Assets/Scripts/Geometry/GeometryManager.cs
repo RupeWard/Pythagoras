@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /*
 	Handles creation & placement of elements in fields
 */
 public class GeometryManager : MonoBehaviour
 {
+#if UNITY_EDITOR
 	public bool testMode = true; // set to true to create some elements to play around with for testing
-
+	private List<Element> testElements = new List<Element>( );
+#endif
+	   
 	#region prefabs
 
 	public GameObject trianglePrefab;
@@ -30,22 +34,25 @@ public class GeometryManager : MonoBehaviour
 
 	private void Start ()
 	{
+#if UNITY_EDITOR
 		if (testMode)
 		{
-			AddTriangleToField(
-				"TestTri",
-				mainField_,
-				0f,
-				new Vector2[]
-				{
-					new Vector2(-1f, -1.5f),
-					new Vector2(1f, -1.5f),
-					new Vector2(1f, .5f)
-				},
-				Color.blue
+			testElements.Add( 
+				AddTriangleToField(
+					"TestTri",
+					mainField_,
+					0f,
+					new Vector2[]
+					{
+						new Vector2(-1f, -1.5f),
+						new Vector2(1f, -1.5f),
+						new Vector2(1f, .5f)
+					},
+					Color.blue
+					)
 				);
-
-			AddParallelogramToField(
+			testElements.Add(
+				AddParallelogramToField(
 				"TestPar",
 				mainField_,
 				0f,
@@ -57,22 +64,24 @@ public class GeometryManager : MonoBehaviour
 				1f,
 				90f,
 				Color.green
-				);
-
-			AddRightTriangleToField(
-				"TestRightTri",
-				mainField_,
-				-0.1f,
-				new Vector2[]
-				{
-					new Vector2(-1f, 0f),
-					new Vector2(1f, 0f)
-				},
-				30f,
-				Color.red
+				)
 			);
+			testElements.Add(
+				AddRightTriangleToField(
+					"TestRightTri",
+					mainField_,
+					-0.1f,
+					new Vector2[]
+					{
+						new Vector2(-1f, 0f),
+						new Vector2(1f, 0f)
+					},
+					30f,
+					Color.red
+				)
+			);			
 		}
-
+#endif
 
 	}
 
