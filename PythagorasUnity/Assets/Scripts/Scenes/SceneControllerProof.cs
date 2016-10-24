@@ -61,6 +61,15 @@ public class SceneControllerProof : SceneController_Base
 
 	#endregion SceneController_Base
 
+	#region Flow
+
+	public void HandleReloadButton()
+	{
+		SceneManager.Instance.ReloadScene( SceneManager.EScene.Proof );
+	}
+
+	#endregion Flow
+
 	#region ForwardButton
 
 	private System.Action forwardButtonAction_;
