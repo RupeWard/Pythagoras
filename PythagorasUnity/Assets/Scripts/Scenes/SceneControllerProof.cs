@@ -390,7 +390,7 @@ public class SceneControllerProof : SceneController_Base
 //		parallelograms[0].SetAlpha( 1f );
 		shadowParallelograms[0].SetAlpha( 0f );
 
-		//		EnableForwardButton( CreateSquare1 );
+		EnableForwardButton( ShearParallelogram1);
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[0].gameObject );
@@ -399,6 +399,65 @@ public class SceneControllerProof : SceneController_Base
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "ShearParallelogram0CR: END" );
+		}
+	}
+
+	private void ShearParallelogram1( )
+	{
+		AssertParallelogram( "ShearParallelogram1", 1 );
+		AssertShadowParallelogram( "ShearParallelogram1", 1, false );
+		DisableForwardButton( );
+		StartCoroutine( ShearParallelogram1CR( ) );
+	}
+
+	private IEnumerator ShearParallelogram1CR( )
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearParallelogram1CR: START" );
+		}
+
+		shadowParallelograms[1] = parallelograms[1].Clone<Parallelogram>( "ShadowParallelogram1" );
+		shadowParallelograms[1].SetColour( shadowColour );
+		shadowParallelograms[1].SetDepth( shadowSquareDepth );
+
+		parallelograms[1].ChangeBaseline( 3 );
+
+		float startingAngle = parallelograms[1].angle;
+		parallelograms[1].SetAlpha( shearAlpha );
+
+		float elapsed = 0f;
+		while (elapsed < shearSquareDuration)
+		{
+			elapsed += Time.deltaTime;
+			parallelograms[1].SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			yield return null;
+		}
+		parallelograms[1].SetAngle( 90f );
+		yield return null;
+
+		elapsed = 0f;
+		while (elapsed <= postShearFadeDuration)
+		{
+			elapsed += Time.deltaTime;
+			float fraction = elapsed / postShearFadeDuration;
+			// parallelograms[0].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
+			shadowParallelograms[1].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
+			yield return null;
+		}
+
+		//		parallelograms[0].SetAlpha( 1f );
+		shadowParallelograms[1].SetAlpha( 0f );
+
+		//		EnableForwardButton( CreateSquare1 );
+
+		yield return null;
+		GameObject.Destroy( shadowParallelograms[1].gameObject );
+		shadowParallelograms[1] = null;
+
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearParallelogram1CR: END" );
 		}
 	}
 
