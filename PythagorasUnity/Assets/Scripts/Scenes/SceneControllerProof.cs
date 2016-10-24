@@ -58,20 +58,23 @@ public class SceneControllerProof : SceneController_Base
 	private void DisableForwardButton()
 	{
 		forwardButtonAction_ = null;
-		forwardButton.interactable = false;
+		forwardButton.gameObject.SetActive( false );
 	}
 
 	private void EnableForwardButton(System.Action action)
 	{
 		forwardButtonAction_ = action;
-		forwardButton.interactable = true;
+		forwardButton.gameObject.SetActive( true );
 	}
 
 	#endregion ForwardButton
 
+	#region proof
+
 	public float createTriangleDuration = 3f;
 	public Color mainTriangleColour = Color.blue;
 
+	
 	private void CreateTriangle()
 	{
 		DisableForwardButton( );
@@ -124,7 +127,7 @@ public class SceneControllerProof : SceneController_Base
 	 
 	private void CreateSquare0()
 	{
-		AssertMainTriangle( "CreateSquare1");
+		AssertMainTriangle( "CreateSquare0");
 		DisableForwardButton( );
 		StartCoroutine( CreateSquare0CR( ) );
 	}
@@ -150,7 +153,7 @@ public class SceneControllerProof : SceneController_Base
 		float targetHeight = mainTriangle_.GetSideLength( 1 );
 
 		float elapsed = 0f;
-		while (elapsed < createTriangleDuration)
+		while (elapsed < createSquareDuration)
 		{
 			elapsed += Time.deltaTime;
 			parallelograms[0].SetHeight( Mathf.Lerp(0f, targetHeight, elapsed / createSquareDuration) );
@@ -159,15 +162,64 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[0].SetHeight( targetHeight );
 		yield return null;
 
-//		EnableForwardButton( CreateSquare1 );
+		EnableForwardButton( CreateSquare1 );
 
 		yield return null;
 
 		if (DEBUG_PROOF)
 		{
-			Debug.Log( "CreateSquare0CR: START" );
+			Debug.Log( "CreateSquare0CR: END" );
 		}
 	}
+
+	private void CreateSquare1( )
+	{
+		AssertMainTriangle( "CreateSquare1" );
+		AssertParallelogram( "CreateSquare1", 0 );
+        DisableForwardButton( );
+		StartCoroutine( CreateSquare1CR( ) );
+	}
+
+	private IEnumerator CreateSquare1CR( )
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "CreateSquare1CR: START" );
+		}
+
+		Vector2[] baseline = mainTriangle_.GetSideExternal( 2 );
+		parallelograms[1] =
+			geometryManager.AddParallelogramToMainField(
+				"Par1",
+				0f,
+				baseline,
+				0f,
+				90f,
+				square1Colour
+				);
+
+		float targetHeight = mainTriangle_.GetSideLength( 2 );
+
+		float elapsed = 0f;
+		while (elapsed < createSquareDuration)
+		{
+			elapsed += Time.deltaTime;
+			parallelograms[1].SetHeight( Mathf.Lerp( 0f, targetHeight, elapsed / createSquareDuration ) );
+			yield return null;
+		}
+		parallelograms[1].SetHeight( targetHeight );
+		yield return null;
+
+		//		EnableForwardButton( CreateSquare1 );
+
+		yield return null;
+
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "CreateSquare1CR: END" );
+		}
+	}
+
 
 	private void AssertMainTriangle(string locn)
 	{
@@ -184,6 +236,8 @@ public class SceneControllerProof : SceneController_Base
 			throw new System.Exception( "Parallelogram[ "+n+" ] doesn't exist in " + locn );
 		}
 	}
+
+	#endregion proof
 
 }
 
