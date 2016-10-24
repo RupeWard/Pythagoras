@@ -103,7 +103,9 @@ public abstract class Element : MonoBehaviour
 	private void AdjustMesh()
 	{
 		DoAdjustMesh( );
+#if UNITY_EDITOR
 		SetModdingValues( );
+#endif
 		isDirty_ = false;
 	}
 
