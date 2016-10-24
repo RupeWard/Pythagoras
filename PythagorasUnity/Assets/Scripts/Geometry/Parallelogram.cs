@@ -21,6 +21,16 @@ public class Parallelogram : Element, RJWard.Core.IDebugDescribable
 	private float height_ = 0f;
 	private float angle_ = 90f;
 
+	public float height
+	{
+		get { return height_; }
+	}
+
+	public float angle
+	{
+		get { return angle_; }
+	}
+
 #if UNITY_EDITOR
 	// for in-editor modification
 

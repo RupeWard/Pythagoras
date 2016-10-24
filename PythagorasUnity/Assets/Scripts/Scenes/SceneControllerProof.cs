@@ -255,7 +255,7 @@ public class SceneControllerProof : SceneController_Base
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[0].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / createSquareDuration ) );
+			parallelograms[0].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
 		parallelograms[0].SetAngle( targetAngle);
@@ -312,7 +312,7 @@ public class SceneControllerProof : SceneController_Base
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[1].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / createSquareDuration ) );
+			parallelograms[1].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
 		parallelograms[1].SetAngle( targetAngle );
@@ -331,7 +331,7 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[1].SetAlpha( 1f );
 		shadowParallelograms[1].SetAlpha( 0f );
 
-		//		EnableForwardButton( CreateSquare1 );
+		EnableForwardButton( ShearParallelogram0 );
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[1].gameObject );
@@ -343,6 +343,64 @@ public class SceneControllerProof : SceneController_Base
 		}
 	}
 
+	private void ShearParallelogram0( )
+	{
+		AssertParallelogram( "ShearParallelogram0", 0 );
+		AssertShadowParallelogram( "ShearParallelogram0", 0, false );
+		DisableForwardButton( );
+		StartCoroutine( ShearParallelogram0CR( ) );
+	}
+
+	private IEnumerator ShearParallelogram0CR( )
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearParallelogram0CR: START" );
+		}
+
+		shadowParallelograms[0] = parallelograms[0].Clone<Parallelogram>( "ShadowParallelogram0" );
+		shadowParallelograms[0].SetColour( shadowColour );
+		shadowParallelograms[0].SetDepth( shadowSquareDepth );
+
+		parallelograms[0].ChangeBaseline( 1 );
+
+		float startingAngle = parallelograms[0].angle;
+		parallelograms[0].SetAlpha( shearAlpha );
+
+		float elapsed = 0f;
+		while (elapsed < shearSquareDuration)
+		{
+			elapsed += Time.deltaTime;
+			parallelograms[0].SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			yield return null;
+		}
+		parallelograms[0].SetAngle( 90f );
+		yield return null;
+
+		elapsed = 0f;
+		while (elapsed <= postShearFadeDuration)
+		{
+			elapsed += Time.deltaTime;
+			float fraction = elapsed / postShearFadeDuration;
+			// parallelograms[0].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
+			shadowParallelograms[0].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
+			yield return null;
+		}
+
+//		parallelograms[0].SetAlpha( 1f );
+		shadowParallelograms[0].SetAlpha( 0f );
+
+		//		EnableForwardButton( CreateSquare1 );
+
+		yield return null;
+		GameObject.Destroy( shadowParallelograms[0].gameObject );
+		shadowParallelograms[0] = null;
+
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearParallelogram0CR: END" );
+		}
+	}
 
 
 	private void AssertMainTriangle(string locn)
@@ -361,11 +419,21 @@ public class SceneControllerProof : SceneController_Base
 		}
 	}
 
-	private void AssertShadowParallelogram( string locn, int n )
+	private void AssertShadowParallelogram( string locn, int n, bool exists )
 	{
-		if (shadowParallelograms[n] == null)
+		if (exists) 
 		{
-			throw new System.Exception( "shadowParallelograms[ " + n + " ] doesn't exist in " + locn );
+			if (shadowParallelograms[n] == null)
+			{
+				throw new System.Exception( "shadowParallelograms[ " + n + " ] doesn't exist in " + locn );
+			}
+		}
+		else
+		{
+			if (shadowParallelograms[n] != null)
+			{
+				throw new System.Exception( "shadowParallelograms[ " + n + " ] already exists in " + locn );
+			}
 		}
 	}
 
