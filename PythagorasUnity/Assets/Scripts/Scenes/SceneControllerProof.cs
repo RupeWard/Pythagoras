@@ -274,7 +274,7 @@ public class SceneControllerProof : SceneController_Base
 		parallelograms[0].SetAlpha( 1f );
 		shadowParallelograms[0].SetAlpha( 0f );
 		
-		//		EnableForwardButton( CreateSquare1 );
+		EnableForwardButton( ShearSquare1 );
 
 		yield return null;
 		GameObject.Destroy( shadowParallelograms[0].gameObject );
@@ -283,6 +283,63 @@ public class SceneControllerProof : SceneController_Base
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "ShearSquare0CR: END" );
+		}
+	}
+
+	private void ShearSquare1( )
+	{
+		AssertParallelogram( "ShearSquare1", 1 );
+		DisableForwardButton( );
+		StartCoroutine( ShearSquare1CR( ) );
+	}
+
+	private IEnumerator ShearSquare1CR( )
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearSquare1CR: START" );
+		}
+
+		shadowParallelograms[1] = parallelograms[1].Clone<Parallelogram>( "ShadowSquare1" );
+		shadowParallelograms[1].SetColour( shadowColour );
+		shadowParallelograms[1].SetDepth( shadowSquareDepth );
+
+		float targetAngle = 180f - mainTriangle_.GetInternalAngleDegrees( 1 );
+
+		parallelograms[1].SetAlpha( shearAlpha );
+
+		float elapsed = 0f;
+		while (elapsed < shearSquareDuration)
+		{
+			elapsed += Time.deltaTime;
+			parallelograms[1].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / createSquareDuration ) );
+			yield return null;
+		}
+		parallelograms[1].SetAngle( targetAngle );
+		yield return null;
+
+		elapsed = 0f;
+		while (elapsed <= postShearFadeDuration)
+		{
+			elapsed += Time.deltaTime;
+			float fraction = elapsed / postShearFadeDuration;
+			parallelograms[1].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
+			shadowParallelograms[1].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
+			yield return null;
+		}
+
+		parallelograms[1].SetAlpha( 1f );
+		shadowParallelograms[1].SetAlpha( 0f );
+
+		//		EnableForwardButton( CreateSquare1 );
+
+		yield return null;
+		GameObject.Destroy( shadowParallelograms[1].gameObject );
+		shadowParallelograms[1] = null;
+
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "ShearSquare1CR: END" );
 		}
 	}
 
