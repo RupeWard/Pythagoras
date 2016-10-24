@@ -38,9 +38,9 @@ public class GeometryManager : MonoBehaviour
 				0f,
 				new Vector2[]
 				{
-				new Vector2(-1f, -2f),
-				new Vector2(1f, -2f),
-				new Vector2(1f, 0f)
+					new Vector2(-1f, -1.5f),
+					new Vector2(1f, -1.5f),
+					new Vector2(1f, .5f)
 				},
 				Color.blue
 				);
@@ -51,16 +51,31 @@ public class GeometryManager : MonoBehaviour
 				0f,
 				new Vector2[]
 				{
-				new Vector2(-1f, 1f),
-				new Vector2(1f, 1f)
+					new Vector2(-1f, 0.5f),
+					new Vector2(1f, 0.5f)
 				},
 				1f,
 				90f,
 				Color.green
 				);
+
+			AddRightTriangleToField(
+				"TestRightTri",
+				mainField_,
+				-0.1f,
+				new Vector2[]
+				{
+					new Vector2(-1f, 0f),
+					new Vector2(1f, 0f)
+				},
+				30f,
+				Color.red
+			);
 		}
+
+
 	}
-	
+
 	#endregion Flow
 
 	#region creating elements
@@ -74,6 +89,17 @@ public class GeometryManager : MonoBehaviour
 		triangle.Init( f, d, v, c );
 		return triangle;
 	}
+
+	// Instantiate a right-angled Triangle (with base defined by v and height h) in a Field and set it up
+	private Triangle AddRightTriangleToField( string n, Field f, float d, Vector2[] hypotenuse, float angle, Color c )
+	{
+		GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
+		triangleGO.name = n;
+		Triangle triangle = triangleGO.GetComponent<Triangle>( );
+		triangle.InitRightAngled( f, d, hypotenuse, angle, c );
+		return triangle;
+	}
+
 
 	// Instantiate a Parallelogram in a Field and set it up
 	private Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a, Color c )
