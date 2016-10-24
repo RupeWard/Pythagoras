@@ -31,6 +31,15 @@ public class SceneControllerProof : SceneController_Base
 
 	#endregion private elements
 
+	#region MBFlow
+
+	private void Update()
+	{
+		ProcessTriangleAngleChange( );
+	}
+
+	#endregion MBFlow
+
 	#region SceneController_Base
 
 	override public SceneManager.EScene Scene ()
@@ -595,9 +604,15 @@ public class SceneControllerProof : SceneController_Base
 
 	private Vector2 minMaxTriangleAngle = new Vector2( 5f, 85f );
 
+	public float triangleAngleChangeSpeed = 1f;
+
+	private float currentTriangleAngleChangeSpeed = 0f;
+
 	// Inspector hooks
 	public GameObject triangleSettingsPanel;
 	public UnityEngine.UI.InputField triangleAngleInputField;
+	public UnityEngine.UI.Button triangleAngleUpButton;
+	public UnityEngine.UI.Button triangleAngleDownButton;
 
 	private void EnableTriangleSettings()
 	{
@@ -607,12 +622,24 @@ public class SceneControllerProof : SceneController_Base
 
 	private void SetTriangleAngleText()
     {
-		triangleAngleInputField.text = initialAngle.ToString( );
+		triangleAngleInputField.text = initialAngle.ToString( "0.0");
 	}
 
 	private void DisableTriangleSettings( )
 	{
 		triangleSettingsPanel.SetActive( false );
+	}
+
+	private void ChangeInitialAngle(float f)
+	{
+		initialAngle = f;
+		if (mainTriangle_ != null && currentTriangleAngleChangeSpeed == 0f )
+		{
+			CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
+		}
+		SetTriangleAngleText( );
+		triangleAngleUpButton.gameObject.SetActive( false == Mathf.Approximately( initialAngle, minMaxTriangleAngle.y ) );
+		triangleAngleDownButton.gameObject.SetActive( false == Mathf.Approximately( initialAngle, minMaxTriangleAngle.x ) );
 	}
 
 	public void OnTriangleAngleInputFieldEndEdit()
@@ -632,15 +659,52 @@ public class SceneControllerProof : SceneController_Base
 			{
 				// TODO Display warning
 				Debug.LogWarning( "Angle out of range at " + f );
+				SetTriangleAngleText( );
 			}
 		}
 		else
 		{
 			// TODO Display warning
+			Debug.LogWarning( "Can't parse angle from '" + triangleAngleInputField.text+"'" );
+			SetTriangleAngleText( );
 		}
-		SetTriangleAngleText( );
 	}
 
+	public void HandleTriangleAngleDownButtonDown( )
+	{
+		currentTriangleAngleChangeSpeed = -1f * triangleAngleChangeSpeed;
+	}
+
+	public void HandleTriangleAngleUpButtonDown()
+	{
+		currentTriangleAngleChangeSpeed = triangleAngleChangeSpeed;
+	}
+
+	public void HandleTriangleAngleButtonUp( )
+	{
+		currentTriangleAngleChangeSpeed = 0f;
+		CreateMainTriangle( );
+	}
+
+	private void ProcessTriangleAngleChange()
+	{
+		if (triangleSettingsPanel.gameObject.activeSelf)
+		{
+			if (currentTriangleAngleChangeSpeed != 0f)
+			{
+				float newAngle = initialAngle + currentTriangleAngleChangeSpeed * Time.deltaTime;
+				newAngle = Mathf.Clamp( newAngle, minMaxTriangleAngle.x, minMaxTriangleAngle.y );
+				if (Mathf.Approximately(newAngle, initialAngle))
+				{
+					currentTriangleAngleChangeSpeed = 0f;
+				}
+		//		else
+				{
+					ChangeInitialAngle( newAngle );
+				}
+			}
+		}
+	}
 	#endregion triangleSettings
 
 }
