@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using RJWard.Geometry;
+
 public class SceneControllerProof : SceneController_Base 
 {
 	static readonly private bool DEBUG_PROOF = true;
