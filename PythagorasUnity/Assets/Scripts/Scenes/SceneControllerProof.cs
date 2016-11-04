@@ -30,17 +30,22 @@ public class SceneControllerProof : SceneController_Base
 	public UnityEngine.UI.Button forwardButton;
 	public UnityEngine.UI.Button fastForwardButton;
 
-	public GeometryFactory geometryFactory;
-
 	public Sprite fastForwardButtonSprite_Go;
 	public Sprite fastForwardButtonSprite_Stop;
 
 	#endregion inspector hooks
 
+	#region prefabs
+
+	public GameObject geometryFactoryPrefab;
+
+	#endregion prefabs
+
 	#region private data
 
 	bool fastForward_ = false;
-	private Field mainField_ = null; 
+	private Field mainField_ = null;
+	private GeometryFactory geometryFactory_;
 
 	#endregion private data
 
@@ -71,6 +76,8 @@ public class SceneControllerProof : SceneController_Base
 	protected override void PostAwake( )
 	{
 		mainField_ = new GameObject( "MainField" ).AddComponent<Field>( );
+		geometryFactory_ = (Instantiate( geometryFactoryPrefab ) as GameObject).GetComponent<GeometryFactory>( );
+		geometryFactory_.transform.SetParent( transform );
 
 		DisableForwardButton( );
 		DisableFastForwardButton( );
@@ -82,7 +89,7 @@ public class SceneControllerProof : SceneController_Base
 		if (testMode)
 		{
 			testElements.Add(
-				geometryFactory.AddTriangleToField(
+				geometryFactory_.AddTriangleToField(
 					mainField_,
 					"TestTri",
 					0f,
@@ -96,7 +103,7 @@ public class SceneControllerProof : SceneController_Base
 					)
 				);
 			testElements.Add(
-				geometryFactory.AddParallelogramToField(
+				geometryFactory_.AddParallelogramToField(
 				mainField_,
 				"TestPar",
 				0f,
@@ -111,7 +118,7 @@ public class SceneControllerProof : SceneController_Base
 				)
 			);
 			testElements.Add(
-				geometryFactory.AddRightTriangleToField(
+				geometryFactory_.AddRightTriangleToField(
 					mainField_,
 					"TestRightTri",
 					-0.1f,
@@ -125,7 +132,7 @@ public class SceneControllerProof : SceneController_Base
 				)
 			);
 			testElements.Add(
-				geometryFactory.AddStraightLineToField(
+				geometryFactory_.AddStraightLineToField(
 					mainField_,
 					"TestLine",
 					-0.2f,
@@ -276,7 +283,7 @@ public class SceneControllerProof : SceneController_Base
 			GameObject.Destroy( mainTriangle_.gameObject );
 		}
 
-		mainTriangle_ = geometryFactory.AddRightTriangleToField(
+		mainTriangle_ = geometryFactory_.AddRightTriangleToField(
 					mainField_,
 					"MainTriangle",
 					0f,
@@ -340,7 +347,7 @@ public class SceneControllerProof : SceneController_Base
 
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 1 );
 		parallelograms[0] =
-			geometryFactory.AddParallelogramToField(
+			geometryFactory_.AddParallelogramToField(
 				mainField_,
 				"Par0",
 				0f,
@@ -389,7 +396,7 @@ public class SceneControllerProof : SceneController_Base
 
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 2 );
 		parallelograms[1] =
-			geometryFactory.AddParallelogramToField(
+			geometryFactory_.AddParallelogramToField(
 				mainField_,
 				"Par1",
 				0f,
