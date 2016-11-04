@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class Parallelogram : Element, RJWard.Core.IDebugDescribable
+	public class Element_Parallelogram : ElementBase, RJWard.Core.IDebugDescribable
 	{
 		public static bool DEBUG_PARALLELOGRAM = true;
 		public static bool DEBUG_PARALLELOGRAM_VERBOSE = false;
@@ -116,7 +116,7 @@ namespace RJWard.Geometry
 
 		protected override void OnClone<T>( T src )
 		{
-			Parallelogram p = src as Parallelogram;
+			Element_Parallelogram p = src as Element_Parallelogram;
 			if (p == null)
 			{
 				throw new System.Exception( gameObject.name + ": Parallelograms (" + this.GetType( ).ToString( ) + ") can currently only be cloned from Parallelograms, not " + src.GetType( ).ToString( ) );

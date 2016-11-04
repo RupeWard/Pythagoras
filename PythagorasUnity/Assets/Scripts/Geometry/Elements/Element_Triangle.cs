@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class Triangle : Element, RJWard.Core.IDebugDescribable
+	public class Element_Triangle : ElementBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_TRIANGLE = true;
 		public static readonly bool DEBUG_TRIANGLE_VERBOSE = false;
@@ -146,7 +146,7 @@ namespace RJWard.Geometry
 
 		protected override void OnClone<T>( T src )
 		{
-			Triangle t = src as Triangle;
+			Element_Triangle t = src as Element_Triangle;
 			if (t == null)
 			{
 				throw new System.Exception( gameObject.name + ": Triangles can currently only be cloned as Triangles" );

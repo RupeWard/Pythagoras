@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class GeometryManager : MonoBehaviour
+	public class GeometryFactory : MonoBehaviour
 	{
 #if UNITY_EDITOR
+		// TODO remove, should only done by client/scene
 		public bool testMode = true; // set to true to create some elements to play around with for testing
-		private List<Element> testElements = new List<Element>( );
+		private List<ElementBase> testElements = new List<ElementBase>( );
 		public void ClearTestElements( )
 		{
 			for (int i = 0; i < testElements.Count; i++)
@@ -33,7 +34,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private Field mainField_ = null; // currently only using the one Field
+		private Field mainField_ = null; // TODO remove, should only be known to clients
 
 		#endregion private data
 
@@ -112,65 +113,65 @@ namespace RJWard.Geometry
 		#region creating elements
 
 		// Instantiate a Triangle in a Field and set it up
-		private Triangle AddTriangleToField( string n, Field f, float d, Vector2[] v, Color c )
+		private Element_Triangle AddTriangleToField( string n, Field f, float d, Vector2[] v, Color c )
 		{
 			GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
-			Triangle triangle = triangleGO.GetComponent<Triangle>( );
+			Element_Triangle triangle = triangleGO.GetComponent<Element_Triangle>( );
 			triangle.Init( f, d, v, c );
 			return triangle;
 		}
 
 		// Instantiate a Triangle in main Field and set it up
-		public Triangle AddTriangleToMainField( string n, float d, Vector2[] v, Color c )
+		public Element_Triangle AddTriangleToMainField( string n, float d, Vector2[] v, Color c )
 		{
 			return AddTriangleToField( n, mainField_, d, v, c );
 		}
 
 		// Instantiate a right-angled Triangle (with base defined by v and height h) in a Field and set it up
-		private Triangle AddRightTriangleToField( string n, Field f, float d, Vector2[] hypotenuse, float angle, Color c )
+		private Element_Triangle AddRightTriangleToField( string n, Field f, float d, Vector2[] hypotenuse, float angle, Color c )
 		{
 			GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
-			Triangle triangle = triangleGO.GetComponent<Triangle>( );
+			Element_Triangle triangle = triangleGO.GetComponent<Element_Triangle>( );
 			triangle.InitRightAngled( f, d, hypotenuse, angle, c );
 			return triangle;
 		}
 
 		// Instantiate a right-angled Triangle (with base defined by v and height h) in main Field and set it up
-		public Triangle AddRightTriangleToMainField( string n, float d, Vector2[] hypotenuse, float angle, Color c )
+		public Element_Triangle AddRightTriangleToMainField( string n, float d, Vector2[] hypotenuse, float angle, Color c )
 		{
 			return AddRightTriangleToField( n, mainField_, d, hypotenuse, angle, c );
 		}
 
 		// Instantiate a Parallelogram in a Field and set it up
-		private Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a, Color c )
+		private Element_Parallelogram AddParallelogramToField( string n, Field f, float d, Vector2[] bl, float h, float a, Color c )
 		{
 			GameObject parallelogramGO = GameObject.Instantiate<GameObject>( parallelogramPrefab ) as GameObject;
 			parallelogramGO.name = n;
-			Parallelogram parallelogram = parallelogramGO.GetComponent<Parallelogram>( );
+			Element_Parallelogram parallelogram = parallelogramGO.GetComponent<Element_Parallelogram>( );
 			parallelogram.Init( f, d, bl, h, a, c );
 			return parallelogram;
 		}
 
 		// Instantiate a Parallelogram in a Field and set it up
-		public Parallelogram AddParallelogramToMainField( string n, float d, Vector2[] bl, float h, float a, Color c )
+		public Element_Parallelogram AddParallelogramToMainField( string n, float d, Vector2[] bl, float h, float a, Color c )
 		{
 			return AddParallelogramToField( n, mainField_, d, bl, h, a, c );
 		}
 
 		// Instantiate a StraightLine in a Field and set it up
-		private StraightLine AddStraightLineToField( string n, Field f, float d, Vector2[] es, float w, Color c )
+		private Element_StraightLine AddStraightLineToField( string n, Field f, float d, Vector2[] es, float w, Color c )
 		{
 			GameObject straightLineGO = GameObject.Instantiate<GameObject>( straightLinePrefab ) as GameObject;
 			straightLineGO.name = n;
-			StraightLine straightLine = straightLineGO.GetComponent<StraightLine>( );
+			Element_StraightLine straightLine = straightLineGO.GetComponent<Element_StraightLine>( );
 			straightLine.Init( f, d, es, w, c );
 			return straightLine;
 		}
 
 		// Instantiate a Parallelogram in a Field and set it up
-		public StraightLine AddStraightLineToMainField( string n, float d, Vector2[] es, float w, Color c )
+		public Element_StraightLine AddStraightLineToMainField( string n, float d, Vector2[] es, float w, Color c )
 		{
 			return AddStraightLineToField( n, mainField_, d, es, w, c );
 		}

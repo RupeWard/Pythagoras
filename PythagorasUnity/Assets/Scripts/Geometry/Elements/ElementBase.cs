@@ -9,7 +9,7 @@ namespace RJWard.Geometry
 {
 	[RequireComponent( typeof( MeshFilter ) )]
 	[RequireComponent( typeof( MeshRenderer ) )]
-	public abstract class Element : MonoBehaviour
+	public abstract class ElementBase : MonoBehaviour
 	{
 		public readonly static bool DEBUG_ELEMENT = true;
 		public readonly static bool DEBUG_ELEMENT_VERBOSE = true;
@@ -158,7 +158,7 @@ namespace RJWard.Geometry
 
 		#region Creation
 
-		public T Clone<T>( string name, float d ) where T : Element
+		public T Clone<T>( string name, float d ) where T : ElementBase
 		{
 			GameObject go = GameObject.Instantiate( this.gameObject ) as GameObject;
 			go.name = name;
@@ -178,13 +178,13 @@ namespace RJWard.Geometry
 			return component;
 		}
 
-		public T Clone<T>( string name ) where T : Element
+		public T Clone<T>( string name ) where T : ElementBase
 		{
 			return Clone<T>( name, depth_ );
 		}
 
 		// Note - have done it this way tp leave possibility of cloning from other types (eg Quadrilateral from parallelogram from square, etc)
-		protected abstract void OnClone<T>( T src ) where T : Element;
+		protected abstract void OnClone<T>( T src ) where T : ElementBase;
 
 		#endregion Creation
 	}

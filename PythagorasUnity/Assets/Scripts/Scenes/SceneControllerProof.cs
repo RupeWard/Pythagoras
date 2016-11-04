@@ -12,7 +12,7 @@ public class SceneControllerProof : SceneController_Base
 	public UnityEngine.UI.Button forwardButton;
 	public UnityEngine.UI.Button fastForwardButton;
 
-	public GeometryManager geometryManager;
+	public GeometryFactory geometryManager;
 
 	public Sprite fastForwardButtonSprite_Go;
 	public Sprite fastForwardButtonSprite_Stop;
@@ -27,9 +27,9 @@ public class SceneControllerProof : SceneController_Base
 
 	#region private elements
 
-	private Triangle mainTriangle_ = null;
-	private Parallelogram[] parallelograms = new Parallelogram[2];
-	private Parallelogram[] shadowParallelograms = new Parallelogram[2];
+	private Element_Triangle mainTriangle_ = null;
+	private Element_Parallelogram[] parallelograms = new Element_Parallelogram[2];
+	private Element_Parallelogram[] shadowParallelograms = new Element_Parallelogram[2];
 
 	#endregion private elements
 
@@ -356,7 +356,7 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearSquare0CR: START" );
 		}
 
-		shadowParallelograms[0] = parallelograms[0].Clone<Parallelogram>("ShadowSquare0" );
+		shadowParallelograms[0] = parallelograms[0].Clone<Element_Parallelogram>("ShadowSquare0" );
 		shadowParallelograms[0].SetColour( shadowColour );
 		shadowParallelograms[0].SetDepth( shadowSquareDepth );
 
@@ -413,7 +413,7 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearSquare1CR: START" );
 		}
 
-		shadowParallelograms[1] = parallelograms[1].Clone<Parallelogram>( "ShadowSquare1" );
+		shadowParallelograms[1] = parallelograms[1].Clone<Element_Parallelogram>( "ShadowSquare1" );
 		shadowParallelograms[1].SetColour( shadowColour );
 		shadowParallelograms[1].SetDepth( shadowSquareDepth );
 
@@ -471,7 +471,7 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearParallelogram0CR: START" );
 		}
 
-		shadowParallelograms[0] = parallelograms[0].Clone<Parallelogram>( "ShadowParallelogram0" );
+		shadowParallelograms[0] = parallelograms[0].Clone<Element_Parallelogram>( "ShadowParallelogram0" );
 		shadowParallelograms[0].SetColour( shadowColour );
 		shadowParallelograms[0].SetDepth( shadowSquareDepth );
 
@@ -530,7 +530,7 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearParallelogram1CR: START" );
 		}
 
-		shadowParallelograms[1] = parallelograms[1].Clone<Parallelogram>( "ShadowParallelogram1" );
+		shadowParallelograms[1] = parallelograms[1].Clone<Element_Parallelogram>( "ShadowParallelogram1" );
 		shadowParallelograms[1].SetColour( shadowColour );
 		shadowParallelograms[1].SetDepth( shadowSquareDepth );
 

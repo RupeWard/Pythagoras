@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class StraightLine : Element, RJWard.Core.IDebugDescribable
+	public class Element_StraightLine : ElementBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_STRAIGHTLINE = true;
 		public static readonly bool DEBUG_STRAIGHTLINE_VERBOSE = false;
@@ -110,7 +110,7 @@ namespace RJWard.Geometry
 
 		protected override void OnClone<T>( T src )
 		{
-			StraightLine s = src as StraightLine;
+			Element_StraightLine s = src as Element_StraightLine;
 			if (s == null)
 			{
 				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
