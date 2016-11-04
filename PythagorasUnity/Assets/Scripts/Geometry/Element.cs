@@ -123,6 +123,7 @@ public abstract class Element : MonoBehaviour
 		cachedTransform_.SetParent( field_.cachedTransform );
 		cachedTransform_.localScale = Vector3.one;
 		cachedTransform_.localRotation = Quaternion.identity;
+		cachedTransform_.localPosition = Vector3.zero;
 		SetDirty( );
 	}
 

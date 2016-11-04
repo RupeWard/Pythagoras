@@ -24,6 +24,7 @@ public class GeometryManager : MonoBehaviour
 
 	public GameObject trianglePrefab;
 	public GameObject parallelogramPrefab;
+	public GameObject straightLinePrefab;
 
 	#endregion prefabs
 
@@ -46,9 +47,8 @@ public class GeometryManager : MonoBehaviour
 		if (testMode)
 		{
 			testElements.Add( 
-				AddTriangleToField(
+				AddTriangleToMainField(
 					"TestTri",
-					mainField_,
 					0f,
 					new Vector2[]
 					{
@@ -60,9 +60,8 @@ public class GeometryManager : MonoBehaviour
 					)
 				);
 			testElements.Add(
-				AddParallelogramToField(
+				AddParallelogramToMainField(
 				"TestPar",
-				mainField_,
 				0f,
 				new Vector2[]
 				{
@@ -75,9 +74,8 @@ public class GeometryManager : MonoBehaviour
 				)
 			);
 			testElements.Add(
-				AddRightTriangleToField(
+				AddRightTriangleToMainField(
 					"TestRightTri",
-					mainField_,
 					-0.1f,
 					new Vector2[]
 					{
@@ -87,7 +85,20 @@ public class GeometryManager : MonoBehaviour
 					30f,
 					Color.red
 				)
-			);			
+			);
+			testElements.Add(
+				AddStraightLineToMainField(
+					"TestLine",
+					-0.2f,
+					new Vector2[]
+					{
+						new Vector2(-2f, -1f),
+						new Vector2(1.5f, 2.5f)
+					},
+					0.1f,
+					Color.red
+				)
+			);
 		}
 #endif
 
@@ -143,6 +154,22 @@ public class GeometryManager : MonoBehaviour
 	public Parallelogram AddParallelogramToMainField( string n, float d, Vector2[] bl, float h, float a, Color c )
 	{
 		return AddParallelogramToField( n, mainField_, d, bl, h, a, c );
+	}
+
+	// Instantiate a StraightLine in a Field and set it up
+	private StraightLine AddStraightLineToField( string n, Field f, float d, Vector2[] es, float w, Color c )
+	{
+		GameObject straightLineGO = GameObject.Instantiate<GameObject>( straightLinePrefab) as GameObject;
+		straightLineGO.name = n;
+		StraightLine straightLine = straightLineGO.GetComponent<StraightLine>( );
+		straightLine.Init( f, d, es, w, c );
+		return straightLine;
+	}
+
+	// Instantiate a Parallelogram in a Field and set it up
+	public StraightLine AddStraightLineToMainField( string n, float d, Vector2[] es, float w, Color c )
+	{
+		return AddStraightLineToField( n, mainField_, d, es, w, c );
 	}
 
 	#endregion creating elements
