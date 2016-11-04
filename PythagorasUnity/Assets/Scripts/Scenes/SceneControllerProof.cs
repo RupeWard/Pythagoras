@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using RJWard.Geometry;
 
@@ -7,12 +8,29 @@ public class SceneControllerProof : SceneController_Base
 {
 	static readonly private bool DEBUG_PROOF = true;
 
+	#region TEST
+
+#if UNITY_EDITOR
+	public bool testMode = true; // set to true to create some elements to play around with for testing
+	private List<ElementBase> testElements = new List<ElementBase>( );
+	public void ClearTestElements( )
+	{
+		for (int i = 0; i < testElements.Count; i++)
+		{
+			GameObject.Destroy( testElements[i].gameObject );
+		}
+		testElements.Clear( );
+	}
+#endif
+
+	#endregion TEST
+
 	#region inspector hooks
 
 	public UnityEngine.UI.Button forwardButton;
 	public UnityEngine.UI.Button fastForwardButton;
 
-	public GeometryFactory geometryManager;
+	public GeometryFactory geometryFactory;
 
 	public Sprite fastForwardButtonSprite_Go;
 	public Sprite fastForwardButtonSprite_Stop;
@@ -22,6 +40,7 @@ public class SceneControllerProof : SceneController_Base
 	#region private data
 
 	bool fastForward_ = false;
+	private Field mainField_ = null; 
 
 	#endregion private data
 
@@ -51,12 +70,77 @@ public class SceneControllerProof : SceneController_Base
 
 	protected override void PostAwake( )
 	{
+		mainField_ = new GameObject( "MainField" ).AddComponent<Field>( );
+
 		DisableForwardButton( );
 		DisableFastForwardButton( );
 	}
 
 	protected override void PostStart( )
 	{
+#if UNITY_EDITOR
+		if (testMode)
+		{
+			testElements.Add(
+				geometryFactory.AddTriangleToField(
+					mainField_,
+					"TestTri",
+					0f,
+					new Vector2[]
+					{
+						new Vector2(-1f, -1.5f),
+						new Vector2(1f, -1.5f),
+						new Vector2(1f, .5f)
+					},
+					Color.blue
+					)
+				);
+			testElements.Add(
+				geometryFactory.AddParallelogramToField(
+				mainField_,
+				"TestPar",
+				0f,
+				new Vector2[]
+				{
+					new Vector2(-1f, 0.5f),
+					new Vector2(1f, 0.5f)
+				},
+				1f,
+				90f,
+				Color.green
+				)
+			);
+			testElements.Add(
+				geometryFactory.AddRightTriangleToField(
+					mainField_,
+					"TestRightTri",
+					-0.1f,
+					new Vector2[]
+					{
+						new Vector2(-1f, 0f),
+						new Vector2(1f, 0f)
+					},
+					30f,
+					Color.red
+				)
+			);
+			testElements.Add(
+				geometryFactory.AddStraightLineToField(
+					mainField_,
+					"TestLine",
+					-0.2f,
+					new Vector2[]
+					{
+						new Vector2(-2f, -1f),
+						new Vector2(1.5f, 2.5f)
+					},
+					0.1f,
+					Color.red
+				)
+			);
+		}
+#endif
+
 		EnableForwardButton( CreateTriangle );
 		EnableTriangleSettings( );
 	}
@@ -192,7 +276,8 @@ public class SceneControllerProof : SceneController_Base
 			GameObject.Destroy( mainTriangle_.gameObject );
 		}
 
-		mainTriangle_ = geometryManager.AddRightTriangleToMainField(
+		mainTriangle_ = geometryFactory.AddRightTriangleToField(
+					mainField_,
 					"MainTriangle",
 					0f,
 					new Vector2[]
@@ -208,7 +293,7 @@ public class SceneControllerProof : SceneController_Base
 	private IEnumerator CreateTriangleCR()
 	{
 #if UNITY_EDITOR
-		geometryManager.ClearTestElements( );
+		ClearTestElements( );
 #endif
 		if (DEBUG_PROOF)
 		{
@@ -255,7 +340,8 @@ public class SceneControllerProof : SceneController_Base
 
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 1 );
 		parallelograms[0] =
-			geometryManager.AddParallelogramToMainField(
+			geometryFactory.AddParallelogramToField(
+				mainField_,
 				"Par0",
 				0f,
 				baseline,
@@ -303,7 +389,8 @@ public class SceneControllerProof : SceneController_Base
 
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 2 );
 		parallelograms[1] =
-			geometryManager.AddParallelogramToMainField(
+			geometryFactory.AddParallelogramToField(
+				mainField_,
 				"Par1",
 				0f,
 				baseline,
