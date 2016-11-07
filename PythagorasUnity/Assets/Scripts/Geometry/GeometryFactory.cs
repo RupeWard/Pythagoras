@@ -67,6 +67,17 @@ namespace RJWard.Geometry
 			return parallelogram;
 		}
 
+		// Instantiate a Square Parallelogram in a Field and set it up
+		public Element_Parallelogram AddSquareParallelogramToField( Field f, string n, float d, Vector2[] bl, float a, Color c )
+		{
+			GameObject parallelogramGO = GameObject.Instantiate<GameObject>( parallelogramPrefab ) as GameObject;
+			parallelogramGO.name = n;
+			Element_Parallelogram parallelogram = parallelogramGO.GetComponent<Element_Parallelogram>( );
+			parallelogram.InitSquare( f, d, bl, c );
+			return parallelogram;
+		}
+
+
 		// Instantiate a StraightLine in a Field and set it up
 		public Element_StraightLine AddStraightLineToField( Field f, string n, float d, Vector2[] es, float w, Color c )
 		{

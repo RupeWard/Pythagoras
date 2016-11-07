@@ -206,18 +206,12 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		public void SetColour( Color c )
+		override public void SetColour( Color c )
 		{
 			cachedMaterial.SetColor( "_Color", c );
 		}
 
-		public void SetColour( Color c, float a )
-		{
-			SetColour( c );
-			SetAlpha( a );
-		}
-
-		public void SetAlpha( float a )
+		override public void SetAlpha( float a )
 		{
 			cachedMaterial.SetFloat( "_Alpha", a );
 		}

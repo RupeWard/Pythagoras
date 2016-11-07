@@ -55,6 +55,20 @@ namespace RJWard.Geometry
 
 		#endregion private data
 
+		#region Non-geometrical Appaarance
+
+		abstract public void SetColour( Color c );
+		abstract public void SetAlpha( float a );
+
+		public void SetColour( Color c, float a )
+		{
+			SetColour( c );
+			SetAlpha( a );
+		}
+
+		#endregion Non-geometrical Appaarance
+
+
 		#region in-editor modding 
 
 #if UNITY_EDITOR

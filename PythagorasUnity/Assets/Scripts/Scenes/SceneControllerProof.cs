@@ -8,22 +8,44 @@ public class SceneControllerProof : SceneController_Base
 {
 	static readonly private bool DEBUG_PROOF = true;
 
+	public bool proofEngineMode = false;
+
 	#region TEST
 
 #if UNITY_EDITOR
 	public bool testMode = true; // set to true to create some elements to play around with for testing
-	private List<ElementBase> testElements = new List<ElementBase>( );
+	private ElementList testElements = new ElementList( "Test Elements" );
 	public void ClearTestElements( )
 	{
-		for (int i = 0; i < testElements.Count; i++)
-		{
-			GameObject.Destroy( testElements[i].gameObject );
-		}
-		testElements.Clear( );
+		testElements.DestroyAllElements( );
 	}
 #endif
 
 	#endregion TEST
+
+	#region Public Settings
+
+	public float createTriangleDuration = 3f;
+	public Color mainTriangleColour = Color.blue;
+
+	public float initialAngle = 30f;
+
+	public float createSquareDuration = 3f;
+	public Color square0Colour = Color.green;
+	public Color square1Colour = Color.magenta;
+
+	public float shearSquareDuration = 3f;
+	public float postShearFadeDuration = 1f;
+
+	public Color shadowColour = new Color( 100f / 255f, 100f / 255f, 100f / 255f );
+	public float shadowSquareDepth = 0.1f;
+	public float removeShadowDuration = 0.5f;
+
+	public float shearAlpha = 125f / 255f;
+
+
+	#endregion Public Settings
+
 
 	#region inspector hooks
 
@@ -51,9 +73,17 @@ public class SceneControllerProof : SceneController_Base
 
 	#region private elements
 
-	private Element_Triangle mainTriangle_ = null;
-	private Element_Parallelogram[] parallelograms = new Element_Parallelogram[2];
-	private Element_Parallelogram[] shadowParallelograms = new Element_Parallelogram[2];
+	private ElementList elements_ = new ElementList( "Elements" );
+
+	private readonly string mainTriangleName = "Main Triangle";
+	private readonly string[] parallelogramNames = { "Parallelogram 0", "Parallelogram 1" };
+	private readonly string[] shadowSquareNames = { "Shadow Square 0", "Shadow Square 1" };
+	private readonly string[] shadowParallelogramNames = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
+
+
+	//	private Element_Triangle mainTriangle_ = null;
+	//	private Element_Parallelogram[] parallelograms = new Element_Parallelogram[2];
+	//	private Element_Parallelogram[] shadowParallelograms = new Element_Parallelogram[2];
 
 	#endregion private elements
 
@@ -88,7 +118,8 @@ public class SceneControllerProof : SceneController_Base
 #if UNITY_EDITOR
 		if (testMode)
 		{
-			testElements.Add(
+			testElements.AddElement(
+				"TestTri",
 				geometryFactory_.AddTriangleToField(
 					mainField_,
 					"TestTri",
@@ -102,22 +133,24 @@ public class SceneControllerProof : SceneController_Base
 					Color.blue
 					)
 				);
-			testElements.Add(
-				geometryFactory_.AddParallelogramToField(
-				mainField_,
+			testElements.AddElement(
 				"TestPar",
-				0f,
-				new Vector2[]
-				{
-					new Vector2(-1f, 0.5f),
-					new Vector2(1f, 0.5f)
-				},
-				1f,
-				90f,
-				Color.green
-				)
-			);
-			testElements.Add(
+				geometryFactory_.AddParallelogramToField(
+					mainField_,
+					"TestPar",
+					0f,
+					new Vector2[]
+					{
+						new Vector2(-1f, 0.5f),
+						new Vector2(1f, 0.5f)
+					},
+					1f,
+					90f,
+					Color.green
+					)
+				);
+			testElements.AddElement(
+				"TestRightTri",
 				geometryFactory_.AddRightTriangleToField(
 					mainField_,
 					"TestRightTri",
@@ -131,7 +164,8 @@ public class SceneControllerProof : SceneController_Base
 					Color.red
 				)
 			);
-			testElements.Add(
+			testElements.AddElement(
+				"TestLine",
 				geometryFactory_.AddStraightLineToField(
 					mainField_,
 					"TestLine",
@@ -148,8 +182,16 @@ public class SceneControllerProof : SceneController_Base
 		}
 #endif
 
-		EnableForwardButton( CreateTriangle );
 		EnableTriangleSettings( );
+
+		if (false == proofEngineMode)
+		{
+			EnableForwardButton( CreateTriangle );
+		}
+		else
+		{
+			throw new System.NotImplementedException( "Proof engine mode not implememted" );
+		}
 	}
 
 	#endregion SceneController_Base
@@ -211,7 +253,7 @@ public class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-			if (parallelograms[0] == null)
+			if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[0]) == null)
 			{
 				// Not yet made first square, so can change triangle
 				EnableTriangleSettings( );
@@ -242,7 +284,23 @@ public class SceneControllerProof : SceneController_Base
 
 	#endregion FastForwardButton
 
-	#region proof
+	// Following region is for when proofEngineMode == true
+	#region proof engine sequence
+
+	private ProofEngine proofEngine_ = null;
+	private void CreateProofEngine()
+	{
+		if (proofEngine_ != null)
+		{
+			GameObject.Destroy( proofEngine_.gameObject );
+		}
+		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
+	}
+
+	#endregion proof engine sequence
+
+	// Following region is for when proofEngineMode == false
+	#region internal proof sequence 
 
 	private void HandleEndOfSequence(System.Action nextSequence)
 	{
@@ -265,36 +323,32 @@ public class SceneControllerProof : SceneController_Base
 		}
 	}
 
-	public float createTriangleDuration = 3f;
-	public Color mainTriangleColour = Color.blue;
-
-	public float initialAngle = 30f;
-	
 	private void CreateTriangle()
 	{
 		DisableForwardButton( );
 		StartCoroutine( CreateTriangleCR( ) );
 	}
 
-	private void CreateMainTriangle()
+	private Element_Triangle CreateMainTriangle()
 	{
-		if (mainTriangle_ != null)
-		{
-			GameObject.Destroy( mainTriangle_.gameObject );
-		}
+		elements_.RemoveElementOfType<Element_Triangle>( mainTriangleName, true );
 
-		mainTriangle_ = geometryFactory_.AddRightTriangleToField(
-					mainField_,
-					"MainTriangle",
-					0f,
-					new Vector2[]
-					{
-						new Vector2(-1f, 0f),
-						new Vector2(1f, 0f)
-					},
-					initialAngle,
-					mainTriangleColour
+		ElementBase e = elements_.AddElement(
+			mainTriangleName,
+			geometryFactory_.AddRightTriangleToField(
+				mainField_,
+				mainTriangleName,
+				0f,
+				new Vector2[]
+				{
+					new Vector2(-1f, 0f),
+					new Vector2(1f, 0f)
+				},
+				initialAngle,
+				mainTriangleColour
+				)
 			);
+		return e as Element_Triangle;
 	}
 
 	private IEnumerator CreateTriangleCR()
@@ -307,17 +361,20 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "CreateTriangleCR: START" );
 		}
 
-		CreateMainTriangle( );
-		mainTriangle_.SetAlpha( 0f );
+
+		Element_Triangle mainTriangle = CreateMainTriangle( );
+		AssertMainTriangle( "CreateTriangleCR" );
+
+		mainTriangle.SetAlpha( 0f );
 
 		float elapsed = 0f;
 		while (elapsed < createTriangleDuration)
 		{
 			elapsed += Time.deltaTime;
-			mainTriangle_.SetAlpha( Mathf.Lerp( 0f, 1f, elapsed / createTriangleDuration ) );
+			mainTriangle.SetAlpha( Mathf.Lerp( 0f, 1f, elapsed / createTriangleDuration ) );
 			yield return null;
 		}
-		mainTriangle_.SetAlpha( 1f );
+		mainTriangle.SetAlpha( 1f );
 		yield return null;
 		HandleEndOfSequence( CreateSquare0 );
 		if (DEBUG_PROOF)
@@ -326,10 +383,6 @@ public class SceneControllerProof : SceneController_Base
 		}
 	}
 
-	public float createSquareDuration = 3f;
-	public Color square0Colour = Color.green;
-	public Color square1Colour = Color.magenta;
-	 
 	private void CreateSquare0()
 	{
 		AssertMainTriangle( "CreateSquare0");
@@ -345,28 +398,32 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "CreateSquare0CR: START" );
 		}
 
-		Vector2[] baseline = mainTriangle_.GetSideExternal( 1 );
-		parallelograms[0] =
+		Element_Triangle mainTriangle = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName );
+
+		Vector2[] baseline = elements_.GetRequiredElementOfType< Element_Triangle> (mainTriangleName).GetSideExternal( 1 );
+
+		Element_Parallelogram parallelogram0 =
 			geometryFactory_.AddParallelogramToField(
 				mainField_,
-				"Par0",
+				parallelogramNames[0],
 				0f,
 				baseline,
 				0f,
 				90f,
 				square0Colour
 				);
+		elements_.AddElement( parallelogramNames[0], parallelogram0 );
 
-		float targetHeight = mainTriangle_.GetSideLength( 1 );
+		float targetHeight = mainTriangle.GetSideLength( 1 );
 
 		float elapsed = 0f;
 		while (elapsed < createSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[0].SetHeight( Mathf.Lerp(0f, targetHeight, elapsed / createSquareDuration) );
+			parallelogram0.SetHeight( Mathf.Lerp(0f, targetHeight, elapsed / createSquareDuration) );
 			yield return null;
 		}
-		parallelograms[0].SetHeight( targetHeight );
+		parallelogram0.SetHeight( targetHeight );
 		yield return null;
 
 		HandleEndOfSequence( CreateSquare1 );
@@ -394,11 +451,14 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "CreateSquare1CR: START" );
 		}
 
+		Element_Triangle mainTriangle_ = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName );
+
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 2 );
-		parallelograms[1] =
+
+		Element_Parallelogram parallelogram1 =
 			geometryFactory_.AddParallelogramToField(
 				mainField_,
-				"Par1",
+				parallelogramNames[1],
 				0f,
 				baseline,
 				0f,
@@ -406,16 +466,18 @@ public class SceneControllerProof : SceneController_Base
 				square1Colour
 				);
 
+		elements_.AddElement( parallelogramNames[1], parallelogram1 );
+
 		float targetHeight = mainTriangle_.GetSideLength( 2 );
 
 		float elapsed = 0f;
 		while (elapsed < createSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[1].SetHeight( Mathf.Lerp( 0f, targetHeight, elapsed / createSquareDuration ) );
+			parallelogram1.SetHeight( Mathf.Lerp( 0f, targetHeight, elapsed / createSquareDuration ) );
 			yield return null;
 		}
-		parallelograms[1].SetHeight( targetHeight );
+		parallelogram1.SetHeight( targetHeight );
 		yield return null;
 
 		HandleEndOfSequence( ShearSquare0 );
@@ -428,44 +490,39 @@ public class SceneControllerProof : SceneController_Base
 		}
 	}
 
-	public float shearSquareDuration = 3f;
-	public float postShearFadeDuration = 1f;
-
-	public Color shadowColour = new Color( 100f / 255f, 100f / 255f, 100f / 255f );
-	public float shadowSquareDepth = 0.1f;
-
-	public float shearAlpha = 125f/255f;
-
 	private void ShearSquare0( )
 	{
 		AssertParallelogram( "ShearSquare0", 0 );
+		AssertShadowSquare( "ShearSquare0", 0, false );
 		DisableForwardButton( );
 		StartCoroutine( ShearSquare0CR( ) );
 	}
 
-	private IEnumerator ShearSquare0CR( )
+	private IEnumerator ShearSquare0CR(  )
 	{
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "ShearSquare0CR: START" );
 		}
 
-		shadowParallelograms[0] = parallelograms[0].Clone<Element_Parallelogram>("ShadowSquare0" );
-		shadowParallelograms[0].SetColour( shadowColour );
-		shadowParallelograms[0].SetDepth( shadowSquareDepth );
+		Element_Parallelogram shadowSquare0 = elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[0]).Clone<Element_Parallelogram>(shadowSquareNames[0]);
+		elements_.AddElement( shadowSquareNames[0], shadowSquare0 );
+		shadowSquare0.SetColour( shadowColour );
+		shadowSquare0.SetDepth( shadowSquareDepth );
 
-		float targetAngle = mainTriangle_.GetInternalAngleDegrees( 0 );
+		float targetAngle = elements_.GetRequiredElementOfType< Element_Triangle >(mainTriangleName).GetInternalAngleDegrees( 0 );
 
-		parallelograms[0].SetAlpha( shearAlpha );
+		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[0] );
+		parallelogram0.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[0].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
+			parallelogram0.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelograms[0].SetAngle( targetAngle);
+		parallelogram0.SetAngle( targetAngle);
 		yield return null;
 		
 		elapsed = 0f;
@@ -473,19 +530,15 @@ public class SceneControllerProof : SceneController_Base
 		{
 			elapsed += Time.deltaTime;
 			float fraction = elapsed / postShearFadeDuration;
-			parallelograms[0].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction) );
-			shadowParallelograms[0].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
+			parallelogram0.SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction) );
 			yield return null;
 		}
 
-		parallelograms[0].SetAlpha( 1f );
-		shadowParallelograms[0].SetAlpha( 0f );
+		parallelogram0.SetAlpha( 1f );
 
 		HandleEndOfSequence( ShearSquare1 );
 
 		yield return null;
-		GameObject.Destroy( shadowParallelograms[0].gameObject );
-		shadowParallelograms[0] = null;
 
 		if (DEBUG_PROOF)
 		{
@@ -496,6 +549,7 @@ public class SceneControllerProof : SceneController_Base
 	private void ShearSquare1( )
 	{
 		AssertParallelogram( "ShearSquare1", 1 );
+		AssertShadowSquare( "ShearSquare1", 1, false );
 		DisableForwardButton( );
 		StartCoroutine( ShearSquare1CR( ) );
 	}
@@ -507,22 +561,25 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearSquare1CR: START" );
 		}
 
-		shadowParallelograms[1] = parallelograms[1].Clone<Element_Parallelogram>( "ShadowSquare1" );
-		shadowParallelograms[1].SetColour( shadowColour );
-		shadowParallelograms[1].SetDepth( shadowSquareDepth );
+		yield return StartCoroutine( RemoveShadowSquareCR( 0 ) );
 
-		float targetAngle = 180f - mainTriangle_.GetInternalAngleDegrees( 1 );
+		Element_Parallelogram shadowSquare1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[1] ).Clone<Element_Parallelogram>( shadowSquareNames[1] );
+		elements_.AddElement( shadowSquareNames[1], shadowSquare1 );
+		shadowSquare1.SetColour( shadowColour );
+		shadowSquare1.SetDepth( shadowSquareDepth );
 
-		parallelograms[1].SetAlpha( shearAlpha );
+		float targetAngle = 180f - elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName ).GetInternalAngleDegrees( 1 );
+
+		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[1] );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[1].SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
+			parallelogram1.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelograms[1].SetAngle( targetAngle );
+		parallelogram1.SetAngle( targetAngle );
 		yield return null;
 
 		elapsed = 0f;
@@ -530,24 +587,54 @@ public class SceneControllerProof : SceneController_Base
 		{
 			elapsed += Time.deltaTime;
 			float fraction = elapsed / postShearFadeDuration;
-			parallelograms[1].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
-			shadowParallelograms[1].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
+			parallelogram1.SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
 			yield return null;
 		}
 
-		parallelograms[1].SetAlpha( 1f );
-		shadowParallelograms[1].SetAlpha( 0f );
+		parallelogram1.SetAlpha( 1f );
 
 		HandleEndOfSequence( ShearParallelogram0 );
 
 		yield return null;
-		GameObject.Destroy( shadowParallelograms[1].gameObject );
-		shadowParallelograms[1] = null;
 
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "ShearSquare1CR: END" );
 		}
+	}
+
+	private IEnumerator RemoveShadowSquareCR( int n )
+	{
+		if (n < 0 || n > 1)
+		{
+			throw new System.Exception( "n must be 0 or 1 in RemoveShadowSquare, not " + n );
+		}
+
+		Element_Parallelogram shadowSquare = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowSquareNames[n] );
+		yield return StartCoroutine( RemoveElementCR( shadowSquare, removeShadowDuration ) );
+	}
+
+	private IEnumerator RemoveShadowParallelogramCR( int n )
+	{
+		if (n < 0 || n > 1)
+		{
+			throw new System.Exception( "n must be 0 or 1 in RemoveShadowParallelogram, not " + n );
+		}
+
+		Element_Parallelogram shadowParallelogram  = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowParallelogramNames[n] );
+		yield return StartCoroutine( RemoveElementCR( shadowParallelogram, removeShadowDuration ) );
+	}
+
+	private IEnumerator RemoveElementCR( ElementBase eb, float duration )
+	{
+		float elapsed = 0f;
+		while (elapsed < removeShadowDuration)
+		{
+			elapsed += Time.deltaTime;
+			eb.SetAlpha( Mathf.Lerp( 1f, 0f, elapsed / removeShadowDuration ) );
+			yield return null;
+		}
+		elements_.DestroyElement( eb );
 	}
 
 	private void ShearParallelogram0( )
@@ -565,43 +652,35 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearParallelogram0CR: START" );
 		}
 
-		shadowParallelograms[0] = parallelograms[0].Clone<Element_Parallelogram>( "ShadowParallelogram0" );
-		shadowParallelograms[0].SetColour( shadowColour );
-		shadowParallelograms[0].SetDepth( shadowSquareDepth );
+		yield return StartCoroutine(RemoveShadowSquareCR(1));
 
-		parallelograms[0].ChangeBaseline( 1 );
+		Element_Parallelogram shadowParallelogram0 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[0] ).Clone<Element_Parallelogram>( shadowParallelogramNames[0] );
+		elements_.AddElement( shadowParallelogramNames[0], shadowParallelogram0);
 
-		float startingAngle = parallelograms[0].angle;
-		parallelograms[0].SetAlpha( shearAlpha );
+		shadowParallelogram0.SetColour( shadowColour );
+		shadowParallelogram0.SetDepth( shadowSquareDepth );
+
+		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[0] );
+		parallelogram0.ChangeBaseline( 1 );
+
+		float startingAngle = parallelogram0.angle;
+		parallelogram0.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[0].SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			parallelogram0.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelograms[0].SetAngle( 90f );
+		parallelogram0.SetAngle( 90f );
 		yield return null;
 
-		elapsed = 0f;
-		while (elapsed <= postShearFadeDuration)
-		{
-			elapsed += Time.deltaTime;
-			float fraction = elapsed / postShearFadeDuration;
-			// parallelograms[0].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
-			shadowParallelograms[0].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
-			yield return null;
-		}
-
-//		parallelograms[0].SetAlpha( 1f );
-		shadowParallelograms[0].SetAlpha( 0f );
+		yield return StartCoroutine( RemoveShadowParallelogramCR( 0 ) );
 
 		HandleEndOfSequence( ShearParallelogram1);
 
 		yield return null;
-		GameObject.Destroy( shadowParallelograms[0].gameObject );
-		shadowParallelograms[0] = null;
 
 		if (DEBUG_PROOF)
 		{
@@ -624,43 +703,33 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearParallelogram1CR: START" );
 		}
 
-		shadowParallelograms[1] = parallelograms[1].Clone<Element_Parallelogram>( "ShadowParallelogram1" );
-		shadowParallelograms[1].SetColour( shadowColour );
-		shadowParallelograms[1].SetDepth( shadowSquareDepth );
+		Element_Parallelogram shadowParallelogram1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[1] ).Clone<Element_Parallelogram>( shadowParallelogramNames[1] );
+		elements_.AddElement( shadowParallelogramNames[1], shadowParallelogram1 );
 
-		parallelograms[1].ChangeBaseline( 3 );
+		shadowParallelogram1.SetColour( shadowColour );
+		shadowParallelogram1.SetDepth( shadowSquareDepth );
 
-		float startingAngle = parallelograms[1].angle;
-		parallelograms[1].SetAlpha( shearAlpha );
+		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[1] );
+
+		parallelogram1.ChangeBaseline( 3 );
+
+		float startingAngle = parallelogram1.angle;
+		parallelogram1.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime;
-			parallelograms[1].SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			parallelogram1.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelograms[1].SetAngle( 90f );
+		parallelogram1.SetAngle( 90f );
 		yield return null;
 
-		elapsed = 0f;
-		while (elapsed <= postShearFadeDuration)
-		{
-			elapsed += Time.deltaTime;
-			float fraction = elapsed / postShearFadeDuration;
-			// parallelograms[0].SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
-			shadowParallelograms[1].SetAlpha( Mathf.Lerp( 1f, 0f, fraction ) );
-			yield return null;
-		}
-
-		//		parallelograms[0].SetAlpha( 1f );
-		shadowParallelograms[1].SetAlpha( 0f );
+		yield return StartCoroutine( RemoveShadowParallelogramCR( 1 ) );
 
 		//		EnableForwardButton( CreateSquare1 );
-
 		yield return null;
-		GameObject.Destroy( shadowParallelograms[1].gameObject );
-		shadowParallelograms[1] = null;
 
 		if (DEBUG_PROOF)
 		{
@@ -671,39 +740,66 @@ public class SceneControllerProof : SceneController_Base
 
 	private void AssertMainTriangle(string locn)
 	{
-		if (mainTriangle_ == null)
+		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName) == null)
 		{
+			elements_.DebugDescribe( );
 			throw new System.Exception( "mainTriangle doesn't exist in " + locn );
 		}
 	}
 
 	private void AssertParallelogram( string locn, int n )
 	{
-		if (parallelograms[n] == null)
+		if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[n]) == null)
 		{
+			elements_.DebugDescribe( );
 			throw new System.Exception( "parallelograms[ "+n+" ] doesn't exist in " + locn );
 		}
 	}
 
+	private void AssertShadowSquare( string locn, int n, bool exists )
+	{
+		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowSquareNames[n] );
+		if (exists)
+		{
+			if (ep == null)
+			{
+				elements_.DebugDescribe( );
+				throw new System.Exception( "shadowSquareNames[ " + n + " ] doesn't exist in " + locn );
+			}
+		}
+		else
+		{
+			if (ep != null)
+			{
+				elements_.DebugDescribe( );
+				throw new System.Exception( "shadowSquareNames[ " + n + " ] already exists in " + locn );
+			}
+		}
+	}
+
+
 	private void AssertShadowParallelogram( string locn, int n, bool exists )
 	{
-		if (exists) 
+		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowParallelogramNames[n] );
+        if (exists) 
 		{
-			if (shadowParallelograms[n] == null)
+			if (ep == null)
 			{
+				elements_.DebugDescribe( );
 				throw new System.Exception( "shadowParallelograms[ " + n + " ] doesn't exist in " + locn );
 			}
 		}
 		else
 		{
-			if (shadowParallelograms[n] != null)
+			if (ep != null)
 			{
+				elements_.DebugDescribe( );
 				throw new System.Exception( "shadowParallelograms[ " + n + " ] already exists in " + locn );
 			}
 		}
 	}
 
-	#endregion proof
+	#endregion internal proof sequence
 
 	#region triangleSettings
 
@@ -738,7 +834,7 @@ public class SceneControllerProof : SceneController_Base
 	private void ChangeInitialAngle(float f)
 	{
 		initialAngle = f;
-		if (mainTriangle_ != null && currentTriangleAngleChangeSpeed == 0f )
+		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName) != null && currentTriangleAngleChangeSpeed == 0f )
 		{
 			CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
 		}
@@ -755,7 +851,7 @@ public class SceneControllerProof : SceneController_Base
 			if (f >= minMaxTriangleAngle.x && f <= minMaxTriangleAngle.y)
 			{
 				initialAngle = f;
-				if (mainTriangle_ != null)
+				if (elements_.GetElementOfType< Element_Triangle >(mainTriangleName) != null)
 				{
 					CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
 				}

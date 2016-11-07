@@ -149,6 +149,16 @@ namespace RJWard.Geometry
 			SetDirty( );
 		}
 
+		public void InitSquare( Field f, float d, Vector2[] bl, Color c )
+		{
+			if (bl.Length != 2)
+			{
+				throw new System.Exception( "bl.Length should be 2, not " + bl.Length.ToString( ) + " when trying to init " + gameObject.name );
+			}
+
+			Init( f, d, bl, Vector2.Distance( bl[0], bl[1] ), 90f, c );
+		}
+
 		public void ChangeBaseline( int n ) // n = 1,2,3 for the 3 other sides (in order retrieved by GetVertices)
 		{
 			if (n < 0 || n > 3)
@@ -275,19 +285,12 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		// TODO should this go into base class? Postponing because element-specific shader params may end up varying 
-		public void SetColour( Color c )
+		public override void SetColour( Color c )
 		{
 			cachedMaterial.SetColor( "_Color", c );
 		}
 
-		public void SetColour( Color c, float a )
-		{
-			SetColour( c );
-			SetAlpha( a );
-		}
-
-		public void SetAlpha( float a )
+		public override void SetAlpha( float a )
 		{
 			cachedMaterial.SetFloat( "_Alpha", a );
 		}

@@ -58,10 +58,8 @@ namespace RJWard.Geometry
 
 		#region modifiers
 
-		public bool AddElement(string n, ElementBase e)
+		public ElementBase AddElement(string n, ElementBase e)
 		{
-			bool success = false;
-
 			if (n.Length == 0)
 			{
 				Debug.LogError( "Name is empty on trying to add to ElementList '"+name_+"'" );
@@ -94,11 +92,10 @@ namespace RJWard.Geometry
 					Debug.Log( "Added '" + n + "', now " + this.DebugDescribe( ) );
 				}
 			}
-
-			return success;
+			return e;
 		}
 
-		public bool RemoveElement( string n )
+		public bool RemoveElement( string n, bool destroy )
 		{
 			bool success = false;
 			if (elements_.ContainsKey(n))
@@ -106,6 +103,10 @@ namespace RJWard.Geometry
 				if (DEBUG_ELEMENTLIST)
 				{
 					Debug.LogWarning( "Removing element '" + n + "' from " + this.DebugDescribe( ) );
+				}
+				if (destroy)
+				{
+					GameObject.Destroy( elements_[n].gameObject );
 				}
 				elements_.Remove( n );
 			}
@@ -119,7 +120,17 @@ namespace RJWard.Geometry
 			return success;
 		}
 
-		public bool RemoveElementOfType< T >( string n ) where T : ElementBase
+		public bool RemoveElement( string n)
+		{
+			return RemoveElement( n, false );
+		}
+
+		public bool DestroyElement( string n )
+		{
+			return RemoveElement( n, true);
+		}
+
+		public bool RemoveElementOfType< T >( string n, bool destroy ) where T : ElementBase
 		{
 			bool success = false;
 			if (elements_.ContainsKey( n ))
@@ -134,6 +145,10 @@ namespace RJWard.Geometry
 					{
 						Debug.LogWarning( "Removing element '" + n + "' from " + this.DebugDescribe( ) );
 					}
+					if (destroy)
+					{
+						GameObject.Destroy( elements_[n].gameObject );
+					}
 					elements_.Remove( n );
 				}
 			}
@@ -147,6 +162,71 @@ namespace RJWard.Geometry
 			return success;
 		}
 
+		public bool RemoveElementOfType<T>( string n ) where T : ElementBase
+		{
+			return RemoveElementOfType<T>( n, false );
+		}
+
+		public bool DestroyElementOfType<T>( string n ) where T : ElementBase
+		{
+			return RemoveElementOfType<T>( n, true );
+		}
+
+		public void RemoveAllElements( bool destroy )
+		{
+			if (destroy)
+			{
+				foreach (KeyValuePair<string, ElementBase> kvp in elements_)
+				{
+					GameObject.Destroy( kvp.Value.gameObject );
+				}
+			}
+			elements_.Clear( );
+		}
+
+		public void RemoveAllElements()
+		{
+			RemoveAllElements( false );
+		}
+
+		public void DestroyAllElements( )
+		{
+			RemoveAllElements( true );
+		}
+
+		public bool RemoveElement( ElementBase eb, bool destroy )
+		{
+			bool found = false;
+			string key = string.Empty;
+			foreach (KeyValuePair<string, ElementBase> kvp in elements_)
+			{
+				if (kvp.Value == eb)
+				{
+					key = kvp.Key;
+					found = true;
+					break;
+				}
+			}
+			if (found)
+			{
+				if (destroy)
+				{
+					GameObject.Destroy( elements_[key].gameObject );
+				}
+				elements_.Remove( key );
+			}
+			return found;
+		}
+
+		public bool RemoveElement( ElementBase eb)
+		{
+			return RemoveElement( eb, false );
+		}
+
+		public bool DestroyElement( ElementBase eb )
+		{
+			return RemoveElement( eb, true );
+		}
 
 		#endregion modifiers
 
@@ -197,6 +277,7 @@ namespace RJWard.Geometry
 
 		public T GetElementOfType< T > ( string n, bool required ) where T : ElementBase
 		{
+			T result = null;
 			ElementBase element;
 			if (false == elements_.TryGetValue( n, out element ))
 			{
@@ -205,13 +286,16 @@ namespace RJWard.Geometry
 					throw new System.Exception( "ElementList '" + name_ + "' does not contain required element called '" + n + "'" );
 				}
 			}
-			T result = element as T;
-			if (result == null)
+			else
 			{
-				Debug.LogError( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + typeof( T ).ToString( ) );
-				if (required)
+				result = element as T;
+				if (result == null)
 				{
-					throw new System.Exception( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + typeof( T ).ToString( ) );
+					Debug.LogError( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + typeof( T ).ToString( ) );
+					if (required)
+					{
+						throw new System.Exception( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + typeof( T ).ToString( ) );
+					}
 				}
 			}
 			return result;
