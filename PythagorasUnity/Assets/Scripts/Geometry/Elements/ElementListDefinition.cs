@@ -177,7 +177,7 @@ namespace RJWard.Geometry
 			{
 				foreach (KeyValuePair< string, System.Type > kvp in elements_)
 				{
-					sb.Append( " (" ).Append( kvp.Key ).Append( " " ).Append( kvp.Value.ToString( ) ).Append(")");
+					sb.Append( " ( '" ).Append( kvp.Key ).Append( "', " ).Append( kvp.Value.ToString( ) ).Append(")");
 				}
 			}
 		}
