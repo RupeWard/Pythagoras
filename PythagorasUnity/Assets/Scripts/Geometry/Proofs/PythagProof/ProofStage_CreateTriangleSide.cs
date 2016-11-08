@@ -8,17 +8,19 @@ namespace RJWard.Geometry
 	{
 		#region private data
 
+		// the line
+		Element_StraightLine line_ = null;
+
+		// line settings for creation
 		private string lineName_ = "[UNNAMED LINE]";
 		private Color lineColour_;
 		private float lineWidth_ = 0.01f;
-
-		private string triangleName_ = "[UNKNOWN TRIANGLE NAME]";
-		private bool internalSide_ = true;
-		private int sideNumber_ = 0;
-
 		private float relativeDepth_ = 0f;
 
-		Element_StraightLine line_ = null;
+		// source details
+		private string triangleName_ = "[UNKNOWN TRIANGLE NAME]";
+		private bool externalSide_ = true;
+		private int sideNumber_ = 0;
 
 		#endregion private data
 
@@ -28,7 +30,7 @@ namespace RJWard.Geometry
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string triangleName,
 			int sideNumber,
-			bool internalSide,
+			bool externalSide,
 			float relDepth,
 			float lw,
 			Color c,
@@ -39,7 +41,7 @@ namespace RJWard.Geometry
 			lineName_ = ln;
 			triangleName_ = triangleName;
 			sideNumber_ = sideNumber;
-			internalSide_ = internalSide;
+			externalSide_ = externalSide;
 			relativeDepth_ = relDepth;
 			lineWidth_ = lw;
 
@@ -72,8 +74,8 @@ namespace RJWard.Geometry
 				sideNumber_,
 				triangle.depth + relativeDepth_,
 				lineWidth_,
-				Color.black,
-				internalSide_
+				lineColour_,
+				externalSide_
 				);
 			AddElement( lineName_, line_);
 

@@ -350,7 +350,7 @@ public class SceneControllerProof : SceneController_Base
 			HandleProofStageFinished,
 			mainTriangleName_,
 			1,
-			false,
+			true,
 			-0.01f,
 			0.01f,
 			Color.black,
@@ -358,6 +358,22 @@ public class SceneControllerProof : SceneController_Base
 			);
 
 		ProofStageBase.ConnectStages( createTriangleStage, createSide1Stage );
+
+		ProofStage_ExtrudeLineToSquare createSquare1Stage = new ProofStage_ExtrudeLineToSquare(
+			"Create Square 1",
+			"Extruding side 1 to a square",
+			geometryFactory_,
+			mainField_,
+			createSquareDuration,
+			HandleProofStageFinished,
+			triangleSideNames_[1],
+			0f,
+			90f,
+			square0Colour,
+			parallelogramNames_[0]
+			);
+
+		ProofStageBase.ConnectStages( createSide1Stage, createSquare1Stage );
 
 		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );

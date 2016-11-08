@@ -22,6 +22,42 @@ namespace RJWard.Geometry
 
 		#endregion private data
 
+		#region properties
+
+		// These return COPIES
+		public Vector2[] GetEnds(bool reverse)
+		{
+			Vector2[] result = new Vector2[2];
+			if (reverse)
+			{
+				result[0] = ends_[0];
+				result[1] = ends_[1];
+			}
+			else
+			{
+				result[0] = ends_[1];
+				result[1] = ends_[0];
+			}
+			return result;
+		}
+
+		public Vector2[] GetEnds( )
+		{
+			return GetEnds( false );
+		}
+
+		public Vector2[] GetEndsReversed( )
+		{
+			return GetEnds( true );
+		}
+
+		public float length
+		{
+			get { return Vector2.Distance( ends_[0], ends_[1] );  }
+		}
+
+		#endregion properties
+
 		#region in-editor modding 
 
 #if UNITY_EDITOR
