@@ -36,13 +36,13 @@ namespace RJWard.Geometry
 		protected static readonly Vector3 s_normal = new Vector3( 0f, 0f, -1f );
 
 		private Field field_ = null; // TODO do we need this? If removing, need another way to check if initialised
-		protected Field field
+		public Field field
 		{
 			get { return field_; }
 		}
 
 		private float depth_ = 0f; // Relative to field. Lower depth elements appear in front. Overlapping same-depth elements may cause z-fighting
-		protected float depth
+		public float depth
 		{
 			get { return depth_; }
 		}

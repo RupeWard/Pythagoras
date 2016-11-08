@@ -4,36 +4,42 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	class ProofStage_CreateTriangle : ProofStageBase
+	class ProofStage_CreateRightTriangle : ProofStageBase
 	{
 		#region private data
 
 		private Vector2[] hypotenuse_ = null;
 		private float angle_ = 0f;
+		private float depth_ = 0f;
 
 		private Element_Triangle triangle_ = null;
 		private Color triangleColour_ = Color.magenta;
+
+		private string triangleName_ = "[UNNAMED RIGHT TRIANGLE]";
 
 		#endregion private data
 
 		#region setup
 
-		public ProofStage_CreateTriangle(
-			string n, string d, GeometryFactory gf, Field f, float dn, System.Action<ProofStageBase> ac, 
+		public ProofStage_CreateRightTriangle(
+			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac, 
+			float depth,
 			Vector2[] h, 
 			float a, 
-			Color c) 
-			: base (n, d, gf, f, dn, ac )
+			Color c,
+			string tn) 
+			: base (n, descn, gf, f, durn, ac )
 		{
 			hypotenuse_ = h;
 			angle_ = a;
 			triangleColour_ = c;
-
+			triangleName_ = tn;
+			depth_ = depth;
 			endRequiredElementListDefinition = new ElementListDefinition(
-				"EndRequirments",
+				"EndRequirements",
 				new Dictionary<string, System.Type> ()
 				{
-					{ "MainTriangle", typeof(Element_Triangle) }
+					{ triangleName_, typeof(Element_Triangle) }
 				}
             );
 		}
@@ -46,25 +52,36 @@ namespace RJWard.Geometry
 		{
 			triangle_ = geometryFactory.AddRightTriangleToField(
 				field,
-				"MainTriangle",
-				0f,
+				triangleName_,
+				depth_,
 				hypotenuse_,
 				angle_,
 				triangleColour_
 				);
-			AddElement( "MainTriangle", triangle_ );
+			AddElement( triangleName_, triangle_ );
 			triangle_.SetAlpha( 0f );
 		}
 
 		protected override void DoUpdateView( )
 		{
 			triangle_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
-
 		}
 
 		protected override void HandleFinished( )
 		{
-			triangle_.SetAlpha( 1f );
+			switch(direction)
+			{
+				case EDirection.Forward:
+					{
+						triangle_.SetAlpha( 1f );
+						break;
+					}
+				case EDirection.Reverse:
+					{
+						triangle_.SetAlpha( 0f );
+						break;
+					}
+			}
 		}
 
 		#endregion ProofStageBase 

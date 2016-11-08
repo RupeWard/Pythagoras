@@ -31,7 +31,7 @@ namespace RJWard.Geometry
 
 		private float currentTimeSeconds_ = 0f;
 		private EDirection direction_ = EDirection.Forward;
-		private string name_ = "UNNAMED PROOF STAGE";
+		private string name_ = "[UNNAMED PROOF STAGE]";
 		private string description_ = string.Empty;
 
 		#endregion private data 
@@ -83,6 +83,11 @@ namespace RJWard.Geometry
 			set { endRequiredElementListDefinition_ = value; }
 		}
 
+		protected ElementList elements
+		{
+			get { return elements_; }
+		}
+
 		#endregion properties
 
 		#region setters
@@ -101,6 +106,12 @@ namespace RJWard.Geometry
 		{
 			SetPreviousStage( b0 );
 			SetNextStage( b1 );
+		}
+
+		static public void ConnectStages(ProofStageBase first, ProofStageBase second)
+		{
+			first.SetNextStage( second );
+			second.SetPreviousStage( first );
 		}
 
 		#endregion setters
@@ -144,17 +155,17 @@ namespace RJWard.Geometry
 
 		protected ProofStageBase( 
 			string n, 
-			string d, 
+			string descn, 
 			GeometryFactory gf, 
 			Field f,
-			float dn,
+			float durn,
 			System.Action<ProofStageBase> a)
 		{
 			name_ = n;
-			description_ = d;
+			description_ = descn;
 			geometryFactory_ = gf;
 			field_ = f;
-			durationSeconds_ = dn;
+			durationSeconds_ = durn;
 			if (a != null)
 			{
 				onFinishedAction += a;

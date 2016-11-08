@@ -79,11 +79,12 @@ public class SceneControllerProof : SceneController_Base
 
 	private ElementList elements_ = new ElementList( "Elements" );
 
-	private readonly string mainTriangleName = "Main Triangle";
-	private readonly string[] parallelogramNames = { "Parallelogram 0", "Parallelogram 1" };
-	private readonly string[] shadowSquareNames = { "Shadow Square 0", "Shadow Square 1" };
-	private readonly string[] shadowParallelogramNames = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
-
+	private readonly string mainTriangleName_ = "Main Triangle";
+	private readonly string[] parallelogramNames_ = { "Parallelogram 0", "Parallelogram 1" };
+	private readonly string[] shadowSquareNames_ = { "Shadow Square 0", "Shadow Square 1" };
+	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
+	private readonly string[] triangleSideNames_ = { "Hypotenuse", "Side 1", "Side 2" }
+	;
 	#endregion private elements
 
 	#region MBFlow
@@ -264,7 +265,7 @@ public class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-			if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[0]) == null)
+			if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames_[0]) == null)
 			{
 				// Not yet made first square, so can change triangle
 				EnableTriangleSettings( );
@@ -322,25 +323,48 @@ public class SceneControllerProof : SceneController_Base
 		}
 		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
 
-		ProofStage_CreateTriangle createTriangleStage = new ProofStage_CreateTriangle(
+		ProofStage_CreateRightTriangle createTriangleStage = new ProofStage_CreateRightTriangle(
 			"Create Triangle",
 			"Creating main triangle",
 			geometryFactory_,
 			mainField_,
 			createTriangleDuration,
 			HandleProofStageFinished,
+			0f,
 			new Vector2[]
 				{
 					new Vector2(-1f, 0f),
 					new Vector2(1f, 0f)
 				},
 			initialAngle,
-			mainTriangleColour
+			mainTriangleColour,
+			mainTriangleName_
 			);
+
+		ProofStage_CreateTriangleSide createSide1Stage = new ProofStage_CreateTriangleSide(
+			"Create Side 1",
+			"This is side 1",
+			geometryFactory_,
+			mainField_,
+			showSideDuration_,
+			HandleProofStageFinished,
+			mainTriangleName_,
+			1,
+			false,
+			-0.01f,
+			0.01f,
+			Color.black,
+			triangleSideNames_[1]
+			);
+
+		ProofStageBase.ConnectStages( createTriangleStage, createSide1Stage );
+
 		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );
 		proofEngine_.Resume( );
     }
+
+	private float showSideDuration_ = 1f;
 
 	private void HandleProofStageFinished( ProofStageBase psb)
 	{
@@ -402,13 +426,13 @@ public class SceneControllerProof : SceneController_Base
 
 	private Element_Triangle CreateMainTriangle()
 	{
-		elements_.RemoveElementOfType<Element_Triangle>( mainTriangleName, true );
+		elements_.RemoveElementOfType<Element_Triangle>( mainTriangleName_, true );
 
 		ElementBase e = elements_.AddElement(
-			mainTriangleName,
+			mainTriangleName_,
 			geometryFactory_.AddRightTriangleToField(
 				mainField_,
-				mainTriangleName,
+				mainTriangleName_,
 				0f,
 				new Vector2[]
 				{
@@ -469,21 +493,21 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "CreateSquare0CR: START" );
 		}
 
-		Element_Triangle mainTriangle = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName );
+		Element_Triangle mainTriangle = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName_ );
 
-		Vector2[] baseline = elements_.GetRequiredElementOfType< Element_Triangle> (mainTriangleName).GetSideExternal( 1 );
+		Vector2[] baseline = elements_.GetRequiredElementOfType< Element_Triangle> (mainTriangleName_).GetSideExternal( 1 );
 
 		Element_Parallelogram parallelogram0 =
 			geometryFactory_.AddParallelogramToField(
 				mainField_,
-				parallelogramNames[0],
+				parallelogramNames_[0],
 				0f,
 				baseline,
 				0f,
 				90f,
 				square0Colour
 				);
-		elements_.AddElement( parallelogramNames[0], parallelogram0 );
+		elements_.AddElement( parallelogramNames_[0], parallelogram0 );
 
 		float targetHeight = mainTriangle.GetSideLength( 1 );
 
@@ -522,14 +546,14 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "CreateSquare1CR: START" );
 		}
 
-		Element_Triangle mainTriangle_ = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName );
+		Element_Triangle mainTriangle_ = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName_ );
 
 		Vector2[] baseline = mainTriangle_.GetSideExternal( 2 );
 
 		Element_Parallelogram parallelogram1 =
 			geometryFactory_.AddParallelogramToField(
 				mainField_,
-				parallelogramNames[1],
+				parallelogramNames_[1],
 				0f,
 				baseline,
 				0f,
@@ -537,7 +561,7 @@ public class SceneControllerProof : SceneController_Base
 				square1Colour
 				);
 
-		elements_.AddElement( parallelogramNames[1], parallelogram1 );
+		elements_.AddElement( parallelogramNames_[1], parallelogram1 );
 
 		float targetHeight = mainTriangle_.GetSideLength( 2 );
 
@@ -576,14 +600,14 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearSquare0CR: START" );
 		}
 
-		Element_Parallelogram shadowSquare0 = elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[0]).Clone<Element_Parallelogram>(shadowSquareNames[0]);
-		elements_.AddElement( shadowSquareNames[0], shadowSquare0 );
+		Element_Parallelogram shadowSquare0 = elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames_[0]).Clone<Element_Parallelogram>(shadowSquareNames_[0]);
+		elements_.AddElement( shadowSquareNames_[0], shadowSquare0 );
 		shadowSquare0.SetColour( shadowColour );
 		shadowSquare0.SetDepth( shadowSquareDepth );
 
-		float targetAngle = elements_.GetRequiredElementOfType< Element_Triangle >(mainTriangleName).GetInternalAngleDegrees( 0 );
+		float targetAngle = elements_.GetRequiredElementOfType< Element_Triangle >(mainTriangleName_).GetInternalAngleDegrees( 0 );
 
-		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[0] );
+		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[0] );
 		parallelogram0.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
@@ -634,14 +658,14 @@ public class SceneControllerProof : SceneController_Base
 
 		yield return StartCoroutine( RemoveShadowSquareCR( 0 ) );
 
-		Element_Parallelogram shadowSquare1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[1] ).Clone<Element_Parallelogram>( shadowSquareNames[1] );
-		elements_.AddElement( shadowSquareNames[1], shadowSquare1 );
+		Element_Parallelogram shadowSquare1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[1] ).Clone<Element_Parallelogram>( shadowSquareNames_[1] );
+		elements_.AddElement( shadowSquareNames_[1], shadowSquare1 );
 		shadowSquare1.SetColour( shadowColour );
 		shadowSquare1.SetDepth( shadowSquareDepth );
 
-		float targetAngle = 180f - elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName ).GetInternalAngleDegrees( 1 );
+		float targetAngle = 180f - elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName_ ).GetInternalAngleDegrees( 1 );
 
-		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[1] );
+		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[1] );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
@@ -681,7 +705,7 @@ public class SceneControllerProof : SceneController_Base
 			throw new System.Exception( "n must be 0 or 1 in RemoveShadowSquare, not " + n );
 		}
 
-		Element_Parallelogram shadowSquare = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowSquareNames[n] );
+		Element_Parallelogram shadowSquare = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowSquareNames_[n] );
 		yield return StartCoroutine( RemoveElementCR( shadowSquare, removeShadowDuration ) );
 	}
 
@@ -692,7 +716,7 @@ public class SceneControllerProof : SceneController_Base
 			throw new System.Exception( "n must be 0 or 1 in RemoveShadowParallelogram, not " + n );
 		}
 
-		Element_Parallelogram shadowParallelogram  = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowParallelogramNames[n] );
+		Element_Parallelogram shadowParallelogram  = elements_.GetRequiredElementOfType<Element_Parallelogram>( shadowParallelogramNames_[n] );
 		yield return StartCoroutine( RemoveElementCR( shadowParallelogram, removeShadowDuration ) );
 	}
 
@@ -725,13 +749,13 @@ public class SceneControllerProof : SceneController_Base
 
 		yield return StartCoroutine(RemoveShadowSquareCR(1));
 
-		Element_Parallelogram shadowParallelogram0 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[0] ).Clone<Element_Parallelogram>( shadowParallelogramNames[0] );
-		elements_.AddElement( shadowParallelogramNames[0], shadowParallelogram0);
+		Element_Parallelogram shadowParallelogram0 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[0] ).Clone<Element_Parallelogram>( shadowParallelogramNames_[0] );
+		elements_.AddElement( shadowParallelogramNames_[0], shadowParallelogram0);
 
 		shadowParallelogram0.SetColour( shadowColour );
 		shadowParallelogram0.SetDepth( shadowSquareDepth );
 
-		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[0] );
+		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[0] );
 		parallelogram0.ChangeBaseline( 1 );
 
 		float startingAngle = parallelogram0.angle;
@@ -774,13 +798,13 @@ public class SceneControllerProof : SceneController_Base
 			Debug.Log( "ShearParallelogram1CR: START" );
 		}
 
-		Element_Parallelogram shadowParallelogram1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames[1] ).Clone<Element_Parallelogram>( shadowParallelogramNames[1] );
-		elements_.AddElement( shadowParallelogramNames[1], shadowParallelogram1 );
+		Element_Parallelogram shadowParallelogram1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[1] ).Clone<Element_Parallelogram>( shadowParallelogramNames_[1] );
+		elements_.AddElement( shadowParallelogramNames_[1], shadowParallelogram1 );
 
 		shadowParallelogram1.SetColour( shadowColour );
 		shadowParallelogram1.SetDepth( shadowSquareDepth );
 
-		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames[1] );
+		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[1] );
 
 		parallelogram1.ChangeBaseline( 3 );
 
@@ -811,7 +835,7 @@ public class SceneControllerProof : SceneController_Base
 
 	private void AssertMainTriangle(string locn)
 	{
-		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName) == null)
+		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName_) == null)
 		{
 			elements_.DebugDescribe( );
 			throw new System.Exception( "mainTriangle doesn't exist in " + locn );
@@ -820,7 +844,7 @@ public class SceneControllerProof : SceneController_Base
 
 	private void AssertParallelogram( string locn, int n )
 	{
-		if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames[n]) == null)
+		if (elements_.GetElementOfType< Element_Parallelogram >(parallelogramNames_[n]) == null)
 		{
 			elements_.DebugDescribe( );
 			throw new System.Exception( "parallelograms[ "+n+" ] doesn't exist in " + locn );
@@ -829,7 +853,7 @@ public class SceneControllerProof : SceneController_Base
 
 	private void AssertShadowSquare( string locn, int n, bool exists )
 	{
-		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowSquareNames[n] );
+		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowSquareNames_[n] );
 		if (exists)
 		{
 			if (ep == null)
@@ -851,7 +875,7 @@ public class SceneControllerProof : SceneController_Base
 
 	private void AssertShadowParallelogram( string locn, int n, bool exists )
 	{
-		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowParallelogramNames[n] );
+		Element_Parallelogram ep = elements_.GetElementOfType<Element_Parallelogram>( shadowParallelogramNames_[n] );
         if (exists) 
 		{
 			if (ep == null)
@@ -905,7 +929,7 @@ public class SceneControllerProof : SceneController_Base
 	private void ChangeInitialAngle(float f)
 	{
 		initialAngle = f;
-		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName) != null && currentTriangleAngleChangeSpeed == 0f )
+		if (elements_.GetElementOfType<Element_Triangle>(mainTriangleName_) != null && currentTriangleAngleChangeSpeed == 0f )
 		{
 			CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
 		}
@@ -922,7 +946,7 @@ public class SceneControllerProof : SceneController_Base
 			if (f >= minMaxTriangleAngle.x && f <= minMaxTriangleAngle.y)
 			{
 				initialAngle = f;
-				if (elements_.GetElementOfType< Element_Triangle >(mainTriangleName) != null)
+				if (elements_.GetElementOfType< Element_Triangle >(mainTriangleName_) != null)
 				{
 					CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
 				}

@@ -88,6 +88,28 @@ namespace RJWard.Geometry
 			return straightLine;
 		}
 
+		public Element_StraightLine CreateStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour, bool internalSide)
+		{
+			return AddStraightLineToField(
+				triangle.field,
+				n,
+				triangle.depth + relativeDepth,
+				(internalSide)?( triangle.GetSideInternal(sideNumber)):( triangle.GetSideExternal(sideNumber)),
+				width,
+				colour
+				);
+		}
+
+		public Element_StraightLine CreateInternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour)
+		{
+			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, true );
+        }
+
+		public Element_StraightLine CreateExternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour )
+		{
+			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
+		}
+
 		#endregion creating elements
 
 	}
