@@ -23,6 +23,15 @@ namespace RJWard.Geometry
 
 		#endregion private data
 
+		#region properties
+
+		public bool isPaused
+		{
+			get { return isPaused_; }
+		}
+
+		#endregion properties
+
 		#region setters
 
 		/* Set speed

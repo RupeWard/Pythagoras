@@ -58,8 +58,14 @@ public class SceneControllerProof : SceneController_Base
 	public Sprite forwardButtonSprite_Go;
 	public Sprite forwardButtonSprite_Stop;
 
-
 	#endregion inspector hooks
+
+	#region private hooks
+
+	public UnityEngine.UI.Image forwardButtonImage;
+	public UnityEngine.UI.Image fastForwardButtonImage;
+	
+	#endregion private hooks
 
 	#region prefabs
 
@@ -105,6 +111,9 @@ public class SceneControllerProof : SceneController_Base
 
 	protected override void PostAwake( )
 	{
+		forwardButtonImage = forwardButton.GetComponent< UnityEngine.UI.Image >( );
+		fastForwardButtonImage = fastForwardButton.GetComponent<UnityEngine.UI.Image>( );
+
 		mainField_ = new GameObject( "MainField" ).AddComponent<Field>( );
 		geometryFactory_ = (Instantiate( geometryFactoryPrefab ) as GameObject).GetComponent<GeometryFactory>( );
 		geometryFactory_.transform.SetParent( transform );
@@ -194,7 +203,8 @@ public class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-			EnableForwardButton( StepForward );
+			CreateProofEngine( );
+			forwardButton.gameObject.SetActive( true );
 		}
 	}
 
@@ -211,7 +221,7 @@ public class SceneControllerProof : SceneController_Base
 
 	#region ForwardButton
 
-	private System.Action forwardButtonAction_;
+	private System.Action forwardButtonAction_; // only used in internal mode
 
 	public void HandleForwardButton()
 	{
@@ -219,19 +229,26 @@ public class SceneControllerProof : SceneController_Base
 		{
 			Debug.Log( "HandleForwardButton(), proofEngineMode = " + proofEngineMode );
 		}
-		if (forwardButtonAction_ == null)
+		if (proofEngineMode)
 		{
-			Debug.LogError( "ForwardButtonPressed with no action" );
+			StepForward( );
 		}
 		else
 		{
-			forwardButtonAction_( );
-			if (fastForward_)
+			if (forwardButtonAction_ == null)
 			{
-				Debug.LogWarning( "Forward button pressed when fastForward is on" );
+				Debug.LogError( "ForwardButtonPressed with no action" );
 			}
-			fastForward_ = false;
-			EnableFastForwardButton( );
+			else
+			{
+				forwardButtonAction_( );
+				if (fastForward_)
+				{
+					Debug.LogWarning( "Forward button pressed when fastForward is on" );
+				}
+				fastForward_ = false;
+				EnableFastForwardButton( );
+			}
 		}
 	}
 
@@ -291,13 +308,13 @@ public class SceneControllerProof : SceneController_Base
 	private void SetFastForwardButtonSprite()
 	{
 		Sprite s = (fastForward_) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
-		fastForwardButton.GetComponent<UnityEngine.UI.Image>( ).sprite = s;
+		fastForwardButtonImage.sprite = s;
 	}
 
-	private void SetForwardButtonSprite( )
+	private void SetForwardButtonSprite( bool isRunning )
 	{
-		Sprite s = (fastForward_) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
-		forwardButton.GetComponent<UnityEngine.UI.Image>( ).sprite = s;
+		Sprite s = (isRunning) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
+		forwardButtonImage.sprite = s;
 	}
 
 	#endregion FastForwardButton
@@ -377,8 +394,11 @@ public class SceneControllerProof : SceneController_Base
 
 		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );
-		proofEngine_.Resume( );
-    }
+		if (!proofEngine_.isPaused)
+		{
+			proofEngine_.Pause( );
+		}
+	}
 
 	private float showSideDuration_ = 1f;
 
@@ -390,6 +410,7 @@ public class SceneControllerProof : SceneController_Base
 		}
 		proofEngine_.Pause( );
 		proofEngine_.ChangeToFollowingStage( psb );
+		SetForwardButtonSprite( !proofEngine_.isPaused );
 	}
 
 	private void StepForward()
@@ -398,14 +419,8 @@ public class SceneControllerProof : SceneController_Base
 		{
 			Debug.Log( "StepForward()" );
 		}
-		if (proofEngine_ == null)
-		{
-			CreateProofEngine( );
-		}
-		else
-		{
-			proofEngine_.TogglePause();
-		}
+		proofEngine_.TogglePause();
+		SetForwardButtonSprite( !proofEngine_.isPaused );
 	}
 
 	#endregion proof engine sequence
