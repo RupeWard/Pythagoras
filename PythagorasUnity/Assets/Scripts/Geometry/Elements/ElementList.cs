@@ -169,12 +169,18 @@ namespace RJWard.Geometry
 		*/
 		public bool RemoveElementOfType< T >( string n, bool destroy ) where T : ElementBase
 		{
+			if (DEBUG_ELEMENTLIST)
+			{
+//				Debug.LogWarning( "RemoveElementOfType< " + typeof( T ).ToString( ) + "( '" + n + "', " + destroy + " )" );
+			}
+
 			bool success = false;
 			if (elements_.ContainsKey( n ))
 			{
-				if (elements_[n] is T)
+				T elementT = elements_[n] as T;
+				if (elementT == null)
 				{
-					Debug.LogWarning( "Element '" + n + "' to remove is not a "+typeof( T ).ToString()+ " in " + this.DebugDescribe( ) );
+					Debug.LogWarning( "Element '" + n + "' to remove is a "+elements_[n].GetType() +" not a "+typeof( T ).ToString()+ " in " + this.DebugDescribe( ) );
 				}
 				else
 				{
@@ -410,7 +416,7 @@ namespace RJWard.Geometry
 			{
 				foreach( KeyValuePair< string, ElementBase > kvp in elements_)
 				{
-					sb.Append( " (" ).Append( kvp.Key ).Append(" ");
+					sb.Append( " ( '" ).Append( kvp.Key ).Append("', ");
 					if (kvp.Value == null)
 					{
 						sb.Append( "NULL!" );
