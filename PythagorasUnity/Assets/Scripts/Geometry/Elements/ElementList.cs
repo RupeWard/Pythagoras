@@ -54,7 +54,6 @@ namespace RJWard.Geometry
 
 		public ElementList( ElementList other)
 		{
-			Debug.LogError( "CLONING LIST" );
 			name_ = other.name_ + " (CLONE)";
 			CopyElementsFrom( other );
 		}
