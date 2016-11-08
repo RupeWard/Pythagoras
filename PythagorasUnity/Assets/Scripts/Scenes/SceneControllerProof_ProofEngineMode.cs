@@ -13,6 +13,10 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public void HandleForwardButtonProofEngineMode( )
 	{
+#if UNITY_EDITOR
+		ClearTestElements( );
+#endif
+
 		if (proofEngine_ != null)
 		{
 			StepForward( );
@@ -35,10 +39,6 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			Debug.Log( "CreateProofEngine()" );
 		}
-
-#if UNITY_EDITOR
-		ClearTestElements( );
-#endif
 
 		if (proofEngine_ != null)
 		{
