@@ -61,41 +61,49 @@ namespace RJWard.Geometry
 			);
 		}
 
+		private void CreateLineIfNeeded( )
+		{
+			if (line_ == null)
+			{
+				Element_Triangle triangle = elements.GetRequiredElementOfType<Element_Triangle>( triangleName_ );
+				line_ = geometryFactory.CreateStraightLineFromTriangleSide(
+					lineName_,
+					triangle,
+					sideNumber_,
+					triangle.depth + relativeDepth_,
+					lineWidth_,
+					lineColour_,
+					externalSide_
+					);
+				AddElement( lineName_, line_ );
+
+				switch (direction)
+				{
+					case EDirection.Forward:
+						{
+							line_.SetAlpha( 0f );
+							break;
+						}
+					case EDirection.Reverse:
+						{
+							line_.SetAlpha( 1f );
+							break;
+						}
+				}
+			}
+		}
+
 		#endregion setup
 
 		#region ProofStageBase 
 
 		protected override void HandleInit( )
-		{
-			Element_Triangle triangle = elements.GetRequiredElementOfType<Element_Triangle>( triangleName_ );
-			line_ = geometryFactory.CreateStraightLineFromTriangleSide(
-				lineName_,
-				triangle,
-				sideNumber_,
-				triangle.depth + relativeDepth_,
-				lineWidth_,
-				lineColour_,
-				externalSide_
-				);
-			AddElement( lineName_, line_);
-
-			switch (direction)
-			{
-				case EDirection.Forward:
-					{
-						line_.SetAlpha( 0f );
-						break;
-					}
-				case EDirection.Reverse:
-					{
-						line_.SetAlpha( 1f );
-						break;
-					}
-			}
+		{ 
 		}
 
 		protected override void DoUpdateView( )
 		{
+			CreateLineIfNeeded( );
 			line_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
 		}
 

@@ -44,26 +44,34 @@ namespace RJWard.Geometry
             );
 		}
 
+		private void CreateTriangleIfNeeded( )
+		{
+			if (triangle_ == null)
+			{
+				triangle_ = geometryFactory.AddRightTriangleToField(
+					field,
+					triangleName_,
+					depth_,
+					hypotenuse_,
+					angle_,
+					triangleColour_
+					);
+				AddElement( triangleName_, triangle_ );
+				triangle_.SetAlpha( 0f );
+			}
+		}
+
 		#endregion setup
 
 		#region ProofStageBase 
 
 		protected override void HandleInit( )
 		{
-			triangle_ = geometryFactory.AddRightTriangleToField(
-				field,
-				triangleName_,
-				depth_,
-				hypotenuse_,
-				angle_,
-				triangleColour_
-				);
-			AddElement( triangleName_, triangle_ );
-			triangle_.SetAlpha( 0f );
 		}
 
 		protected override void DoUpdateView( )
 		{
+			CreateTriangleIfNeeded( );
 			triangle_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
 		}
 

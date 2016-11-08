@@ -118,8 +118,8 @@ public partial class SceneControllerProof : SceneController_Base
 		geometryFactory_ = (Instantiate( geometryFactoryPrefab ) as GameObject).GetComponent< GeometryFactory >( );
 		geometryFactory_.transform.SetParent( transform );
 
-		DisableForwardButton( );
-		DisableFastForwardButton( );
+		forwardButton.gameObject.SetActive( false );
+		fastForwardButton.gameObject.SetActive( false );
 	}
 
 	protected override void PostStart( )
@@ -205,6 +205,7 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			CreateProofEngine( );
 			forwardButton.gameObject.SetActive( true );
+			fastForwardButton.gameObject.SetActive( true );
 		}
 	}
 
@@ -221,8 +222,6 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#region ForwardButton
 
-	private System.Action forwardButtonAction_; // only used in internal mode
-
 	public void HandleForwardButton()
 	{
 		if (DEBUG_PROOF)
@@ -231,37 +230,18 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 		if (proofEngineMode)
 		{
-			StepForward( );
+			HandleForwardButtonProofEngineMode( );
 		}
 		else
 		{
-			if (forwardButtonAction_ == null)
-			{
-				Debug.LogError( "ForwardButtonPressed with no action" );
-			}
-			else
-			{
-				forwardButtonAction_( );
-				if (fastForward_)
-				{
-					Debug.LogWarning( "Forward button pressed when fastForward is on" );
-				}
-				fastForward_ = false;
-				EnableFastForwardButton( );
-			}
+			HandleForwardButtonInternalMode( );
 		}
 	}
 
-	private void DisableForwardButton()
+	private void SetForwardButtonSprite( bool isRunning )
 	{
-		forwardButtonAction_ = null;
-		forwardButton.gameObject.SetActive( false );
-	}
-
-	private void EnableForwardButton(System.Action action)
-	{
-		forwardButtonAction_ = action;
-		forwardButton.gameObject.SetActive( true );
+		Sprite s = (isRunning) ? (forwardButtonSprite_Stop) : (forwardButtonSprite_Go);
+		forwardButtonImage.sprite = s;
 	}
 
 	#endregion ForwardButton
@@ -309,12 +289,6 @@ public partial class SceneControllerProof : SceneController_Base
 	{
 		Sprite s = (fastForward_) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
 		fastForwardButtonImage.sprite = s;
-	}
-
-	private void SetForwardButtonSprite( bool isRunning )
-	{
-		Sprite s = (isRunning) ? (forwardButtonSprite_Stop) : (forwardButtonSprite_Go);
-		forwardButtonImage.sprite = s;
 	}
 
 	#endregion FastForwardButton

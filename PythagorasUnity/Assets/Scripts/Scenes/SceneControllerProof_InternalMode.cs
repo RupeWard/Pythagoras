@@ -4,8 +4,47 @@ using System.Collections.Generic;
 
 using RJWard.Geometry;
 
+/* 
+	Functions and fields only used in Internal proof mode
+*/
 public partial class SceneControllerProof : SceneController_Base
 {
+	#region ForwardButton
+
+	private System.Action forwardButtonAction_; // only used in internal mode
+
+	public void HandleForwardButtonInternalMode( )
+	{
+		if (forwardButtonAction_ == null)
+		{
+			Debug.LogError( "ForwardButtonPressed with no action" );
+		}
+		else
+		{
+			forwardButtonAction_( );
+			if (fastForward_)
+			{
+				Debug.LogWarning( "Forward button pressed when fastForward is on" );
+			}
+			fastForward_ = false;
+			EnableFastForwardButton( );
+		}
+	}
+
+	private void DisableForwardButton( )
+	{
+		forwardButtonAction_ = null;
+		forwardButton.gameObject.SetActive( false );
+	}
+
+	private void EnableForwardButton( System.Action action )
+	{
+		forwardButtonAction_ = action;
+		forwardButton.gameObject.SetActive( true );
+	}
+
+	#endregion ForwardButton
+
 	// Following region is for when proofEngineMode == false
 	#region internal proof sequence 
 

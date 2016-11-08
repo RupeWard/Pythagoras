@@ -58,44 +58,53 @@ namespace RJWard.Geometry
 			);
 		}
 
+		private void CreateSquareIfNeeded( )
+		{
+			if (parallelogram_ == null)
+			{
+				Element_StraightLine line = elements.GetRequiredElementOfType<Element_StraightLine>( lineName_ );
+				parallelogramHeight_ = line.length;
+
+				parallelogram_ =
+					geometryFactory.AddParallelogramToField(
+						line.field,
+						parallelogramName_,
+						line.depth + relativeDepth_,
+						line.GetEnds( ),
+						parallelogramHeight_,
+						parallelogramAngle_,
+						parallelogramColour_
+						);
+				AddElement( parallelogramName_, parallelogram_ );
+
+				switch (direction)
+				{
+					case EDirection.Forward:
+						{
+							parallelogram_.SetHeight( 0f );
+							break;
+						}
+					case EDirection.Reverse:
+						{
+							parallelogram_.SetHeight( parallelogramHeight_ );
+							break;
+						}
+				}
+			}
+		}
+
+
 		#endregion setup
 
 		#region ProofStageBase 
 
 		protected override void HandleInit( )
 		{
-			Element_StraightLine line = elements.GetRequiredElementOfType<Element_StraightLine>( lineName_);
-			parallelogramHeight_ = line.length;
-
-			parallelogram_ =
-				geometryFactory.AddParallelogramToField(
-					line.field,
-					parallelogramName_,
-					line.depth + relativeDepth_,
-					line.GetEnds(),
-					parallelogramHeight_,
-					parallelogramAngle_,
-					parallelogramColour_
-					);
-			AddElement( parallelogramName_, parallelogram_);
-
-			switch (direction)
-			{
-				case EDirection.Forward:
-					{
-						parallelogram_.SetHeight( 0f );
-						break;
-					}
-				case EDirection.Reverse:
-					{
-						parallelogram_.SetHeight( parallelogramHeight_ );
-						break;
-					}
-			}
 		}
 
 		protected override void DoUpdateView( )
 		{
+			CreateSquareIfNeeded( );
 			parallelogram_.SetHeight(Mathf.Lerp( 0f, parallelogramHeight_, currentTimeFractional ) );
 		}
 

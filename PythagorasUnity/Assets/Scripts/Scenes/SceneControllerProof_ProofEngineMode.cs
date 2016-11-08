@@ -4,8 +4,27 @@ using System.Collections.Generic;
 
 using RJWard.Geometry;
 
+/* 
+	Functions and fields only used in proof engine mode
+*/
 public partial class SceneControllerProof : SceneController_Base
 {
+	#region Forward button
+
+	public void HandleForwardButtonProofEngineMode( )
+	{
+		if (proofEngine_ != null)
+		{
+			StepForward( );
+		}
+		else
+		{
+			Debug.LogError( "No ProofEngine on ForwardButton press" );
+		}
+	}
+
+	#endregion Forward button
+
 	// Following region is for when proofEngineMode == true
 	#region proof engine sequence
 
@@ -129,13 +148,28 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 	}
 
+	private void HandleProofStageStarted( ProofStageBase psb )
+	{
+		if (elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[0] ) == null)
+		{
+			// Not yet made first square, so can change triangle
+			EnableTriangleSettings( );
+		}
+		else
+		{
+			DisableTriangleSettings( );
+		}
+	}
+
 	private void HandleProofStageFinished( ProofStageBase psb )
 	{
 		if (DEBUG_PROOF)
 		{
 			Debug.Log( "HandleProofStageFinished( " + psb.name + ")" );
 		}
-		if (false == psb.dontPauseOnFinish )
+
+
+		if (false == fastForward_ && false == psb.dontPauseOnFinish )
 		{
 			proofEngine_.Pause( );
 		}
