@@ -45,6 +45,19 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#endregion ForwardButton
 
+	#region triangle settings
+
+	private void HandleAngleChangedInternalMode( )
+	{
+		Element_Triangle mainTriangle = elements_.GetElementOfType<Element_Triangle>( mainTriangleName_ );
+		if (mainTriangle != null)
+		{
+			CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
+		}
+	}
+
+	#endregion triangle settings
+
 	// Following region is for when proofEngineMode == false
 	#region internal proof sequence 
 

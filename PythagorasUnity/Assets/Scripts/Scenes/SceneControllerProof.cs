@@ -203,7 +203,7 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-			CreateProofEngine( );
+//			CreateProofEngine( );
 			forwardButton.gameObject.SetActive( true );
 			fastForwardButton.gameObject.SetActive( true );
 		}
@@ -293,7 +293,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#endregion FastForwardButton
 
-	#region triangleSettings
+	#region triangle settings
 
 	private Vector2 minMaxTriangleAngle = new Vector2( 5f, 85f );
 
@@ -343,10 +343,7 @@ public partial class SceneControllerProof : SceneController_Base
 			if (f >= minMaxTriangleAngle.x && f <= minMaxTriangleAngle.y)
 			{
 				initialAngle = f;
-				if (elements_.GetElementOfType< Element_Triangle >(mainTriangleName_) != null)
-				{
-					CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
-				}
+				HandleAngleChanged( );
 			}
 			else
 			{
@@ -376,7 +373,19 @@ public partial class SceneControllerProof : SceneController_Base
 	public void HandleTriangleAngleButtonUp( )
 	{
 		currentTriangleAngleChangeSpeed = 0f;
-		CreateMainTriangle( );
+		HandleAngleChanged( );
+	}
+
+	private void HandleAngleChanged()
+	{
+		if (proofEngineMode)
+		{
+			HandleAngleChangedProofEngineMode( );
+		}
+		else
+		{
+			HandleAngleChangedInternalMode( );
+		}
 	}
 
 	private void ProcessTriangleAngleChange()
@@ -398,7 +407,7 @@ public partial class SceneControllerProof : SceneController_Base
 			}
 		}
 	}
-	#endregion triangleSettings
+	#endregion triangles ettings
 
 }
 

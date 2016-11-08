@@ -16,18 +16,29 @@ public partial class SceneControllerProof : SceneController_Base
 #if UNITY_EDITOR
 		ClearTestElements( );
 #endif
+		if (proofEngine_ == null)
+		{
+			CreateProofEngine( );
+		}
 
-		if (proofEngine_ != null)
-		{
-			StepForward( );
-		}
-		else
-		{
-			Debug.LogError( "No ProofEngine on ForwardButton press" );
-		}
+		StepForward( );
 	}
 
 	#endregion Forward button
+
+	#region triangle settings
+
+	private void HandleAngleChangedProofEngineMode( )
+	{
+		if (proofEngine_ != null)
+		{
+			CreateProofEngine( );
+			proofEngine_.Resume( );
+			SetForwardButtonSprite( !proofEngine_.isPaused );
+		}
+	}
+
+	#endregion triangle settings
 
 	// Following region is for when proofEngineMode == true
 	#region proof engine sequence
@@ -42,10 +53,22 @@ public partial class SceneControllerProof : SceneController_Base
 
 		if (proofEngine_ != null)
 		{
+			if (DEBUG_PROOF)
+			{
+				Debug.Log( "CreateProofEngine destroying proofEngine" );
+			}
 			GameObject.Destroy( proofEngine_.gameObject );
 		}
 		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
 
+		if (elements_.NumElements > 0)
+		{
+			if (DEBUG_PROOF)
+			{
+				Debug.Log( "CreateProofEngine destroying "+elements_.NumElements+" elements" );
+			}
+			elements_.DestroyAllElements( );
+		}
 		ProofStage_CreateRightTriangle createTriangleStage = new ProofStage_CreateRightTriangle(
 			"Create Triangle",
 			"Creating main triangle",
