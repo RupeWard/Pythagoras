@@ -114,16 +114,6 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		protected override void OnClone<T>( T src )
-		{
-			Element_Parallelogram p = src as Element_Parallelogram;
-			if (p == null)
-			{
-				throw new System.Exception( gameObject.name + ": Parallelograms (" + this.GetType( ).ToString( ) + ") can currently only be cloned from Parallelograms, not " + src.GetType( ).ToString( ) );
-			}
-			Init( p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.cachedMaterial.GetColor( "_Color" ) );
-		}
-
 		public void Init( Field f, float d, Vector2[] bl, float h, float a, Color c )
 		{
 			if (bl.Length != 2)
@@ -199,6 +189,25 @@ namespace RJWard.Geometry
 		}
 
 		#endregion Setup
+
+		#region creation
+
+		protected override void OnClone<T>( T src )
+		{
+			Element_Parallelogram p = src as Element_Parallelogram;
+			if (p == null)
+			{
+				throw new System.Exception( gameObject.name + ": Parallelograms (" + this.GetType( ).ToString( ) + ") can currently only be cloned from Parallelograms, not " + src.GetType( ).ToString( ) );
+			}
+			Init( p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.cachedMaterial.GetColor( "_Color" ) );
+		}
+
+		public override ElementBase Clone( string name )
+		{
+			return this.Clone< Element_Parallelogram >( name );
+		}
+
+		#endregion creation
 
 		#region Mesh
 
@@ -285,14 +294,14 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		public override void SetColour( Color c )
+		protected override void HandleColourChanged( )
 		{
-			cachedMaterial.SetColor( "_Color", c );
+			cachedMaterial.SetColor( "_Color", colour );
 		}
 
-		public override void SetAlpha( float a )
+		protected override void HandleAlphaChanged( )
 		{
-			cachedMaterial.SetFloat( "_Alpha", a );
+			cachedMaterial.SetFloat( "_Alpha", alpha );
 		}
 
 		#endregion Non-geometrical Appaarance
@@ -317,7 +326,7 @@ namespace RJWard.Geometry
 			}
 		}
 
-		#endregion
+		#endregion shapeChangers
 
 		#region IDebugDescribable
 

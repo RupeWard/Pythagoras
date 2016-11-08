@@ -53,12 +53,42 @@ namespace RJWard.Geometry
 			isDirty_ = true;
 		}
 
+		private Color colour_; // TODO replace with some kind of decorator
+		public Color colour
+		{
+			get { return colour_;  }
+		}
+
+		private float alpha_; // TODO replace with some kind of decorator
+		public float alpha
+		{
+			get { return alpha_; }
+		}
+
 		#endregion private data
 
 		#region Non-geometrical Appaarance
 
-		abstract public void SetColour( Color c );
-		abstract public void SetAlpha( float a );
+		abstract protected void HandleColourChanged( );
+		abstract protected void HandleAlphaChanged( );
+
+		public void SetColour( Color c )
+		{
+			if (colour_ != c)
+			{
+				colour_ = c;
+				HandleColourChanged( );
+			}
+		}
+
+		public void SetAlpha( float a )
+		{
+			if (alpha_ != a)
+			{
+				alpha_ = a;
+				HandleAlphaChanged( );
+			}
+		}
 
 		public void SetColour( Color c, float a )
 		{
@@ -80,12 +110,6 @@ namespace RJWard.Geometry
 #endif
 
 		#endregion in-editor modding 
-
-		#region interface
-
-		abstract protected void DoAdjustMesh( );
-
-		#endregion interface
 
 		#region MB Flow
 
@@ -168,6 +192,8 @@ namespace RJWard.Geometry
 			return mesh;
 		}
 
+		abstract protected void DoAdjustMesh( );
+
 		#endregion
 
 		#region Creation
@@ -199,6 +225,8 @@ namespace RJWard.Geometry
 
 		// Note - have done it this way tp leave possibility of cloning from other types (eg Quadrilateral from parallelogram from square, etc)
 		protected abstract void OnClone<T>( T src ) where T : ElementBase;
+
+		abstract public ElementBase Clone( string name );
 
 		#endregion Creation
 	}

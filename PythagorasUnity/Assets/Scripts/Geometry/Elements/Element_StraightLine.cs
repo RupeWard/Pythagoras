@@ -144,16 +144,6 @@ namespace RJWard.Geometry
 			SetDirty( );
 		}
 
-		protected override void OnClone<T>( T src )
-		{
-			Element_StraightLine s = src as Element_StraightLine;
-			if (s == null)
-			{
-				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
-			}
-			Init( s.field, s.depth, s.ends_.ToArray( ), s.width_, s.cachedMaterial.GetColor( "_Color" ) );
-		}
-
 		Vector2 GetDirection( )
 		{
 			return ends_[1] - ends_[0];
@@ -179,6 +169,26 @@ namespace RJWard.Geometry
 		}
 
 		#endregion Setup
+
+		#region  creation
+
+		protected override void OnClone<T>( T src )
+		{
+			Element_StraightLine s = src as Element_StraightLine;
+			if (s == null)
+			{
+				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
+			}
+			Init( s.field, s.depth, s.ends_.ToArray( ), s.width_, s.colour );
+		}
+
+		public override ElementBase Clone( string name )
+		{
+			return this.Clone< Element_StraightLine >( name );
+		}
+
+
+		#endregion creation
 
 		#region Mesh
 
@@ -242,14 +252,14 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		override public void SetColour( Color c )
+		override protected void HandleColourChanged( )
 		{
-			cachedMaterial.SetColor( "_Color", c );
+			cachedMaterial.SetColor( "_Color", colour );
 		}
 
-		override public void SetAlpha( float a )
+		override protected void HandleAlphaChanged(  )
 		{
-			cachedMaterial.SetFloat( "_Alpha", a );
+			cachedMaterial.SetFloat( "_Alpha", alpha );
 		}
 
 		#endregion Non-geometrical Appaarance

@@ -110,6 +110,7 @@ namespace RJWard.Geometry
 			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
 		}
 
+		
 		#endregion creating elements
 
 	}

@@ -142,6 +142,10 @@ namespace RJWard.Geometry
 			SetDirty( );
 		}
 
+		#endregion Setup
+
+		#region creation
+
 		protected override void OnClone<T>( T src )
 		{
 			Element_Triangle t = src as Element_Triangle;
@@ -152,7 +156,12 @@ namespace RJWard.Geometry
 			Init( t.field, t.depth, t.vertices_.ToArray( ), t.cachedMaterial.GetColor( "_Color" ) );
 		}
 
-		#endregion Setup
+		public override ElementBase Clone( string name )
+		{
+			return this.Clone< Element_Triangle >( name );
+		}
+
+		#endregion creation
 
 		#region Mesh
 
@@ -296,14 +305,14 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		override public void SetColour( Color c )
+		override protected void HandleColourChanged( )
 		{
-			cachedMaterial.SetColor( "_Color", c );
+			cachedMaterial.SetColor( "_Color", colour );
 		}
 
-		override public void SetAlpha( float a )
+		override protected void HandleAlphaChanged( )
 		{
-			cachedMaterial.SetFloat( "_Alpha", a );
+			cachedMaterial.SetFloat( "_Alpha", alpha );
 		}
 
 
