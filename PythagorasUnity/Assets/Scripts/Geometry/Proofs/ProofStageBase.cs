@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	/*
+		Base class for a proof stage
+	*/
 	abstract public class ProofStageBase 
 	{
 		public enum EDirection
@@ -11,33 +14,80 @@ namespace RJWard.Geometry
 			Reverse
 		}
 
-		#region operational data 
+		#region private data 
 
-		protected GeometryFactory geometryFactory_ = null;
-		protected Field field_ = null;
+		private GeometryFactory geometryFactory_ = null;
+		private Field field_ = null;
+
+		private ProofStageBase previousStage_ = null;
+		private ProofStageBase nextStage_ = null;
 
 		private float durationSeconds_ = 1f;
+
+		private ElementListDefinition startRequiredElementListDefinition_ = null;
+		private ElementListDefinition endRequiredElementListDefinition_ = null;
+
+		private ElementList elements_ = null;
+
+		private float currentTimeSeconds_ = 0f;
+		private EDirection direction_ = EDirection.Forward;
+		private string name_ = "UNNAMED PROOF STAGE";
+		private string description_ = string.Empty;
+
+		#endregion private data 
+
+		#region properties
+
+		protected GeometryFactory geometryFactory
+		{
+			get { return geometryFactory_;  }
+		}
+
+		protected Field field
+		{
+			get { return field_; }
+		}
+
+		public float currentTimeFractional
+		{
+			get { return currentTimeSeconds_ / durationSeconds_; }
+		}
+
+		public EDirection direction
+		{
+			get { return direction_; }
+		}
+
+		public string name
+		{
+			get { return name_; }
+		}
+
+		public string description
+		{
+			get { return description_; }
+		}
+
 		public float durationSeconds
 		{
 			get { return durationSeconds_; }
 		}
 
-		private ElementListDefinition startRequiredElementListDefinition_ = null;
-		private ElementListDefinition endRequiredElementListDefinition_ = null;
-
-		public ElementListDefinition startRequiredElementListDefinition
+		protected ElementListDefinition startRequiredElementListDefinition
 		{
 			set { startRequiredElementListDefinition_ = value; }
 		}
 
-		public ElementListDefinition endRequiredElementListDefinition
+		protected ElementListDefinition endRequiredElementListDefinition
 		{
 			set { endRequiredElementListDefinition_ = value; }
 		}
 
-		private ProofStageBase previousStage_ = null;
-		private ProofStageBase nextStage_ = null;
-		public void SetPreviousStage(ProofStageBase b)
+		#endregion properties
+
+		#region setters
+
+		public void SetPreviousStage( ProofStageBase b )
 		{
 			previousStage_ = b;
 		}
@@ -47,6 +97,16 @@ namespace RJWard.Geometry
 			nextStage_ = b;
 		}
 
+		public void SetBorderingStages( ProofStageBase b0, ProofStageBase b1 )
+		{
+			SetPreviousStage( b0 );
+			SetNextStage( b1 );
+		}
+
+		#endregion setters
+
+		/* Direction-dependent following stage (next if forward, previous if reverse)
+		*/
 		public ProofStageBase GetFollowingStage()
 		{
 			ProofStageBase result = null;
@@ -66,42 +126,13 @@ namespace RJWard.Geometry
 			return result;
 		}
 
-		public void SetBorderingStages(ProofStageBase b0, ProofStageBase b1)
-		{
-			SetPreviousStage( b0 );
-			SetNextStage( b1 );
-		}
-
-		private ElementList elements_ = null;
+		/* Derived class should call this on creating new elements
+		*/
 		protected void AddElement(string n, ElementBase e)
 		{
 			elements_.AddElement(n, e );
 		}
 
-		private float currentTimeSeconds_ = 0f;
-		public float currentTimeFractional
-		{
-			get { return currentTimeSeconds_ / durationSeconds_;  }
-		}
-
-		private EDirection direction_ = EDirection.Forward;
-		public EDirection direction
-		{
-			get { return direction_; }
-		}
-
-		protected string name_ = "UNNAMED PROOF STAGE";
-		protected string description_ = string.Empty;
-		public string name
-		{
-			get { return name_; }
-		}
-		public string description
-		{
-			get { return description_;  }
-		}
-
-		#endregion operational data 
 
 		#region callbacks
 
@@ -130,6 +161,10 @@ namespace RJWard.Geometry
 			}
 		} 
 
+		/* Start the stage 
+
+			initialises the current time and validates the element list, depending on direction
+		*/
 		public void Init(EDirection d, ElementList e)
 		{
 			if (e == null)
@@ -168,9 +203,12 @@ namespace RJWard.Geometry
 						break;
 					}
 			}
-			HandleInit( );
+
+			// derived class
+			HandleInit( ); 
 			UpdateView( );
 		}
+
 		#endregion Setup
 
 		#region Process
@@ -181,10 +219,14 @@ namespace RJWard.Geometry
 			DoUpdateView( );
 		}
 
-		abstract protected void DoUpdateView( );
-		abstract protected void HandleInit( );
-		abstract protected void HandleFinished( );
+		abstract protected void DoUpdateView( ); // derived class defines to set up view according to current time
+		abstract protected void HandleInit( );  // derived class overrides to handle any initialisation work
+		abstract protected void HandleFinished( ); // derived class overrides to handle anything needs doing on finish (in either direction) 
 
+		/* This is the main direction-dependent updating function. 
+
+			Time elapsed since previosu update is passed in by engine (to enable speed change)
+		*/
 		public void HandleSecondsElapsed(float s)
 		{
 			bool shouldFinish = false;
@@ -218,6 +260,11 @@ namespace RJWard.Geometry
 			}
 		}
 
+		/* Called when stage reaches target (direction-depoendent)
+
+			validates element list against own requirements
+			initialises next stage with this ones direction and element list
+		*/
 		private void Finish()
 		{
 			HandleFinished( );

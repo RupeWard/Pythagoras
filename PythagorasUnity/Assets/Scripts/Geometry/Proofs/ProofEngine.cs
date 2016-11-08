@@ -3,6 +3,11 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	/* 
+		ProofEngine
+
+		Handles updates of proof stages
+	*/
 	public class ProofEngine : MonoBehaviour
 	{
 		public static bool DEBUG_PROOFENGINE = true;
@@ -13,13 +18,17 @@ namespace RJWard.Geometry
 
 		const float MAXSPEED = 100f;
 		 
-		private float speed_ = 1f;
+		private float speed_ = 1f; // each proof stage specifies duration, engine applies this global modifier
 		private bool isPaused_ = true;
 
 		#endregion private data
 
 		#region setters
 
+		/* Set speed
+
+			returns true if speed is the speed asked for (including if it was already that speed)
+		*/
 		public bool SetSpeed(float f)
 		{
 			bool success = true;
@@ -42,9 +51,10 @@ namespace RJWard.Geometry
 			return success;
 		}
 
-		public bool SetPaused( bool b)
+		/* Pause/Resume
+		*/
+		public void SetPaused( bool b)
 		{
-			bool success = true;
 			if (isPaused_ != b)
 			{
 				if (DEBUG_PROOFENGINE)
@@ -53,17 +63,23 @@ namespace RJWard.Geometry
 				}
 				isPaused_ = b;
 			}
-			return success;
+			else
+			{
+				if (DEBUG_PROOFENGINE)
+				{
+					Debug.LogWarning( "ProofEngine isPaused was already " + b );
+				}
+			}
 		}
 
-		public bool Pause()
+		public void Pause()
 		{
-			return SetPaused( true );
+			SetPaused( true );
 		}
 
-		public bool Resume( )
+		public void Resume( )
 		{
-			return SetPaused( false );
+			SetPaused( false );
 		}
 
 		public void TogglePause()
@@ -100,15 +116,12 @@ namespace RJWard.Geometry
 			}
 			if (modIsPaused != isPaused_)
 			{
-				if (SetPaused( modIsPaused))
+				SetPaused( modIsPaused );
+				if (DEBUG_PROOFENGINE)
 				{
-					if (DEBUG_PROOFENGINE)
-					{
-						Debug.LogWarning( "Inspector pause change made" );
-					}
+					Debug.LogWarning( "Inspector pause change made" );
 				}
 			}
-
 		}
 
 		private void SetModdingValues( )
@@ -116,8 +129,8 @@ namespace RJWard.Geometry
 			modSpeed = speed_;
 			modIsPaused = isPaused_;
 		}
-
 #endif
+
 		#endregion editor modding
 
 		#region MD Flow
@@ -150,6 +163,7 @@ namespace RJWard.Geometry
 #if UNITY_ENGINE
 			CheckIfModded( );
 #endif
+			// If not paused, update the current stage
 			if (false == isPaused_)
 			{
 				if (currentStage_ != null)
@@ -167,6 +181,10 @@ namespace RJWard.Geometry
 			currentStage_ = b;
 		}
 
+		/* Change stage according to previously completed stage
+
+			Note: thius is direction dependent. GetFollowingStage can be either the one before or the one after.
+		*/
 		public void ChangeToFollowingStage( ProofStageBase b )
 		{
 			if (b == null)

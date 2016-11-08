@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
+using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
@@ -28,6 +28,14 @@ namespace RJWard.Geometry
 			hypotenuse_ = h;
 			angle_ = a;
 			triangleColour_ = c;
+
+			endRequiredElementListDefinition = new ElementListDefinition(
+				"EndRequirments",
+				new Dictionary<string, System.Type> ()
+				{
+					{ "MainTriangle", typeof(Element_Triangle) }
+				}
+            );
 		}
 
 		#endregion setup
@@ -36,8 +44,8 @@ namespace RJWard.Geometry
 
 		protected override void HandleInit( )
 		{
-			triangle_ = geometryFactory_.AddRightTriangleToField(
-				field_,
+			triangle_ = geometryFactory.AddRightTriangleToField(
+				field,
 				"MainTriangle",
 				0f,
 				hypotenuse_,

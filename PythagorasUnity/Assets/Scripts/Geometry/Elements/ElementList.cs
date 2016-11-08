@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 /*
-	Stores a list of elements 
+	Stores a list of elements by name, with access by name or name & type.
+	Can be validated against an ElementListDefinition
 */
 namespace RJWard.Geometry
 {
@@ -12,7 +13,7 @@ namespace RJWard.Geometry
 #if UNITY_EDITOR
 		static private bool THROW_EXCEPTIONS = true;
 #else
-		static private bool THROW_EXCEPTIONS = false;
+		static private bool THROW_EXCEPTIONS = false; 
 #endif
 
 		static public bool DEBUG_ELEMENTLIST = true;
@@ -20,7 +21,7 @@ namespace RJWard.Geometry
 		#region private data
 
 		private Dictionary<string, ElementBase> elements_ = new Dictionary<string, ElementBase>( );
-		private string name_ = "[UN-NAMED ELEMENT LIST]";
+		private string name_ = "[UNNAMED ELEMENT LIST]";
 
 		#endregion private data
 
@@ -45,12 +46,23 @@ namespace RJWard.Geometry
 			name_ = n;
 		}
 
+		public ElementList(string n, ElementList other )
+		{
+			name_ = n;
+			CopyElementsFrom( other );
+		}
+
 		public ElementList( ElementList other)
 		{
-			name_ = other.name_ + "_CLONE";
-			foreach ( string n in other.elements_.Keys)
+			name_ = other.name_ + " (CLONE)";
+			CopyElementsFrom( other );
+		}
+
+		private void CopyElementsFrom( ElementList other )
+		{
+			foreach (string n in other.elements_.Keys)
 			{
-				elements_.Add( n, elements_[n] );
+				elements_.Add( n, other.elements_[n] );
 			}
 		}
 
@@ -58,8 +70,17 @@ namespace RJWard.Geometry
 
 		#region modifiers
 
+		/* Add an element to the list
+
+			n must be non-empty
+			e must be non-null
+			list must not already contain an element called n
+
+			returns the element added (or null)
+		*/
 		public ElementBase AddElement(string n, ElementBase e)
 		{
+			ElementBase result = null;
 			if (n.Length == 0)
 			{
 				Debug.LogError( "Name is empty on trying to add to ElementList '"+name_+"'" );
@@ -87,14 +108,21 @@ namespace RJWard.Geometry
 			else
 			{
 				elements_.Add( n, e );
+				result = e;
 				if (DEBUG_ELEMENTLIST)
 				{
 					Debug.Log( "Added '" + n + "', now " + this.DebugDescribe( ) );
 				}
 			}
-			return e;
+			return result;
 		}
 
+		/* Remove element called n from the list if it exists 
+		
+			destroy = also destroy the GO 
+
+			returns true if element was found and removed
+		*/
 		public bool RemoveElement( string n, bool destroy )
 		{
 			bool success = false;
@@ -109,6 +137,7 @@ namespace RJWard.Geometry
 					GameObject.Destroy( elements_[n].gameObject );
 				}
 				elements_.Remove( n );
+				success = true;
 			}
 			else
 			{
@@ -120,16 +149,24 @@ namespace RJWard.Geometry
 			return success;
 		}
 
+		// Helper - remove without destroying
 		public bool RemoveElement( string n)
 		{
 			return RemoveElement( n, false );
 		}
 
+		// Helper - remove and destroy
 		public bool DestroyElement( string n )
 		{
 			return RemoveElement( n, true);
 		}
 
+		/* Remove element called n from the list if it exists and is of given type
+		
+			destroy = also destroy the GO 
+
+			returns true if element was found and removed
+		*/
 		public bool RemoveElementOfType< T >( string n, bool destroy ) where T : ElementBase
 		{
 			bool success = false;
@@ -150,6 +187,7 @@ namespace RJWard.Geometry
 						GameObject.Destroy( elements_[n].gameObject );
 					}
 					elements_.Remove( n );
+					success = true;
 				}
 			}
 			else
@@ -162,16 +200,22 @@ namespace RJWard.Geometry
 			return success;
 		}
 
+		// Helper - remove without destroying
 		public bool RemoveElementOfType<T>( string n ) where T : ElementBase
 		{
 			return RemoveElementOfType<T>( n, false );
 		}
 
+		// Helper - remove and destroy
 		public bool DestroyElementOfType<T>( string n ) where T : ElementBase
 		{
 			return RemoveElementOfType<T>( n, true );
 		}
 
+		/* Remove all elements
+
+			destroy - also destroy them
+		*/
 		public void RemoveAllElements( bool destroy )
 		{
 			if (destroy)
@@ -184,45 +228,72 @@ namespace RJWard.Geometry
 			elements_.Clear( );
 		}
 
+		// Helper - remove all without destroying
 		public void RemoveAllElements()
 		{
 			RemoveAllElements( false );
 		}
 
+		// Helper - remove all and destroy
 		public void DestroyAllElements( )
 		{
 			RemoveAllElements( true );
 		}
 
+		/* Remove specific element the list if it exists 
+
+			destroy = also destroy the GO 
+
+			returns true if element was found and removed
+		*/
 		public bool RemoveElement( ElementBase eb, bool destroy )
 		{
 			bool found = false;
 			string key = string.Empty;
-			foreach (KeyValuePair<string, ElementBase> kvp in elements_)
+			if (eb == null)
 			{
-				if (kvp.Value == eb)
+				if (DEBUG_ELEMENTLIST)
 				{
-					key = kvp.Key;
-					found = true;
-					break;
+					Debug.LogWarning( "Null Element passed to RemoveElement in ElementList '" + name + "'" );
 				}
 			}
-			if (found)
+			else
 			{
-				if (destroy)
+				foreach (KeyValuePair<string, ElementBase> kvp in elements_)
 				{
-					GameObject.Destroy( elements_[key].gameObject );
+					if (kvp.Value == eb)
+					{
+						key = kvp.Key;
+						found = true;
+						break;
+					}
 				}
-				elements_.Remove( key );
+				if (found)
+				{
+					if (destroy)
+					{
+						GameObject.Destroy( elements_[key].gameObject );
+					}
+					elements_.Remove( key );
+				}
+				else
+				{
+					if (DEBUG_ELEMENTLIST)
+					{
+						Debug.LogWarning( "Element '" + eb.name + "' not in ElementList '" + name + "' on trying to Remove" );
+					}
+				}
 			}
 			return found;
 		}
 
+		// Helper - rmeove without destroying
 		public bool RemoveElement( ElementBase eb)
 		{
 			return RemoveElement( eb, false );
 		}
 
+		// Helper - rmeove and destroy
 		public bool DestroyElement( ElementBase eb )
 		{
 			return RemoveElement( eb, true );
@@ -232,6 +303,12 @@ namespace RJWard.Geometry
 
 		#region accessors
 
+		/* Retrieve element by name
+
+			required -> throw exception if true and element not found
+
+			returns element or null if not found
+		*/
 		public ElementBase GetElement (string n, bool required)
 		{
 			ElementBase result;
@@ -245,16 +322,22 @@ namespace RJWard.Geometry
 			return result;
 		}
 
+		// Helper - retrieve by name but don't worry if not found (client must deal with it)
 		public ElementBase GetElement(string n)
 		{
 			return GetElement( n, false );
 		}
 
+		// Helper - retrieve by name and throw exception if not found
 		public ElementBase GetRequiredElement( string n )
 		{
 			return GetElement( n, true );
 		}
 
+		/* Pop: Retrieve element by name and also remove from list
+
+			As RemoveElement(n, rrquired) but with renoval
+		*/
 		public ElementBase PopElement( string n, bool required)
 		{
 			ElementBase e = GetElement( n, required );
@@ -275,6 +358,10 @@ namespace RJWard.Geometry
 			return PopElement( n, true );
 		}
 
+		/* Retrieve element by name, if of type
+
+			as non-generic version above but with type-checking
+		*/
 		public T GetElementOfType< T > ( string n, bool required ) where T : ElementBase
 		{
 			T result = null;
