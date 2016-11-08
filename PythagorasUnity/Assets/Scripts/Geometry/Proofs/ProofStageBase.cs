@@ -206,7 +206,7 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				elements_ = new ElementList( e );
+				elements_ = e;
 			}
 			direction_ = d;
 			switch (direction_)
