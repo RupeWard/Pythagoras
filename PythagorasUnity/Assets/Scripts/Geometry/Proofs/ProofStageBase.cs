@@ -239,7 +239,6 @@ namespace RJWard.Geometry
 
 			// derived class
 			HandleInit( ); 
-			UpdateView( );
 		}
 
 		#endregion Setup
