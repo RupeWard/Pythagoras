@@ -32,6 +32,12 @@ namespace RJWard.Geometry
 
 		#endregion properties
 
+		#region callbacks
+
+		public System.Action<bool> onPauseAction;
+
+		#endregion callbacks
+
 		#region setters
 
 		/* Set speed
@@ -71,6 +77,10 @@ namespace RJWard.Geometry
 					Debug.Log( "ProofEngine isPaused changed to " + b );
 				}
 				isPaused_ = b;
+				if (onPauseAction != null)
+				{
+					onPauseAction( isPaused_ );
+				}
 			}
 			else
 			{
