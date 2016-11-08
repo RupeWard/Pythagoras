@@ -61,6 +61,8 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[1]
 			);
 
+		createSide1Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Forward );
+
 		ProofStageBase.ConnectStages( createTriangleStage, createSide1Stage );
 
 		ProofStage_ExtrudeLineToSquare createSquare1Stage = new ProofStage_ExtrudeLineToSquare(
@@ -76,6 +78,8 @@ public partial class SceneControllerProof : SceneController_Base
 			square0Colour,
 			parallelogramNames_[0]
 			);
+
+		createSquare1Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Reverse );
 
 		ProofStageBase.ConnectStages( createSide1Stage, createSquare1Stage );
 
@@ -95,6 +99,8 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[2]
 			);
 
+		createSide2Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Forward );
+
 		ProofStageBase.ConnectStages( createSquare1Stage, createSide2Stage );
 
 		ProofStage_ExtrudeLineToSquare createSquare2Stage = new ProofStage_ExtrudeLineToSquare(
@@ -111,8 +117,9 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[1]
 			);
 
-		ProofStageBase.ConnectStages( createSide2Stage, createSquare2Stage );
+		createSquare2Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Reverse );
 
+		ProofStageBase.ConnectStages( createSide2Stage, createSquare2Stage );
 
 		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );
@@ -128,7 +135,10 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			Debug.Log( "HandleProofStageFinished( " + psb.name + ")" );
 		}
-		proofEngine_.Pause( );
+		if (false == psb.dontPauseOnFinish )
+		{
+			proofEngine_.Pause( );
+		}
 		proofEngine_.ChangeToFollowingStage( psb );
 		SetForwardButtonSprite( !proofEngine_.isPaused );
 	}

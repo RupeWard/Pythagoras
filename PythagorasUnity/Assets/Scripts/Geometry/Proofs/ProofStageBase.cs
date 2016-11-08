@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
@@ -33,6 +34,12 @@ namespace RJWard.Geometry
 		private EDirection direction_ = EDirection.Forward;
 		private string name_ = "[UNNAMED PROOF STAGE]";
 		private string description_ = string.Empty;
+
+		private Dictionary< EDirection, bool > dontPauseOnFinish_ = new Dictionary<EDirection, bool>( )
+		{
+			{ EDirection.Forward, false },
+			{ EDirection.Reverse, false }
+		};
 
 		#endregion private data 
 
@@ -88,6 +95,11 @@ namespace RJWard.Geometry
 			get { return elements_; }
 		}
 
+		public bool dontPauseOnFinish
+		{
+			get { return dontPauseOnFinish_[direction_];  }
+		}
+
 		#endregion properties
 
 		#region setters
@@ -106,6 +118,16 @@ namespace RJWard.Geometry
 		{
 			SetPreviousStage( b0 );
 			SetNextStage( b1 );
+		}
+
+		public void SetDontPauseOnFinish( EDirection d, bool b)
+		{
+			dontPauseOnFinish_[d] = b;
+		}
+
+		public void SetDontPauseOnFinish( EDirection d )
+		{
+			SetDontPauseOnFinish( d, true );
 		}
 
 		static public void ConnectStages(ProofStageBase first, ProofStageBase second)
