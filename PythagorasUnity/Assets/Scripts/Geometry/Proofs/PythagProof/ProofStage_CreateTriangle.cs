@@ -19,11 +19,11 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_CreateTriangle(
-			string n, string d, GeometryFactory gf, Field f, System.Action<ProofStageBase> ac, 
+			string n, string d, GeometryFactory gf, Field f, float dn, System.Action<ProofStageBase> ac, 
 			Vector2[] h, 
 			float a, 
 			Color c) 
-			: base (n, d, gf, f, ac )
+			: base (n, d, gf, f, dn, ac )
 		{
 			hypotenuse_ = h;
 			angle_ = a;

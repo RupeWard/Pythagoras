@@ -41,10 +41,31 @@ namespace RJWard.Geometry
 		{
 			previousStage_ = b;
 		}
+
 		public void SetNextStage( ProofStageBase b )
 		{
 			nextStage_ = b;
 		}
+
+		public ProofStageBase GetFollowingStage()
+		{
+			ProofStageBase result = null;
+			switch (direction_)
+			{
+				case EDirection.Forward:
+					{
+						result = nextStage_;
+						break;
+					}
+				case EDirection.Reverse:
+					{
+						result = previousStage_;
+						break;
+					}
+			}
+			return result;
+		}
+
 		public void SetBorderingStages(ProofStageBase b0, ProofStageBase b1)
 		{
 			SetPreviousStage( b0 );
@@ -94,13 +115,15 @@ namespace RJWard.Geometry
 			string n, 
 			string d, 
 			GeometryFactory gf, 
-			Field f, 
+			Field f,
+			float dn,
 			System.Action<ProofStageBase> a)
 		{
 			name_ = n;
 			description_ = d;
 			geometryFactory_ = gf;
 			field_ = f;
+			durationSeconds_ = dn;
 			if (a != null)
 			{
 				onFinishedAction += a;
@@ -209,6 +232,10 @@ namespace RJWard.Geometry
 								throw new System.Exception( "ElementList does not satisfy start conditions for proof stage " + name_ +" on Finish()");
 							}
 						}
+						if (previousStage_ != null)
+						{
+							previousStage_.Init( direction_, elements_ );
+						}
 						break;
 					}
 				case EDirection.Forward:
@@ -219,6 +246,10 @@ namespace RJWard.Geometry
 							{
 								throw new System.Exception( "ElementList does not satisfy end conditions for proof stage " + name_ +" on Finish()");
 							}
+						}
+						if (nextStage_ != null)
+						{
+							nextStage_.Init( direction_, elements_ );
 						}
 						break;
 					}

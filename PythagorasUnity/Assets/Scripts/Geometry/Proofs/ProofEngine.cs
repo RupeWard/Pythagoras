@@ -56,6 +56,21 @@ namespace RJWard.Geometry
 			return success;
 		}
 
+		public bool Pause()
+		{
+			return SetPaused( true );
+		}
+
+		public bool Resume( )
+		{
+			return SetPaused( false );
+		}
+
+		public void TogglePause()
+		{
+			SetPaused( !isPaused_ );
+		}
+
 		#endregion setters
 
 		#region editor modding
@@ -147,11 +162,30 @@ namespace RJWard.Geometry
 
 		#region Process
 
-		public void ChangeStage( ProofStageBase b)
+		public void Init( ProofStageBase b)
 		{
 			currentStage_ = b;
 		}
 
+		public void ChangeToFollowingStage( ProofStageBase b )
+		{
+			if (b == null)
+			{
+				throw new System.ArgumentNullException( "Stage supplied is null" );
+			}
+			currentStage_ = b.GetFollowingStage( );
+			if (DEBUG_PROOFENGINE)
+			{
+				if (currentStage_ != null)
+				{
+					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) changes it to "+currentStage_.name );
+				}
+				else
+				{
+					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) changes it to null" );
+				}
+			}
+		}
 		#endregion Process
 
 	}

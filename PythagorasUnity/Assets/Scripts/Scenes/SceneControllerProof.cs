@@ -8,7 +8,7 @@ public class SceneControllerProof : SceneController_Base
 {
 	static readonly private bool DEBUG_PROOF = true;
 
-	public bool proofEngineMode = false;
+	public bool proofEngineMode = true;
 
 	#region TEST
 
@@ -55,6 +55,10 @@ public class SceneControllerProof : SceneController_Base
 	public Sprite fastForwardButtonSprite_Go;
 	public Sprite fastForwardButtonSprite_Stop;
 
+	public Sprite forwardButtonSprite_Go;
+	public Sprite forwardButtonSprite_Stop;
+
+
 	#endregion inspector hooks
 
 	#region prefabs
@@ -79,11 +83,6 @@ public class SceneControllerProof : SceneController_Base
 	private readonly string[] parallelogramNames = { "Parallelogram 0", "Parallelogram 1" };
 	private readonly string[] shadowSquareNames = { "Shadow Square 0", "Shadow Square 1" };
 	private readonly string[] shadowParallelogramNames = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
-
-
-	//	private Element_Triangle mainTriangle_ = null;
-	//	private Element_Parallelogram[] parallelograms = new Element_Parallelogram[2];
-	//	private Element_Parallelogram[] shadowParallelograms = new Element_Parallelogram[2];
 
 	#endregion private elements
 
@@ -115,6 +114,10 @@ public class SceneControllerProof : SceneController_Base
 
 	protected override void PostStart( )
 	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "SceneControllerProof.PostStart()" );
+		}
 #if UNITY_EDITOR
 		if (testMode)
 		{
@@ -190,7 +193,7 @@ public class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-			throw new System.NotImplementedException( "Proof engine mode not implememted" );
+			EnableForwardButton( StepForward );
 		}
 	}
 
@@ -211,6 +214,10 @@ public class SceneControllerProof : SceneController_Base
 
 	public void HandleForwardButton()
 	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "HandleForwardButton(), proofEngineMode = " + proofEngineMode );
+		}
 		if (forwardButtonAction_ == null)
 		{
 			Debug.LogError( "ForwardButtonPressed with no action" );
@@ -245,6 +252,10 @@ public class SceneControllerProof : SceneController_Base
 
 	public void HandleFastForwardButton()
 	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "HandleFastForwardButton(), proofEngineMode = " + proofEngineMode +" FFwd = "+fastForward_);
+		}
 		fastForward_ = !fastForward_;
 		SetFastForwardButtonSprite( );
 		if (fastForward_)
@@ -282,6 +293,12 @@ public class SceneControllerProof : SceneController_Base
 		fastForwardButton.GetComponent<UnityEngine.UI.Image>( ).sprite = s;
 	}
 
+	private void SetForwardButtonSprite( )
+	{
+		Sprite s = (fastForward_) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
+		forwardButton.GetComponent<UnityEngine.UI.Image>( ).sprite = s;
+	}
+
 	#endregion FastForwardButton
 
 	// Following region is for when proofEngineMode == true
@@ -290,11 +307,65 @@ public class SceneControllerProof : SceneController_Base
 	private ProofEngine proofEngine_ = null;
 	private void CreateProofEngine()
 	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "CreateProofEngine()" );
+		}
+
+#if UNITY_EDITOR
+		ClearTestElements( );
+#endif
+
 		if (proofEngine_ != null)
 		{
 			GameObject.Destroy( proofEngine_.gameObject );
 		}
 		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
+
+		ProofStage_CreateTriangle createTriangleStage = new ProofStage_CreateTriangle(
+			"Create Triangle",
+			"Creating main triangle",
+			geometryFactory_,
+			mainField_,
+			createTriangleDuration,
+			HandleProofStageFinished,
+			new Vector2[]
+				{
+					new Vector2(-1f, 0f),
+					new Vector2(1f, 0f)
+				},
+			initialAngle,
+			mainTriangleColour
+			);
+		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
+		proofEngine_.Init( createTriangleStage );
+		proofEngine_.Resume( );
+    }
+
+	private void HandleProofStageFinished( ProofStageBase psb)
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "HandleProofStageFinished( "+psb.name+")" );
+		}
+		proofEngine_.Pause( );
+		proofEngine_.ChangeToFollowingStage( psb );
+	}
+
+	private void StepForward()
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.Log( "StepForward()" );
+		}
+		if (proofEngine_ == null)
+		{
+			CreateProofEngine( );
+		}
+		else
+		{
+			proofEngine_.TogglePause();
+		}
 	}
 
 	#endregion proof engine sequence
