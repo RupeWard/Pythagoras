@@ -313,7 +313,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 	private void SetForwardButtonSprite( bool isRunning )
 	{
-		Sprite s = (isRunning) ? (fastForwardButtonSprite_Stop) : (fastForwardButtonSprite_Go);
+		Sprite s = (isRunning) ? (forwardButtonSprite_Stop) : (forwardButtonSprite_Go);
 		forwardButtonImage.sprite = s;
 	}
 
