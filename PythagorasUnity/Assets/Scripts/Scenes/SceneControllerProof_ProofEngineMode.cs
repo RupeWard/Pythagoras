@@ -34,7 +34,6 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			CreateProofEngine( );
 			proofEngine_.Resume( );
-			SetForwardButtonSprite( !proofEngine_.isPaused );
 		}
 	}
 
@@ -60,6 +59,7 @@ public partial class SceneControllerProof : SceneController_Base
 			GameObject.Destroy( proofEngine_.gameObject );
 		}
 		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
+		proofEngine_.onPauseAction += SetForwardButtonSprite;
 
 		if (elements_.NumElements > 0)
 		{
@@ -197,7 +197,6 @@ public partial class SceneControllerProof : SceneController_Base
 			proofEngine_.Pause( );
 		}
 		proofEngine_.ChangeToFollowingStage( psb );
-		SetForwardButtonSprite( !proofEngine_.isPaused );
 	}
 
 	private void StepForward( )
@@ -207,7 +206,6 @@ public partial class SceneControllerProof : SceneController_Base
 			Debug.Log( "StepForward()" );
 		}
 		proofEngine_.TogglePause( );
-		SetForwardButtonSprite( !proofEngine_.isPaused );
 	}
 
 	#endregion proof engine sequence

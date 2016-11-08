@@ -203,7 +203,6 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 		else
 		{
-//			CreateProofEngine( );
 			forwardButton.gameObject.SetActive( true );
 			fastForwardButton.gameObject.SetActive( true );
 		}
@@ -238,9 +237,9 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 	}
 
-	private void SetForwardButtonSprite( bool isRunning )
+	private void SetForwardButtonSprite( bool isPaused)
 	{
-		Sprite s = (isRunning) ? (forwardButtonSprite_Stop) : (forwardButtonSprite_Go);
+		Sprite s = (isPaused) ? (forwardButtonSprite_Go) : (forwardButtonSprite_Stop);
 		forwardButtonImage.sprite = s;
 	}
 
