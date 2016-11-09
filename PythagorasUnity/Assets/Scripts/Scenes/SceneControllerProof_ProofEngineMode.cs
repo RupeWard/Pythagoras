@@ -125,7 +125,7 @@ public partial class SceneControllerProof : SceneController_Base
 			elements_.DestroyAllElements( );
 		}
 
-		ProofStage_CreateRightTriangle createTriangleStage = new ProofStage_CreateRightTriangle(
+		ProofStage_CreateRightTriangle createTriangle_Stage = new ProofStage_CreateRightTriangle(
 			"Create Triangle",
 			"Creating main triangle",
 			geometryFactory_,
@@ -143,7 +143,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainTriangleName_
 			);
 
-		ProofStage_CreateTriangleSide createSide1Stage = new ProofStage_CreateTriangleSide(
+		ProofStage_CreateTriangleSide createSide1_Stage = new ProofStage_CreateTriangleSide(
 			"Create Side 1",
 			"This is side 1",
 			geometryFactory_,
@@ -159,11 +159,11 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[1]
 			);
 
-		createSide1Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		createSide1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		ProofStageBase.ConnectStages( createTriangleStage, createSide1Stage );
+		ProofStageBase.ConnectStages( createTriangle_Stage, createSide1_Stage );
 
-		ProofStage_ExtrudeLineToSquare createSquare1Stage = new ProofStage_ExtrudeLineToSquare(
+		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
 			"Create Square 1",
 			"Extruding side 1 to a square",
 			geometryFactory_,
@@ -177,11 +177,11 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[0]
 			);
 
-		createSquare1Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
+		createSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
-		ProofStageBase.ConnectStages( createSide1Stage, createSquare1Stage );
+		ProofStageBase.ConnectStages( createSide1_Stage, createSquare1_Stage );
 
-		ProofStage_CreateTriangleSide createSide2Stage = new ProofStage_CreateTriangleSide(
+		ProofStage_CreateTriangleSide createSide2_Stage = new ProofStage_CreateTriangleSide(
 			"Create Side 2",
 			"This is side 2",
 			geometryFactory_,
@@ -197,11 +197,11 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[2]
 			);
 
-		createSide2Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		createSide2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		ProofStageBase.ConnectStages( createSquare1Stage, createSide2Stage );
+		ProofStageBase.ConnectStages( createSquare1_Stage, createSide2_Stage );
 
-		ProofStage_ExtrudeLineToSquare createSquare2Stage = new ProofStage_ExtrudeLineToSquare(
+		ProofStage_ExtrudeLineToSquare createSquare2_Stage = new ProofStage_ExtrudeLineToSquare(
 			"Create Square 2",
 			"Extruding side 2 to a square",
 			geometryFactory_,
@@ -215,11 +215,11 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[1]
 			);
 
-		createSquare2Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
+		createSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
-		ProofStageBase.ConnectStages( createSide2Stage, createSquare2Stage );
+		ProofStageBase.ConnectStages( createSide2_Stage, createSquare2_Stage );
 
-		ProofStage_CloneElement createShadowSquare1 = new ProofStage_CloneElement(
+		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
 			"Create Shadow Square 1",
 			"Creating shadow square 1",
 			geometryFactory_,
@@ -233,10 +233,31 @@ public partial class SceneControllerProof : SceneController_Base
 			shadowSquareNames_[0]
 			);
 
-		ProofStageBase.ConnectStages( createSquare2Stage, createShadowSquare1 );
+		ProofStageBase.ConnectStages( createSquare2_Stage, createShadowSquare1_Stage );
 
-		createTriangleStage.Init( ProofEngine.EDirection.Forward, elements_ );
-		proofEngine_.Init( createTriangleStage );
+		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
+			"Shear Square 0",
+			"Shearing square 0",
+			geometryFactory_,
+			mainField_,
+			shearSquareDuration,
+			HandleProofStageFinished,
+			parallelogramNames_[0],
+			new AngleProvider_Triangle(
+				mainTriangleName_,
+				0,
+				AngleProvider_Triangle.EAngleModifier.Raw
+				)
+			);
+
+		shearSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
+
+		ProofStageBase.ConnectStages( createShadowSquare1_Stage, shearSquare1_Stage );
+
+		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
+		proofEngine_.Init( createTriangle_Stage );
 		if (!proofEngine_.isPaused)
 		{
 			proofEngine_.Pause( );
