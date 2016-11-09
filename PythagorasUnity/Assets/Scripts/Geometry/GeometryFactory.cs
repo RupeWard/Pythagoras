@@ -108,6 +108,14 @@ namespace RJWard.Geometry
 		{
 			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
 		}
+
+		public ElementBase CreateClone( string n, ElementBase srcElement, float relativeDepth, Color colour )
+		{
+			ElementBase result = srcElement.Clone( n );
+			result.SetDepth( srcElement.depth + relativeDepth );
+			result.SetColour( colour );
+			return result;
+		}
 		
 		#endregion creating elements
 	}
