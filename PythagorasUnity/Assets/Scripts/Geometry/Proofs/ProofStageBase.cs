@@ -246,6 +246,11 @@ namespace RJWard.Geometry
 			geometryFactory_ = gf;
 			field_ = f;
 			durationSeconds_ = durn;
+			// zero duration causes div by zero error when calculating fractional time, so we fix it to a tiny value instead
+			if (durationSeconds_ == 0f) 
+			{
+				durationSeconds_ = 0.000001f;
+			}
 			if (a != null)
 			{
 				onFinishedAction += a;
