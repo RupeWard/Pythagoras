@@ -233,9 +233,9 @@ public partial class SceneControllerProof : SceneController_Base
 			shadowSquareNames_[0]
 			);
 
-		ProofStageBase.ConnectStages( createSquare2_Stage, createShadowSquare1_Stage );
-
 		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		ProofStageBase.ConnectStages( createSquare2_Stage, createShadowSquare1_Stage );
 
 		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
 			"Shear Square 0",
@@ -259,6 +259,47 @@ public partial class SceneControllerProof : SceneController_Base
 		shearSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
 		ProofStageBase.ConnectStages( createShadowSquare1_Stage, shearSquare1_Stage );
+
+		ProofStage_CloneElement createShadowSquare2_Stage = new ProofStage_CloneElement(
+			"Create Shadow Square 2",
+			"Creating shadow square 2",
+			geometryFactory_,
+			mainField_,
+			0f,
+			HandleProofStageFinished,
+			parallelogramNames_[1],
+			typeof( Element_Parallelogram ),
+			0.01f,
+			shadowColour,
+			shadowSquareNames_[1]
+		);
+
+		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		ProofStageBase.ConnectStages( shearSquare1_Stage, createShadowSquare2_Stage );
+
+		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
+			"Shear Square 1",
+			"Shearing square 1",
+			geometryFactory_,
+			mainField_,
+			shearSquareDuration,
+			HandleProofStageFinished,
+			parallelogramNames_[1],
+			new AngleProvider_Parallelogram(
+				parallelogramNames_[1],
+				0,
+				GeometryHelpers.EAngleModifier.Raw),
+			new AngleProvider_Triangle(
+				mainTriangleName_,
+				1,
+				GeometryHelpers.EAngleModifier.Supplementary
+				)
+			);
+
+		shearSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
+
+		ProofStageBase.ConnectStages( createShadowSquare2_Stage, shearSquare2_Stage );
 
 		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangle_Stage );
