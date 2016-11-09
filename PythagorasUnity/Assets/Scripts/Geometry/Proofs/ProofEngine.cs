@@ -41,7 +41,7 @@ namespace RJWard.Geometry
 		#region callbacks
 
 		public System.Action< bool > onPauseAction;
-		public System.Action< EDirection > onDirectionChanged;
+		public System.Action< EDirection > onDirectionChangedAction;
 
 		#endregion callbacks
 
@@ -205,11 +205,15 @@ namespace RJWard.Geometry
 		public void Init( ProofStageBase b)
 		{
 			currentStage_ = b;
+			if (onDirectionChangedAction != null)
+			{
+				onDirectionChangedAction( currentStage_.direction );
+			}
 		}
 
 		/* Change stage according to previously completed stage
 
-			Note: thius is direction dependent. GetFollowingStage can be either the one before or the one after.
+			Note: this is direction dependent. GetFollowingStage can be either the one before or the one after.
 		*/
 		public void ChangeToFollowingStage( ProofStageBase b )
 		{
@@ -217,19 +221,42 @@ namespace RJWard.Geometry
 			{
 				throw new System.ArgumentNullException( "Stage supplied is null" );
 			}
-			currentStage_ = b.GetFollowingStage( );
-			if (DEBUG_PROOFENGINE)
+			ProofStageBase followingStage = b.GetFollowingStage( );
+			if (followingStage != null)
 			{
-				if (currentStage_ != null)
+				currentStage_ = followingStage;
+				if (DEBUG_PROOFENGINE)
 				{
-					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) changes it to "+currentStage_.name );
+					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) changes it to " + currentStage_.name );
 				}
-				else
+			}
+			else
+			{
+				ChangeDirection( );
+				if (DEBUG_PROOFENGINE)
 				{
-					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) changes it to null" );
+					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) has no following stage, so changed direction instead" );
 				}
 			}
 		}
+
+		public bool ChangeDirection()
+		{
+			bool result = false;
+			if (currentStage_ != null)
+			{
+				if (currentStage_.ChangeDirection( ))
+				{
+					result = true;
+					if (onDirectionChangedAction != null)
+					{
+						onDirectionChangedAction( currentStage_.direction );
+					}
+				}
+			}
+			return result;
+		}
+
 		#endregion Process
 
 	}

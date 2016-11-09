@@ -56,7 +56,7 @@ namespace RJWard.Geometry
 					angle_,
 					triangleColour_
 					);
-				AddElement( triangleName_, triangle_ );
+				elements.AddElement( triangleName_, triangle_ );
 				triangle_.SetAlpha( 0f );
 			}
 		}
@@ -86,7 +86,10 @@ namespace RJWard.Geometry
 					}
 				case ProofEngine.EDirection.Reverse:
 					{
-						triangle_.SetAlpha( 0f );
+						if (triangle_ != null)
+						{
+							triangle_.SetAlpha( 0f );
+						}
 						break;
 					}
 			}

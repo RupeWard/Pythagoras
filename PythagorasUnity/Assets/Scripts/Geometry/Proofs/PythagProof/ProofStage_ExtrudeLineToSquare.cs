@@ -75,7 +75,7 @@ namespace RJWard.Geometry
 						parallelogramAngle_,
 						parallelogramColour_
 						);
-				AddElement( parallelogramName_, parallelogram_ );
+				elements.AddElement( parallelogramName_, parallelogram_ );
 
 				switch (direction)
 				{

@@ -9,6 +9,8 @@ namespace RJWard.Geometry
 	*/
 	abstract public class ProofStageBase 
 	{
+		public static bool DEBUG_PROOFSTAGE = true;
+
 		#region private data 
 
 		private GeometryFactory geometryFactory_ = null;
@@ -94,6 +96,28 @@ namespace RJWard.Geometry
 			get { return dontPauseOnFinish_[direction_];  }
 		}
 
+		/* Direction-dependent following stage (next if forward, previous if reverse)
+		*/
+		public ProofStageBase GetFollowingStage( )
+		{
+			ProofStageBase result = null;
+			switch (direction_)
+			{
+				case ProofEngine.EDirection.Forward:
+					{
+						result = nextStage_;
+						break;
+					}
+				case ProofEngine.EDirection.Reverse:
+					{
+						result = previousStage_;
+						break;
+					}
+			}
+			return result;
+		}
+
+
 		#endregion properties
 
 		#region setters
@@ -124,6 +148,75 @@ namespace RJWard.Geometry
 			SetDontPauseOnFinish( d, true );
 		}
 
+		public bool ChangeDirection()
+		{
+			bool changed = false;
+			switch (direction_)
+			{
+				case ProofEngine.EDirection.Forward:
+					{
+						if (currentTimeFractional > 0f) 
+						{
+							direction_ = ProofEngine.EDirection.Reverse;
+							changed = true;
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.Log( "ProofStage '" + name + "' changed direction to Reverse because not at start" );
+							}
+						}
+						else if (previousStage_ != null)
+						{
+							direction_ = ProofEngine.EDirection.Reverse;
+							changed = true;
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.Log( "ProofStage '" + name + "' changed direction to Reverse because at start but has a previous stage to switch to" );
+							}
+							Finish( );
+						}
+						else
+						{
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.LogWarning( "ProofStage '" + name + "' failed to change direction to Reverse because at start but has no previous stage to switch to" );
+							}
+						}
+						break;
+					}
+				case ProofEngine.EDirection.Reverse:
+					{
+						if (currentTimeFractional < 1f)
+						{
+							direction_ = ProofEngine.EDirection.Forward;
+							changed = true;
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.Log( "ProofStage '" + name + "' changed direction to Forward because not at end" );
+							}
+						}
+						else if (nextStage_ != null)
+						{
+							direction_ = ProofEngine.EDirection.Forward;
+							changed = true;
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.Log( "ProofStage '" + name + "' changed direction to Forward because at end but has a next stage to switch to" );
+							}
+							Finish( );
+						}
+						else
+						{
+							if (DEBUG_PROOFSTAGE)
+							{
+								Debug.LogWarning( "ProofStage '" + name + "' failed to change direction to Forward because at end but has no next stage to switch to" );
+							}
+						}
+						break;
+					}
+			}
+			return changed;
+		}
+
 		static public void ConnectStages(ProofStageBase first, ProofStageBase second)
 		{
 			first.SetNextStage( second );
@@ -131,35 +224,6 @@ namespace RJWard.Geometry
 		}
 
 		#endregion setters
-
-		/* Direction-dependent following stage (next if forward, previous if reverse)
-		*/
-		public ProofStageBase GetFollowingStage()
-		{
-			ProofStageBase result = null;
-			switch (direction_)
-			{
-				case ProofEngine.EDirection.Forward:
-					{
-						result = nextStage_;
-						break;
-					}
-				case ProofEngine.EDirection.Reverse:
-					{
-						result = previousStage_;
-						break;
-					}
-			}
-			return result;
-		}
-
-		/* Derived class should call this on creating new elements
-		*/
-		protected void AddElement(string n, ElementBase e)
-		{
-			elements_.AddElement(n, e );
-		}
-
 
 		#region callbacks
 

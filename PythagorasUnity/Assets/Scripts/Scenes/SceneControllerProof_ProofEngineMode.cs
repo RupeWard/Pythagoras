@@ -24,9 +24,36 @@ public partial class SceneControllerProof : SceneController_Base
 		StepForward( );
 	}
 
+	private static readonly Dictionary< ProofEngine.EDirection, Quaternion > forwardButtonRotations = new Dictionary< ProofEngine.EDirection, Quaternion >( )
+	{
+		{ ProofEngine.EDirection.Forward, Quaternion.Euler( new Vector3( 0f, 0f, 180f)) },
+		{ ProofEngine.EDirection.Reverse, Quaternion.Euler( new Vector3( 0f, 0f, 0f)) }
+	};
+
+    private void SetForwardButtonDirection( ProofEngine.EDirection dirn )
+	{
+		if (DEBUG_PROOF)
+		{
+			Debug.LogWarning( "SetForwardButtonDirection to " + dirn );
+		}
+		forwardButton.transform.rotation = forwardButtonRotations[dirn];
+	}
+
 	#endregion Forward button
 
 	#region Change direction button
+
+	public void HandleChangeDirectionButton()
+	{
+		if (proofEngine_ != null)
+		{
+			proofEngine_.ChangeDirection( );
+		}
+		else
+		{
+			Debug.LogWarning( "Can't change direction as no proof engine" );
+		}
+	}
 
 	#endregion Change direction button
 
@@ -62,8 +89,9 @@ public partial class SceneControllerProof : SceneController_Base
 			}
 			GameObject.Destroy( proofEngine_.gameObject );
 		}
-		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent<ProofEngine>( );
+		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent< ProofEngine >( );
 		proofEngine_.onPauseAction += SetForwardButtonSprite;
+		proofEngine_.onDirectionChangedAction += SetForwardButtonDirection;
 
 		if (elements_.NumElements > 0)
 		{
@@ -73,6 +101,7 @@ public partial class SceneControllerProof : SceneController_Base
 			}
 			elements_.DestroyAllElements( );
 		}
+
 		ProofStage_CreateRightTriangle createTriangleStage = new ProofStage_CreateRightTriangle(
 			"Create Triangle",
 			"Creating main triangle",
@@ -173,11 +202,13 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			proofEngine_.Pause( );
 		}
+
+		changeDirectionButton.gameObject.SetActive( true );
 	}
 
 	private void HandleProofStageStarted( ProofStageBase psb )
 	{
-		if (elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[0] ) == null)
+		if (elements_.GetElementOfType< Element_Parallelogram >( parallelogramNames_[0] ) == null)
 		{
 			// Not yet made first square, so can change triangle
 			EnableTriangleSettings( );

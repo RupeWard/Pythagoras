@@ -75,7 +75,7 @@ namespace RJWard.Geometry
 					lineColour_,
 					externalSide_
 					);
-				AddElement( lineName_, line_ );
+				elements.AddElement( lineName_, line_ );
 
 				switch (direction)
 				{
@@ -113,12 +113,14 @@ namespace RJWard.Geometry
 			{
 				case ProofEngine.EDirection.Forward:
 					{
-						line_.SetAlpha( 1f );
 						break;
 					}
 				case ProofEngine.EDirection.Reverse:
 					{
-						line_.SetAlpha( 0f );
+						if (line_ != null)
+						{
+							line_.SetAlpha( 0f );
+						}
 						break;
 					}
 			}
