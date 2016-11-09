@@ -54,6 +54,7 @@ public partial class SceneControllerProof : SceneController_Base
 	public UnityEngine.UI.Button forwardButton;
 	public UnityEngine.UI.Button changeDirectionButton;
 	public UnityEngine.UI.Button fastForwardButton;
+	public UnityEngine.UI.Button loopButton;
 
 	public Sprite fastForwardButtonSprite_Go;
 	public Sprite fastForwardButtonSprite_Stop;
@@ -61,13 +62,17 @@ public partial class SceneControllerProof : SceneController_Base
 	public Sprite forwardButtonSprite_Go;
 	public Sprite forwardButtonSprite_Stop;
 
+	public Sprite loopButtonSprite_On;
+	public Sprite loopButtonSprite_Off;
+
 	#endregion inspector hooks
 
 	#region private hooks
 
 	public UnityEngine.UI.Image forwardButtonImage;
 	public UnityEngine.UI.Image fastForwardButtonImage;
-	
+	public UnityEngine.UI.Image loopButtonImage;
+
 	#endregion private hooks
 
 	#region prefabs
@@ -124,6 +129,7 @@ public partial class SceneControllerProof : SceneController_Base
 		forwardButton.gameObject.SetActive( false );
 		changeDirectionButton.gameObject.SetActive( false );
 		fastForwardButton.gameObject.SetActive( false );
+		loopButton.gameObject.SetActive( false );
 	}
 
 	protected override void PostStart( )

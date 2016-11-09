@@ -57,6 +57,28 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#endregion Change direction button
 
+	#region Loop button
+
+	public void HandleLoopButton()
+	{
+		if (proofEngine_ != null)
+		{
+			proofEngine_.ToggleLoop( );
+		}
+		else
+		{
+			Debug.LogWarning( "Can't change loop as no proof engine" );
+		}
+	}
+
+	private void SetLoopButtonSprite(bool loop)
+	{
+		Sprite s = (loop) ? (loopButtonSprite_Off) : (loopButtonSprite_On);
+		loopButtonImage.sprite = s;
+	}
+
+	#endregion Loop button
+
 	#region triangle settings
 
 	private void HandleAngleChangedProofEngineMode( )
@@ -92,6 +114,7 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_ = (new GameObject( "ProofEngine" )).AddComponent< ProofEngine >( );
 		proofEngine_.onPauseAction += SetForwardButtonSprite;
 		proofEngine_.onDirectionChangedAction += SetForwardButtonDirection;
+		proofEngine_.onLoopChangedAction += SetLoopButtonSprite;
 
 		if (elements_.NumElements > 0)
 		{
@@ -220,6 +243,7 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 
 		changeDirectionButton.gameObject.SetActive( true );
+		loopButton.gameObject.SetActive( true );
 	}
 
 	private void HandleProofStageStarted( ProofStageBase psb )

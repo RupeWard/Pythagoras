@@ -38,12 +38,18 @@ namespace RJWard.Geometry
 			get { return isPaused_; }
 		}
 
+		public bool loop
+		{
+			get { return loop_;  }
+		}
+
 		#endregion properties
 
 		#region callbacks
 
 		public System.Action< bool > onPauseAction;
 		public System.Action< EDirection > onDirectionChangedAction;
+		public System.Action<bool> onLoopChangedAction;
 
 		#endregion callbacks
 
@@ -113,6 +119,34 @@ namespace RJWard.Geometry
 		public void TogglePause()
 		{
 			SetPaused( !isPaused_ );
+		}
+
+		public void SetLoop(bool l)
+		{
+			if (loop_ != l)
+			{
+				if (DEBUG_PROOFENGINE)
+				{
+					Debug.Log( "Changing ProofEngie.loop to " + l );
+				}
+				loop_ = l;
+				if (onLoopChangedAction != null)
+				{
+					onLoopChangedAction( loop_ );
+				}
+			}
+			else
+			{
+				if (DEBUG_PROOFENGINE)
+				{
+					Debug.Log( "ProofEngie.loop isd already " + l );
+				}
+			}
+		}
+
+		public void ToggleLoop()
+		{
+			SetLoop( !loop_ );
 		}
 
 		#endregion setters
