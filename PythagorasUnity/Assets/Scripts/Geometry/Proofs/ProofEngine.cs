@@ -25,6 +25,8 @@ namespace RJWard.Geometry
 		const float MAXSPEED = 100f;
 		 
 		private float speed_ = 1f; // each proof stage specifies duration, engine applies this global modifier
+		private bool loop_ = false;
+
 		private bool isPaused_ = true;
 
 		#endregion private data
@@ -236,6 +238,14 @@ namespace RJWard.Geometry
 				if (DEBUG_PROOFENGINE)
 				{
 					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) has no following stage, so changed direction instead" );
+				}
+				if (loop_)
+				{
+					Resume( );
+				}
+				else
+				{
+					Pause( );
 				}
 			}
 		}

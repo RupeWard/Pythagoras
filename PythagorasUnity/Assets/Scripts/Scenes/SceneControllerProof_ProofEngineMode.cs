@@ -196,6 +196,22 @@ public partial class SceneControllerProof : SceneController_Base
 
 		ProofStageBase.ConnectStages( createSide2Stage, createSquare2Stage );
 
+		ProofStage_CloneElement createShadowSquare1 = new ProofStage_CloneElement(
+			"Create Shadow Square 1",
+			"Creating shadow square 1",
+			geometryFactory_,
+			mainField_,
+			0f,
+			HandleProofStageFinished,
+			parallelogramNames_[0],
+			typeof( Element_Parallelogram ),
+			0.01f,
+			shadowColour,
+			shadowSquareNames_[0]
+			);
+
+		ProofStageBase.ConnectStages( createSquare2Stage, createShadowSquare1 );
+
 		createTriangleStage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );
 		if (!proofEngine_.isPaused)

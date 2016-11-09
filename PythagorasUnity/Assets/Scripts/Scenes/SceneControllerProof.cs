@@ -45,6 +45,8 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public float shearAlpha = 125f / 255f;
 
+	public bool loop_ = false;
+
 	#endregion Public Settings
 
 	#region inspector hooks
