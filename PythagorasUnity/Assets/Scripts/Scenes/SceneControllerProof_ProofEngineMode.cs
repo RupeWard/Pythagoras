@@ -301,6 +301,35 @@ public partial class SceneControllerProof : SceneController_Base
 
 		ProofStageBase.ConnectStages( createShadowSquare2_Stage, shearSquare2_Stage );
 
+		ProofStage_RemoveElement removeShadowSquare1_Stage = new ProofStage_RemoveElement(
+			"RemoveShadow Square 1",
+			"Removing shadow square 1",
+			geometryFactory_,
+			mainField_,
+			0.2f,
+			HandleProofStageFinished,
+			shadowSquareNames_[0],
+			typeof(Element_Parallelogram) );
+
+		removeShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		ProofStageBase.ConnectStages( shearSquare2_Stage, removeShadowSquare1_Stage );
+
+		ProofStage_RemoveElement removeShadowSquare2_Stage = new ProofStage_RemoveElement(
+			"RemoveShadow Square 2",
+			"Removing shadow square 2",
+			geometryFactory_,
+			mainField_,
+			0.2f,
+			HandleProofStageFinished,
+			shadowSquareNames_[1],
+			typeof( Element_Parallelogram ) );
+
+		removeShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
+		removeShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		ProofStageBase.ConnectStages( removeShadowSquare1_Stage, removeShadowSquare2_Stage );
+
 		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangle_Stage );
 		if (!proofEngine_.isPaused)
