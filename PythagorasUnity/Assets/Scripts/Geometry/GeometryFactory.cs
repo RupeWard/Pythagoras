@@ -40,9 +40,9 @@ namespace RJWard.Geometry
 		// Instantiate a Triangle in a Field and set it up
 		public Element_Triangle AddTriangleToField( Field f, string n, float d, Vector2[] v, Color c )
 		{
-			GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
+			GameObject triangleGO = GameObject.Instantiate< GameObject >( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
-			Element_Triangle triangle = triangleGO.GetComponent<Element_Triangle>( );
+			Element_Triangle triangle = triangleGO.GetComponent< Element_Triangle >( );
 			triangle.Init( f, d, v, c );
 			return triangle;
 		}
@@ -50,9 +50,9 @@ namespace RJWard.Geometry
 		// Instantiate a right-angled Triangle (with base defined by v and height h) in a Field and set it up
 		public Element_Triangle AddRightTriangleToField( Field f, string n, float d, Vector2[] hypotenuse, float angle, Color c )
 		{
-			GameObject triangleGO = GameObject.Instantiate<GameObject>( trianglePrefab ) as GameObject;
+			GameObject triangleGO = GameObject.Instantiate< GameObject >( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
-			Element_Triangle triangle = triangleGO.GetComponent<Element_Triangle>( );
+			Element_Triangle triangle = triangleGO.GetComponent< Element_Triangle >( );
 			triangle.InitRightAngled( f, d, hypotenuse, angle, c );
 			return triangle;
 		}
@@ -60,9 +60,9 @@ namespace RJWard.Geometry
 		// Instantiate a Parallelogram in a Field and set it up
 		public Element_Parallelogram AddParallelogramToField( Field f, string n, float d, Vector2[] bl, float h, float a, Color c )
 		{
-			GameObject parallelogramGO = GameObject.Instantiate<GameObject>( parallelogramPrefab ) as GameObject;
+			GameObject parallelogramGO = GameObject.Instantiate< GameObject >( parallelogramPrefab ) as GameObject;
 			parallelogramGO.name = n;
-			Element_Parallelogram parallelogram = parallelogramGO.GetComponent<Element_Parallelogram>( );
+			Element_Parallelogram parallelogram = parallelogramGO.GetComponent< Element_Parallelogram >( );
 			parallelogram.Init( f, d, bl, h, a, c );
 			return parallelogram;
 		}
@@ -70,20 +70,19 @@ namespace RJWard.Geometry
 		// Instantiate a Square Parallelogram in a Field and set it up
 		public Element_Parallelogram AddSquareParallelogramToField( Field f, string n, float d, Vector2[] bl, float a, Color c )
 		{
-			GameObject parallelogramGO = GameObject.Instantiate<GameObject>( parallelogramPrefab ) as GameObject;
+			GameObject parallelogramGO = GameObject.Instantiate< GameObject >( parallelogramPrefab ) as GameObject;
 			parallelogramGO.name = n;
-			Element_Parallelogram parallelogram = parallelogramGO.GetComponent<Element_Parallelogram>( );
+			Element_Parallelogram parallelogram = parallelogramGO.GetComponent< Element_Parallelogram >( );
 			parallelogram.InitSquare( f, d, bl, c );
 			return parallelogram;
 		}
 
-
 		// Instantiate a StraightLine in a Field and set it up
 		public Element_StraightLine AddStraightLineToField( Field f, string n, float d, Vector2[] es, float w, Color c )
 		{
-			GameObject straightLineGO = GameObject.Instantiate<GameObject>( straightLinePrefab ) as GameObject;
+			GameObject straightLineGO = GameObject.Instantiate< GameObject >( straightLinePrefab ) as GameObject;
 			straightLineGO.name = n;
-			Element_StraightLine straightLine = straightLineGO.GetComponent<Element_StraightLine>( );
+			Element_StraightLine straightLine = straightLineGO.GetComponent< Element_StraightLine >( );
 			straightLine.Init( f, d, es, w, c );
 			return straightLine;
 		}
@@ -109,10 +108,7 @@ namespace RJWard.Geometry
 		{
 			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
 		}
-
 		
 		#endregion creating elements
-
 	}
-
 }

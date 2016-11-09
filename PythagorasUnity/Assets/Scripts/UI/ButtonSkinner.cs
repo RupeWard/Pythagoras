@@ -16,7 +16,7 @@ public class ButtonSkinner : Skinner
 			throw new System.Exception( "No UIManager when skinning button " + gameObject.name );
 		}
 
-		UnityEngine.UI.Button button = GetComponent<UnityEngine.UI.Button>( );
+		UnityEngine.UI.Button button = GetComponent< UnityEngine.UI.Button >( );
 
 		UnityEngine.UI.ColorBlock buttonColours = button.colors;
         buttonColours.normalColor = UIManager.Instance.buttonNormalColour;

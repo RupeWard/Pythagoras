@@ -64,7 +64,7 @@ namespace RJWard.Geometry
 		{
 			if (parallelogram_ == null)
 			{
-				Element_StraightLine line = elements.GetRequiredElementOfType<Element_StraightLine>( lineName_ );
+				Element_StraightLine line = elements.GetRequiredElementOfType< Element_StraightLine >( lineName_ );
 
 				parallelogram_ =
 					geometryFactory.AddParallelogramToField(

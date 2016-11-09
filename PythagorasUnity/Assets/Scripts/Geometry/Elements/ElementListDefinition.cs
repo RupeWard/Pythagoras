@@ -15,7 +15,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private Dictionary<string, System.Type> elements_ = new Dictionary<string, System.Type>();
+		private Dictionary< string, System.Type > elements_ = new Dictionary< string, System.Type >();
 		private string name_ = "[UNNAMED ElementList]";
 
 		#endregion private data

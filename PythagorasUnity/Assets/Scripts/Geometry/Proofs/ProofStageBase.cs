@@ -31,7 +31,7 @@ namespace RJWard.Geometry
 		private string name_ = "[UNNAMED PROOF STAGE]";
 		private string description_ = string.Empty;
 
-		private Dictionary< ProofEngine.EDirection, bool > dontPauseOnFinish_ = new Dictionary<ProofEngine.EDirection, bool >( )
+		private Dictionary< ProofEngine.EDirection, bool > dontPauseOnFinish_ = new Dictionary< ProofEngine.EDirection, bool >( )
 		{
 			{ ProofEngine.EDirection.Forward, false },
 			{ ProofEngine.EDirection.Reverse, false }
@@ -399,8 +399,6 @@ namespace RJWard.Geometry
 
 		}
 		#endregion Process
-
-
 	}
 }
 

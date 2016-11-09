@@ -17,7 +17,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private List<Vector2> ends_ = new List<Vector2>( 2 ) { Vector3.zero, Vector3.zero }; // the vertices
+		private List< Vector2 > ends_ = new List< Vector2 >( 2 ) { Vector3.zero, Vector3.zero }; // the vertices
 		private float width_ = 0.1f;
 
 		#endregion private data
@@ -107,17 +107,6 @@ namespace RJWard.Geometry
 
 		#endregion in-editor modding 
 
-		/*
-		#region MB/Element Flow
-
-		protected override void PostAwake()
-		{
-		}
-
-		#endregion MB/Element Flow
-		*/
-
-
 		#region Setup
 
 		public void Init( Field f, float d, Vector2[] es, float w, Color c )
@@ -172,7 +161,7 @@ namespace RJWard.Geometry
 
 		#region  creation
 
-		protected override void OnClone<T>( T src )
+		protected override void OnClone< T >( T src )
 		{
 			Element_StraightLine s = src as Element_StraightLine;
 			if (s == null)
@@ -186,7 +175,6 @@ namespace RJWard.Geometry
 		{
 			return this.Clone< Element_StraightLine >( name );
 		}
-
 
 		#endregion creation
 

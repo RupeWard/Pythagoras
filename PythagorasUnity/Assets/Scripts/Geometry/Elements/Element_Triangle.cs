@@ -19,7 +19,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private List<Vector2> vertices_ = new List<Vector2>( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero }; // the vertices
+		private List< Vector2 > vertices_ = new List< Vector2 >( 3 ) { Vector3.zero, Vector3.zero, Vector3.zero }; // the vertices
 
 		#endregion private data
 
@@ -62,17 +62,6 @@ namespace RJWard.Geometry
 #endif
 
 		#endregion in-editor modding 
-
-		/*
-		#region MB/Element Flow
-
-		protected override void PostAwake()
-		{
-		}
-
-		#endregion MB/Element Flow
-		*/
-
 
 		#region Setup
 
@@ -146,7 +135,7 @@ namespace RJWard.Geometry
 
 		#region creation
 
-		protected override void OnClone<T>( T src )
+		protected override void OnClone< T >( T src )
 		{
 			Element_Triangle t = src as Element_Triangle;
 			if (t == null)

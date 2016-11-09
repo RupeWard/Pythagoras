@@ -20,7 +20,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private Dictionary<string, ElementBase> elements_ = new Dictionary<string, ElementBase>( );
+		private Dictionary< string, ElementBase > elements_ = new Dictionary< string, ElementBase >( );
 		private string name_ = "[UNNAMED ELEMENT LIST]";
 
 		#endregion private data
@@ -207,15 +207,15 @@ namespace RJWard.Geometry
 		}
 
 		// Helper - remove without destroying
-		public bool RemoveElementOfType<T>( string n ) where T : ElementBase
+		public bool RemoveElementOfType< T >( string n ) where T : ElementBase
 		{
-			return RemoveElementOfType<T>( n, false );
+			return RemoveElementOfType< T >( n, false );
 		}
 
 		// Helper - remove and destroy
-		public bool DestroyElementOfType<T>( string n ) where T : ElementBase
+		public bool DestroyElementOfType< T >( string n ) where T : ElementBase
 		{
-			return RemoveElementOfType<T>( n, true );
+			return RemoveElementOfType< T >( n, true );
 		}
 
 		/* Remove all elements
@@ -394,16 +394,15 @@ namespace RJWard.Geometry
 			return result;
 		}
 
-		public T GetElementOfType<T>( string n ) where T : ElementBase
+		public T GetElementOfType< T >( string n ) where T : ElementBase
 		{
-			return GetElementOfType<T>( n, false );
+			return GetElementOfType< T >( n, false );
 		}
 
-		public T GetRequiredElementOfType<T>( string n ) where T : ElementBase
+		public T GetRequiredElementOfType< T >( string n ) where T : ElementBase
 		{
-			return GetElementOfType<T>( n, true );
+			return GetElementOfType< T >( n, true );
 		}
-
 		
 		#endregion accessors
 

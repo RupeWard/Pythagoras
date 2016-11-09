@@ -20,7 +20,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private List<Vector2> baseVertices_ = new List<Vector2>( 2 ) { Vector3.zero, Vector3.zero };
+		private List< Vector2 > baseVertices_ = new List< Vector2 >( 2 ) { Vector3.zero, Vector3.zero };
 		private float height_ = 0f;
 		private float angle_ = 90f;
 
@@ -102,15 +102,6 @@ namespace RJWard.Geometry
 
 		#endregion geometric properties
 
-		/*
-		#region MB/Element Flow
-
-		protected override void PostAwake( )
-		{
-		}
-
-		#endregion MB/Element Flow
-		*/
 
 		#region Setup
 
@@ -192,7 +183,7 @@ namespace RJWard.Geometry
 
 		#region creation
 
-		protected override void OnClone<T>( T src )
+		protected override void OnClone< T >( T src )
 		{
 			Element_Parallelogram p = src as Element_Parallelogram;
 			if (p == null)
