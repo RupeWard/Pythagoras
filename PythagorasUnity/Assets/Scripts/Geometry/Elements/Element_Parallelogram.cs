@@ -24,6 +24,10 @@ namespace RJWard.Geometry
 		private float height_ = 0f;
 		private float angle_ = 90f;
 
+		#endregion private data
+
+		#region properties
+
 		public float height
 		{
 			get { return height_; }
@@ -33,6 +37,20 @@ namespace RJWard.Geometry
 		{
 			get { return angle_; }
 		}
+
+		public float GetAngle(int n)
+		{
+			float result = angle_;
+			if ( n % 2 == 1)
+			{
+				result = GeometryHelpers.ModifyAngle( result, GeometryHelpers.EAngleModifier.Supplementary );
+			}
+			return result;
+        }
+
+		#endregion properties
+
+		#region editor modding
 
 #if UNITY_EDITOR
 		// for in-editor modification
@@ -85,9 +103,8 @@ namespace RJWard.Geometry
 		}
 
 #endif
-
-		#endregion private data
-
+		#endregion editor modding
+		
 		#region geometric properties
 
 		public float BaseLength( )

@@ -13,7 +13,9 @@ namespace RJWard.Geometry
 
 		// parallelogram settings for creation
 		private string parallelogramName_ = "[UNKNOWN PARALLELOGRAM]";
-		private IAngleProvider angleProvider_ = null;
+
+		private IAngleProvider startAngleProvider_ = null;
+		private IAngleProvider targetAngleProvider_ = null;
 
 		private float parallelogramTargetAngle_ = 90f;
 		private float parallelogramStartAngle_ = 90f;
@@ -25,12 +27,14 @@ namespace RJWard.Geometry
 		public ProofStage_ShearParallelogram(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
-			IAngleProvider ap
+			IAngleProvider sap,
+            IAngleProvider tap
 			) 
 			: base (n, descn, gf, f, durn, ac )
 		{
 			parallelogramName_ = pn;
-			angleProvider_ = ap;
+			startAngleProvider_ = sap;
+			targetAngleProvider_ = tap;
 
 			startRequiredElementListDefinition = new ElementListDefinition(
 				"StartRequirements",
@@ -57,8 +61,8 @@ namespace RJWard.Geometry
 			if (parallelogram_ == null)
 			{
 				parallelogram_ = elements.GetRequiredElementOfType<Element_Parallelogram>( parallelogramName_ );
-				parallelogramStartAngle_ = parallelogram_.angle;
-				parallelogramTargetAngle_ = angleProvider_.GetAngle( elements );
+				parallelogramStartAngle_ = startAngleProvider_.GetAngle( elements );
+				parallelogramTargetAngle_ = targetAngleProvider_.GetAngle( elements );
 			}
 		}
 

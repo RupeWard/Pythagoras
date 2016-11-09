@@ -3,11 +3,11 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
-	public class AngleProvider_Triangle : IAngleProvider
-	{
+	public class AngleProvider_Parallelogram : IAngleProvider
+	{ 
 		#region private data
 
-		private string triangleName_ = "[UNKNOWN TRIANGLE]";
+	private string parallelogramName_ = "[UNKNOWN PARALLELOGRAM]";
 		private int angleNumber_ = 0;
 		private GeometryHelpers.EAngleModifier eModifier_ = GeometryHelpers.EAngleModifier.Raw;
 
@@ -15,12 +15,12 @@ namespace RJWard.Geometry
 
 		#region setup
 
-		public AngleProvider_Triangle( 
-			string tn,
+		public AngleProvider_Parallelogram ( 
+            string pn,
 			int an,
 			GeometryHelpers.EAngleModifier eam)
 		{
-			triangleName_ = tn;
+			parallelogramName_ = pn;
 			angleNumber_ = an;
 			eModifier_ = eam;
 		}
@@ -33,8 +33,8 @@ namespace RJWard.Geometry
 		{
 			float result = 0f;
 
-			Element_Triangle triangle = elements.GetRequiredElementOfType< Element_Triangle >( triangleName_ );
-			float rawAngle = triangle.GetInternalAngleDegrees( angleNumber_ );
+			Element_Parallelogram parallelogram = elements.GetRequiredElementOfType< Element_Parallelogram >( parallelogramName_ );
+			float rawAngle = parallelogram.GetAngle(angleNumber_);
 			result = GeometryHelpers.ModifyAngle( rawAngle, eModifier_ );
 			return result;
 		}

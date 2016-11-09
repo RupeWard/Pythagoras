@@ -245,10 +245,14 @@ public partial class SceneControllerProof : SceneController_Base
 			shearSquareDuration,
 			HandleProofStageFinished,
 			parallelogramNames_[0],
-			new AngleProvider_Triangle(
+			new AngleProvider_Parallelogram(
+				parallelogramNames_[0],
+				0,
+				GeometryHelpers.EAngleModifier.Raw),
+            new AngleProvider_Triangle(
 				mainTriangleName_,
 				0,
-				AngleProvider_Triangle.EAngleModifier.Raw
+				GeometryHelpers.EAngleModifier.Raw
 				)
 			);
 
