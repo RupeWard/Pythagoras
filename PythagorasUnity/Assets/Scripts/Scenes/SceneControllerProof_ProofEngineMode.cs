@@ -26,6 +26,10 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#endregion Forward button
 
+	#region Change direction button
+
+	#endregion Change direction button
+
 	#region triangle settings
 
 	private void HandleAngleChangedProofEngineMode( )
@@ -103,7 +107,7 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[1]
 			);
 
-		createSide1Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Forward );
+		createSide1Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		ProofStageBase.ConnectStages( createTriangleStage, createSide1Stage );
 
@@ -121,7 +125,7 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[0]
 			);
 
-		createSquare1Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Reverse );
+		createSquare1Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
 		ProofStageBase.ConnectStages( createSide1Stage, createSquare1Stage );
 
@@ -141,7 +145,7 @@ public partial class SceneControllerProof : SceneController_Base
 			triangleSideNames_[2]
 			);
 
-		createSide2Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Forward );
+		createSide2Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		ProofStageBase.ConnectStages( createSquare1Stage, createSide2Stage );
 
@@ -159,11 +163,11 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[1]
 			);
 
-		createSquare2Stage.SetDontPauseOnFinish( ProofStageBase.EDirection.Reverse );
+		createSquare2Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
 		ProofStageBase.ConnectStages( createSide2Stage, createSquare2Stage );
 
-		createTriangleStage.Init( ProofStageBase.EDirection.Forward, elements_ );
+		createTriangleStage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangleStage );
 		if (!proofEngine_.isPaused)
 		{

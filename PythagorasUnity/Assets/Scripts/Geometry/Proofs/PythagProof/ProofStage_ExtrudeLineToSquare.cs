@@ -79,12 +79,12 @@ namespace RJWard.Geometry
 
 				switch (direction)
 				{
-					case EDirection.Forward:
+					case ProofEngine.EDirection.Forward:
 						{
 							parallelogram_.SetHeight( 0f );
 							break;
 						}
-					case EDirection.Reverse:
+					case ProofEngine.EDirection.Reverse:
 						{
 							parallelogram_.SetHeight( parallelogramHeight_ );
 							break;

@@ -50,6 +50,7 @@ public partial class SceneControllerProof : SceneController_Base
 	#region inspector hooks
 
 	public UnityEngine.UI.Button forwardButton;
+	public UnityEngine.UI.Button changeDirectionButton;
 	public UnityEngine.UI.Button fastForwardButton;
 
 	public Sprite fastForwardButtonSprite_Go;
@@ -119,6 +120,7 @@ public partial class SceneControllerProof : SceneController_Base
 		geometryFactory_.transform.SetParent( transform );
 
 		forwardButton.gameObject.SetActive( false );
+		changeDirectionButton.gameObject.SetActive( false );
 		fastForwardButton.gameObject.SetActive( false );
 	}
 

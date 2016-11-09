@@ -79,12 +79,12 @@ namespace RJWard.Geometry
 		{
 			switch(direction)
 			{
-				case EDirection.Forward:
+				case ProofEngine.EDirection.Forward:
 					{
 						triangle_.SetAlpha( 1f );
 						break;
 					}
-				case EDirection.Reverse:
+				case ProofEngine.EDirection.Reverse:
 					{
 						triangle_.SetAlpha( 0f );
 						break;

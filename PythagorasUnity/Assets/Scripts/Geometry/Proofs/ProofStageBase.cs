@@ -9,12 +9,6 @@ namespace RJWard.Geometry
 	*/
 	abstract public class ProofStageBase 
 	{
-		public enum EDirection
-		{
-			Forward,
-			Reverse
-		}
-
 		#region private data 
 
 		private GeometryFactory geometryFactory_ = null;
@@ -31,14 +25,14 @@ namespace RJWard.Geometry
 		private ElementList elements_ = null;
 
 		private float currentTimeSeconds_ = 0f;
-		private EDirection direction_ = EDirection.Forward;
+		private ProofEngine.EDirection direction_ = ProofEngine.EDirection.Forward;
 		private string name_ = "[UNNAMED PROOF STAGE]";
 		private string description_ = string.Empty;
 
-		private Dictionary< EDirection, bool > dontPauseOnFinish_ = new Dictionary<EDirection, bool>( )
+		private Dictionary< ProofEngine.EDirection, bool > dontPauseOnFinish_ = new Dictionary<ProofEngine.EDirection, bool >( )
 		{
-			{ EDirection.Forward, false },
-			{ EDirection.Reverse, false }
+			{ ProofEngine.EDirection.Forward, false },
+			{ ProofEngine.EDirection.Reverse, false }
 		};
 
 		#endregion private data 
@@ -60,7 +54,7 @@ namespace RJWard.Geometry
 			get { return currentTimeSeconds_ / durationSeconds_; }
 		}
 
-		public EDirection direction
+		public ProofEngine.EDirection direction
 		{
 			get { return direction_; }
 		}
@@ -120,12 +114,12 @@ namespace RJWard.Geometry
 			SetNextStage( b1 );
 		}
 
-		public void SetDontPauseOnFinish( EDirection d, bool b)
+		public void SetDontPauseOnFinish( ProofEngine.EDirection d, bool b)
 		{
 			dontPauseOnFinish_[d] = b;
 		}
 
-		public void SetDontPauseOnFinish( EDirection d )
+		public void SetDontPauseOnFinish( ProofEngine.EDirection d )
 		{
 			SetDontPauseOnFinish( d, true );
 		}
@@ -145,12 +139,12 @@ namespace RJWard.Geometry
 			ProofStageBase result = null;
 			switch (direction_)
 			{
-				case EDirection.Forward:
+				case ProofEngine.EDirection.Forward:
 					{
 						result = nextStage_;
 						break;
 					}
-				case EDirection.Reverse:
+				case ProofEngine.EDirection.Reverse:
 					{
 						result = previousStage_;
 						break;
@@ -198,7 +192,7 @@ namespace RJWard.Geometry
 
 			initialises the current time and validates the element list, depending on direction
 		*/
-		public void Init(EDirection d, ElementList e)
+		public void Init( ProofEngine.EDirection d, ElementList e)
 		{
 			if (e == null)
 			{
@@ -211,7 +205,7 @@ namespace RJWard.Geometry
 			direction_ = d;
 			switch (direction_)
 			{
-				case EDirection.Forward:
+				case ProofEngine.EDirection.Forward:
 					{
 						currentTimeSeconds_ = 0f;
 						if (startRequiredElementListDefinition_ != null)
@@ -223,7 +217,7 @@ namespace RJWard.Geometry
 						}
 						break;
 					}
-				case EDirection.Reverse:
+				case ProofEngine.EDirection.Reverse:
 					{
 						currentTimeSeconds_ = durationSeconds_;
 						if (endRequiredElementListDefinition_ != null)
@@ -264,7 +258,7 @@ namespace RJWard.Geometry
 			bool shouldFinish = false;
 			switch (direction_)
 			{
-				case EDirection.Forward:
+				case ProofEngine.EDirection.Forward:
 					{
 						currentTimeSeconds_ += s;
 						if (currentTimeSeconds_ >= durationSeconds_)
@@ -274,7 +268,7 @@ namespace RJWard.Geometry
 						}
 						break;
 					}
-				case EDirection.Reverse:
+				case ProofEngine.EDirection.Reverse:
 					{
 						currentTimeSeconds_ -= s;
 						if (currentTimeSeconds_ <= 0f)
@@ -302,7 +296,7 @@ namespace RJWard.Geometry
 			HandleFinished( );
 			switch (direction_)
 			{
-				case EDirection.Reverse:
+				case ProofEngine.EDirection.Reverse:
 					{
 						if (startRequiredElementListDefinition_ != null)
 						{
@@ -317,7 +311,7 @@ namespace RJWard.Geometry
 						}
 						break;
 					}
-				case EDirection.Forward:
+				case ProofEngine.EDirection.Forward:
 					{
 						if (endRequiredElementListDefinition_ != null)
 						{

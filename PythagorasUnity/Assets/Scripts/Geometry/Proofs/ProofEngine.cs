@@ -12,6 +12,12 @@ namespace RJWard.Geometry
 	{
 		public static bool DEBUG_PROOFENGINE = true;
 
+		public enum EDirection
+		{
+			Forward,
+			Reverse
+		}
+
 		#region private data
 
 		private ProofStageBase currentStage_ = null;
@@ -34,7 +40,8 @@ namespace RJWard.Geometry
 
 		#region callbacks
 
-		public System.Action<bool> onPauseAction;
+		public System.Action< bool > onPauseAction;
+		public System.Action< EDirection > onDirectionChanged;
 
 		#endregion callbacks
 
