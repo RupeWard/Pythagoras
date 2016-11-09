@@ -6,8 +6,6 @@ public partial class MessageBus : MonoBehaviour
 {
 	private static MessageBus _instance;
 
-	//	public Action<BOotsaData> bootsChanged;
-
 	public static MessageBus instance
 	{
 		get
@@ -25,23 +23,30 @@ public partial class MessageBus : MonoBehaviour
 		get { return _instance != null;  }
 	}
 
-	/*
-	public void dispatchBootsChanged(BootsData bd)
+}
+
+
+/*
+Application-specific file 
+
+	public partial class MessageBus
 	{
-		if (bootsChanged != null)
+		public System.Action< Type > exampleAction;
+		public void sendExampleAction(Type t)
 		{
-//			Debug.Log ("Sending boots changed to " + bd.id);
-			bootsChanged (bd);
-		} 
-		else
-		{
-			Debug.LogWarning ("No boots changed action ");
+			if (exampleAction != null)
+			{
+				exampleAction( t );
+			}
+			else
+			{
+				Debug.LogWarning( "No exampleAction" );
+			}
 		}
 	}
-	*/
-
 	public void clear()
 	{
-//		bootsChanged = null;
+		exampleAction -= null;
 	}
-}
+
+*/
