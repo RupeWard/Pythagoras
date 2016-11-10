@@ -353,6 +353,26 @@ public partial class SceneControllerProof : SceneController_Base
 
 		ProofStageBase.ConnectStages( removeShadowSquare2_Stage, shearParallelogram0_Stage );
 
+		ProofStage_ShearParallelogram shearParallelogram1_Stage = new ProofStage_ShearParallelogram(
+			"Shear Parallelogram 1",
+			"Shearing parallelogram 1",
+			geometryFactory_,
+			mainField_,
+			shearSquareDuration,
+			HandleProofStageFinished,
+			parallelogramNames_[1],
+			3,
+			shearAlpha,
+			new AngleProvider_Parallelogram(
+				parallelogramNames_[1],
+				0,
+				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Constant(
+				90f
+			)
+		);
+
+		ProofStageBase.ConnectStages( shearParallelogram0_Stage, shearParallelogram1_Stage );
 
 		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangle_Stage );
