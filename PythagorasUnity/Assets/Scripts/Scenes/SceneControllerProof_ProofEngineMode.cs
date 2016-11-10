@@ -92,6 +92,18 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#endregion triangle settings
 
+	#region speed panel
+
+	private void HandleSpeedChangedProofEngineMode( )
+	{
+		if (proofEngine_ != null)
+		{
+			proofEngine_.SetSpeed( initialSpeed );
+		}
+	}
+
+	#endregion speed panel
+
 	// Following region is for when proofEngineMode == true
 	#region proof engine sequence
 
@@ -115,6 +127,8 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.onPauseAction += SetForwardButtonSprite;
 		proofEngine_.onDirectionChangedAction += SetForwardButtonDirection;
 		proofEngine_.onLoopChangedAction += SetLoopButtonSprite;
+
+		proofEngine_.SetSpeed( initialSpeed );
 
 		if (elements_.NumElements > 0)
 		{

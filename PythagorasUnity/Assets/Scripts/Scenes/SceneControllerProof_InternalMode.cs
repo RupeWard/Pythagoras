@@ -129,7 +129,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < createTriangleDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			mainTriangle.SetAlpha( Mathf.Lerp( 0f, 1f, elapsed / createTriangleDuration ) );
 			yield return null;
 		}
@@ -177,8 +177,8 @@ public partial class SceneControllerProof : SceneController_Base
 
 		float elapsed = 0f;
 		while (elapsed < createSquareDuration)
-		{
-			elapsed += Time.deltaTime;
+		{ 
+            elapsed += Time.deltaTime * initialSpeed;
 			parallelogram0.SetHeight( Mathf.Lerp( 0f, targetHeight, elapsed / createSquareDuration ) );
 			yield return null;
 		}
@@ -232,7 +232,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < createSquareDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			parallelogram1.SetHeight( Mathf.Lerp( 0f, targetHeight, elapsed / createSquareDuration ) );
 			yield return null;
 		}
@@ -277,7 +277,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			parallelogram0.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
@@ -287,7 +287,7 @@ public partial class SceneControllerProof : SceneController_Base
 		elapsed = 0f;
 		while (elapsed <= postShearFadeDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			float fraction = elapsed / postShearFadeDuration;
 			parallelogram0.SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
 			yield return null;
@@ -334,7 +334,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			parallelogram1.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
@@ -344,7 +344,7 @@ public partial class SceneControllerProof : SceneController_Base
 		elapsed = 0f;
 		while (elapsed <= postShearFadeDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			float fraction = elapsed / postShearFadeDuration;
 			parallelogram1.SetAlpha( Mathf.Lerp( shearAlpha, 1f, fraction ) );
 			yield return null;
@@ -389,7 +389,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < removeShadowDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			eb.SetAlpha( Mathf.Lerp( 1f, 0f, elapsed / removeShadowDuration ) );
 			yield return null;
 		}
@@ -428,7 +428,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			parallelogram0.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
@@ -478,7 +478,7 @@ public partial class SceneControllerProof : SceneController_Base
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
-			elapsed += Time.deltaTime;
+			elapsed += Time.deltaTime * initialSpeed;
 			parallelogram1.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}

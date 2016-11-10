@@ -29,6 +29,7 @@ public partial class SceneControllerProof : SceneController_Base
 	public Color mainTriangleColour = Color.blue;
 
 	public float initialAngle = 30f;
+	public float initialSpeed = 1f;
 
 	private float showSideDuration_ = 1f;
 
@@ -106,6 +107,7 @@ public partial class SceneControllerProof : SceneController_Base
 	private void Update()
 	{
 		ProcessTriangleAngleChange( );
+		ProcessSpeedChange( );
 	}
 
 	#endregion MBFlow
@@ -206,6 +208,7 @@ public partial class SceneControllerProof : SceneController_Base
 #endif
 
 		EnableTriangleSettings( );
+		EnableSpeedPanel( );
 
 		if (false == proofEngineMode)
 		{
@@ -304,9 +307,12 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#region triangle settings
 
+//	private static bool DEBUG_ANGLE = true;
+
 	private Vector2 minMaxTriangleAngle = new Vector2( 5f, 85f );
 
-	public float triangleAngleChangeSpeed = 1f;
+	public float triangleAngleChangeInitialSpeed = 1f;
+	public float triangleAngleChangeAcceleration = 1.02f;
 
 	private float currentTriangleAngleChangeSpeed = 0f;
 
@@ -334,14 +340,28 @@ public partial class SceneControllerProof : SceneController_Base
 
 	private void ChangeInitialAngle(float f)
 	{
-		initialAngle = f;
-		if (elements_.GetElementOfType< Element_Triangle >(mainTriangleName_) != null && currentTriangleAngleChangeSpeed == 0f )
+		if (f < minMaxTriangleAngle.x || f > minMaxTriangleAngle.y)
 		{
-			CreateMainTriangle( ); // TODO maybe implement adjustment without re-creation?
+			throw new System.ArgumentException( "Angle " + f + " out of range " + minMaxSpeed );
 		}
-		SetTriangleAngleText( );
-		triangleAngleUpButton.gameObject.SetActive( false == Mathf.Approximately( initialAngle, minMaxTriangleAngle.y ) );
-		triangleAngleDownButton.gameObject.SetActive( false == Mathf.Approximately( initialAngle, minMaxTriangleAngle.x ) );
+
+		if (false == Mathf.Approximately(f, initialAngle))
+		{
+			initialAngle = f;
+
+			SetTriangleAngleText( );
+
+			triangleAngleUpButton.gameObject.SetActive( initialAngle < minMaxTriangleAngle.y );
+			triangleAngleDownButton.gameObject.SetActive( initialAngle > minMaxTriangleAngle.x );
+		}
+		/*
+		else
+		{
+			if (DEBUG_ANGLE)
+			{
+				Debug.LogWarning( "Angle not changed enough" );
+			}
+		}*/
 	}
 
 	public void OnTriangleAngleInputFieldEndEdit()
@@ -351,8 +371,7 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			if (f >= minMaxTriangleAngle.x && f <= minMaxTriangleAngle.y)
 			{
-				initialAngle = f;
-				HandleAngleChanged( );
+				ChangeInitialAngle( f );
 			}
 			else
 			{
@@ -371,12 +390,12 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public void HandleTriangleAngleDownButtonDown( )
 	{
-		currentTriangleAngleChangeSpeed = -1f * triangleAngleChangeSpeed;
+		currentTriangleAngleChangeSpeed = -1f * triangleAngleChangeInitialSpeed;
 	}
 
 	public void HandleTriangleAngleUpButtonDown()
 	{
-		currentTriangleAngleChangeSpeed = triangleAngleChangeSpeed;
+		currentTriangleAngleChangeSpeed = triangleAngleChangeInitialSpeed;
 	}
 
 	public void HandleTriangleAngleButtonUp( )
@@ -404,19 +423,147 @@ public partial class SceneControllerProof : SceneController_Base
 			if (currentTriangleAngleChangeSpeed != 0f)
 			{
 				float newAngle = initialAngle + currentTriangleAngleChangeSpeed * Time.deltaTime;
-				newAngle = Mathf.Clamp( newAngle, minMaxTriangleAngle.x, minMaxTriangleAngle.y );
-				if (Mathf.Approximately(newAngle, initialAngle))
+
+				if (newAngle < minMaxTriangleAngle.x || newAngle > minMaxTriangleAngle.y)
 				{
+					newAngle = Mathf.Clamp( newAngle, minMaxTriangleAngle.x, minMaxTriangleAngle.y );
 					currentTriangleAngleChangeSpeed = 0f;
 				}
-		//		else
+				else
 				{
-					ChangeInitialAngle( newAngle );
+					currentTriangleAngleChangeSpeed *= triangleAngleChangeAcceleration;
 				}
+
+				ChangeInitialAngle( newAngle );
 			}
 		}
 	}
 	#endregion triangles ettings
+
+	#region speed panel
+
+//	static private bool DEBUG_SPEED = true;
+
+	private Vector2 minMaxSpeed = new Vector2( 0f, 10f );
+
+	public float speedChangeInitialSpeed = 0.2f;
+	public float speedChangeAcceleration = 1.02f;
+
+	private float currentSpeedChangeSpeed = 0f;
+
+	// Inspector hooks
+	public GameObject speedPanel;
+	public UnityEngine.UI.InputField speedInputField;
+	public UnityEngine.UI.Button speedUpButton;
+	public UnityEngine.UI.Button speedDownButton;
+
+	private void EnableSpeedPanel( )
+	{
+		speedPanel.SetActive( true );
+		SetSpeedText( );
+	}
+
+	private void SetSpeedText( )
+	{
+		speedInputField.text = initialSpeed.ToString( "0.0" );
+	}
+
+	private void DisableSpeedPanel( )
+	{
+		speedPanel.SetActive( false );
+	}
+
+	private void ChangeInitialSpeed( float f )
+	{
+		if (f < minMaxSpeed.x || f > minMaxSpeed.y)
+		{
+			throw new System.ArgumentException( "Speed " + f + " out of range " + minMaxSpeed );
+		}
+		if (f != initialSpeed)
+		{
+			initialSpeed = f;
+			SetSpeedText( );
+			speedUpButton.gameObject.SetActive( false == Mathf.Approximately( initialSpeed, minMaxSpeed.y ) );
+			speedDownButton.gameObject.SetActive( false == Mathf.Approximately( initialSpeed, minMaxSpeed.x ) );
+
+			HandleSpeedChanged( );
+		}
+	}
+
+	public void OnSpeedInputFieldEndEdit( )
+	{
+		float f;
+		if (float.TryParse( speedInputField.text, out f ))
+		{
+			if (f >= minMaxSpeed.x && f <= minMaxSpeed.y)
+			{
+				ChangeInitialSpeed( f );
+			}
+			else
+			{
+				// TODO Display warning
+				Debug.LogWarning( "Speed out of range at " + f );
+				SetSpeedText( );
+			}
+		}
+		else
+		{
+			// TODO Display warning
+			Debug.LogWarning( "Can't parse speed from '" + speedInputField.text + "'" );
+			SetSpeedText( );
+		}
+	}
+
+	public void HandleSpeedDownButtonDown( )
+	{
+		currentSpeedChangeSpeed = -1f * speedChangeInitialSpeed;
+	}
+
+	public void HandleSpeedUpButtonDown( )
+	{
+		currentSpeedChangeSpeed = speedChangeInitialSpeed;
+	}
+
+	public void HandleSpeedButtonUp( )
+	{
+		currentSpeedChangeSpeed = 0f;
+		HandleSpeedChanged( );
+	}
+
+	private void HandleSpeedChanged( )
+	{
+		if (proofEngineMode)
+		{
+			HandleSpeedChangedProofEngineMode( );
+		}
+		else
+		{
+			//HandleSpeedChangedInternalMode( ); // this mode uses initial speed directly so nothing to do
+		}
+	}
+
+	private void ProcessSpeedChange( )
+	{
+		if (speedPanel.gameObject.activeSelf)
+		{
+			if (currentSpeedChangeSpeed != 0f)
+			{
+				float newSpeed = initialSpeed + currentSpeedChangeSpeed * Time.deltaTime;
+				if (newSpeed < minMaxSpeed.x || newSpeed > minMaxSpeed.y)
+				{
+					newSpeed = Mathf.Clamp( newSpeed, minMaxSpeed.x, minMaxSpeed.y );
+					currentSpeedChangeSpeed = 0f;
+				}
+				else
+				{
+					currentSpeedChangeSpeed *= speedChangeAcceleration;
+				}
+				ChangeInitialSpeed( newSpeed);
+			}
+		}
+	}
+	#endregion speed panel
+
 
 }
 
