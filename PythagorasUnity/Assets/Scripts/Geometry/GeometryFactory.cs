@@ -43,7 +43,7 @@ namespace RJWard.Geometry
 			GameObject triangleGO = GameObject.Instantiate< GameObject >( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
 			Element_Triangle triangle = triangleGO.GetComponent< Element_Triangle >( );
-			triangle.Init( f, d, v, c );
+			triangle.Init( this, f, d, v, c );
 			return triangle;
 		}
 
@@ -53,7 +53,7 @@ namespace RJWard.Geometry
 			GameObject triangleGO = GameObject.Instantiate< GameObject >( trianglePrefab ) as GameObject;
 			triangleGO.name = n;
 			Element_Triangle triangle = triangleGO.GetComponent< Element_Triangle >( );
-			triangle.InitRightAngled( f, d, hypotenuse, angle, c );
+			triangle.InitRightAngled( this, f, d, hypotenuse, angle, c );
 			return triangle;
 		}
 
@@ -63,7 +63,7 @@ namespace RJWard.Geometry
 			GameObject parallelogramGO = GameObject.Instantiate< GameObject >( parallelogramPrefab ) as GameObject;
 			parallelogramGO.name = n;
 			Element_Parallelogram parallelogram = parallelogramGO.GetComponent< Element_Parallelogram >( );
-			parallelogram.Init( f, d, bl, h, a, c );
+			parallelogram.Init( this, f, d, bl, h, a, c );
 			return parallelogram;
 		}
 
@@ -73,7 +73,7 @@ namespace RJWard.Geometry
 			GameObject parallelogramGO = GameObject.Instantiate< GameObject >( parallelogramPrefab ) as GameObject;
 			parallelogramGO.name = n;
 			Element_Parallelogram parallelogram = parallelogramGO.GetComponent< Element_Parallelogram >( );
-			parallelogram.InitSquare( f, d, bl, c );
+			parallelogram.InitSquare(this, f, d, bl, c );
 			return parallelogram;
 		}
 
@@ -83,7 +83,7 @@ namespace RJWard.Geometry
 			GameObject straightLineGO = GameObject.Instantiate< GameObject >( straightLinePrefab ) as GameObject;
 			straightLineGO.name = n;
 			Element_StraightLine straightLine = straightLineGO.GetComponent< Element_StraightLine >( );
-			straightLine.Init( f, d, es, w, c );
+			straightLine.Init( this, f, d, es, w, c );
 			return straightLine;
 		}
 

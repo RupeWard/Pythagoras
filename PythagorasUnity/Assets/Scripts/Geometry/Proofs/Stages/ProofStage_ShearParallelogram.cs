@@ -13,12 +13,15 @@ namespace RJWard.Geometry
 
 		// parallelogram settings for creation
 		private string parallelogramName_ = "[UNKNOWN PARALLELOGRAM]";
+		private int baselineNumber_ = 0;
 
 		private IAngleProvider startAngleProvider_ = null;
 		private IAngleProvider targetAngleProvider_ = null;
 
 		private float parallelogramTargetAngle_ = 90f;
 		private float parallelogramStartAngle_ = 90f;
+
+		private float shearAlpha_ = 1f;
 
 		#endregion private data
 
@@ -27,12 +30,39 @@ namespace RJWard.Geometry
 		public ProofStage_ShearParallelogram(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
+			int bn,
+			float sa,
 			IAngleProvider sap,
             IAngleProvider tap
 			) 
 			: base (n, descn, gf, f, durn, ac )
 		{
+			CtorSetup( pn, bn, sa, sap, tap );
+		}
+
+		public ProofStage_ShearParallelogram(
+			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string pn,
+			float sa,
+			IAngleProvider sap,
+			IAngleProvider tap
+			)
+			: base( n, descn, gf, f, durn, ac )
+		{
+			CtorSetup( pn, 0, sa, sap, tap );
+		}
+
+		private void CtorSetup(
+			string pn,
+			int bn,
+			float sa,
+			IAngleProvider sap,
+			IAngleProvider tap
+			)
+		{
 			parallelogramName_ = pn;
+			shearAlpha_ = sa;
+			baselineNumber_ = bn;
 			startAngleProvider_ = sap;
 			targetAngleProvider_ = tap;
 
@@ -52,6 +82,7 @@ namespace RJWard.Geometry
 			);
 		}
 
+
 		#endregion setup
 
 		#region ProofStageBase 
@@ -61,18 +92,40 @@ namespace RJWard.Geometry
 			if (parallelogram_ == null)
 			{
 				parallelogram_ = elements.GetRequiredElementOfType<Element_Parallelogram>( parallelogramName_ );
+				if (direction == ProofEngine.EDirection.Forward)
+				{
+					if (baselineNumber_ != 0)
+					{
+						parallelogram_.ChangeBaseline( baselineNumber_ );
+					}
+				}
 				parallelogramStartAngle_ = startAngleProvider_.GetAngle( elements );
 				parallelogramTargetAngle_ = targetAngleProvider_.GetAngle( elements );
+			}
+			else
+			{
+				if (direction == ProofEngine.EDirection.Forward)
+				{
+					if (baselineNumber_ != 0)
+					{
+						parallelogram_.ChangeBaseline( baselineNumber_ );
+					}
+				}
 			}
 		}
 
 		protected override void DoUpdateView( )
 		{
+			if (currentTimeFractional > 0f)
+			{
+				parallelogram_.SetAlpha( shearAlpha_ );
+			}
 			parallelogram_.SetAngle(Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
 		}
 
 		protected override void HandleFinished( )
 		{
+			parallelogram_.SetAlpha( 1f );
 			switch (direction)
 			{
 				case ProofEngine.EDirection.Forward:
@@ -83,6 +136,10 @@ namespace RJWard.Geometry
 				case ProofEngine.EDirection.Reverse:
 					{
 						parallelogram_.SetAngle( parallelogramStartAngle_);
+						if (baselineNumber_ != 0)
+						{
+							parallelogram_.ChangeBaseline( 4 - baselineNumber_ );
+						}
 						break;
 					}
 			}

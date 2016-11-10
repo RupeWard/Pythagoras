@@ -35,6 +35,12 @@ namespace RJWard.Geometry
 
 		protected static readonly Vector3 s_normal = new Vector3( 0f, 0f, -1f );
 
+		private GeometryFactory geometryFactory_ = null;
+		protected GeometryFactory geometryFactory
+		{
+			get { return geometryFactory_; }
+		}
+
 		private Field field_ = null; // TODO do we need this? If removing, need another way to check if initialised
 		public Field field
 		{
@@ -150,8 +156,9 @@ namespace RJWard.Geometry
 		}
 
 		// Call this from derived classes' Init functions
-		protected void Init( Field f, float d )
+		protected void Init( GeometryFactory gf, Field f, float d )
 		{
+			geometryFactory_ = gf;
 			SetField( f );
 			depth_ = d;
 			SetDirty( );

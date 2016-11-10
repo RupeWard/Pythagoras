@@ -245,6 +245,7 @@ public partial class SceneControllerProof : SceneController_Base
 			shearSquareDuration,
 			HandleProofStageFinished,
 			parallelogramNames_[0],
+			shearAlpha,
 			new AngleProvider_Parallelogram(
 				parallelogramNames_[0],
 				0,
@@ -286,6 +287,7 @@ public partial class SceneControllerProof : SceneController_Base
 			shearSquareDuration,
 			HandleProofStageFinished,
 			parallelogramNames_[1],
+			shearAlpha,
 			new AngleProvider_Parallelogram(
 				parallelogramNames_[1],
 				0,
@@ -329,6 +331,28 @@ public partial class SceneControllerProof : SceneController_Base
 		removeShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		ProofStageBase.ConnectStages( removeShadowSquare1_Stage, removeShadowSquare2_Stage );
+
+		ProofStage_ShearParallelogram shearParallelogram0_Stage = new ProofStage_ShearParallelogram(
+			"Shear Parallelogram 0",
+			"Shearing parallelogram 0",
+			geometryFactory_,
+			mainField_,
+			shearSquareDuration,
+			HandleProofStageFinished,
+			parallelogramNames_[0],
+			1,
+			shearAlpha,
+			new AngleProvider_Parallelogram(
+				parallelogramNames_[0],
+				0,
+				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Constant(
+				90f
+			)
+		);
+
+		ProofStageBase.ConnectStages( removeShadowSquare2_Stage, shearParallelogram0_Stage );
+
 
 		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
 		proofEngine_.Init( createTriangle_Stage );

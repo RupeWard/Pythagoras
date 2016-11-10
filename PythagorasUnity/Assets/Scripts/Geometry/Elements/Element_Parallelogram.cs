@@ -48,6 +48,8 @@ namespace RJWard.Geometry
 			return result;
         }
 
+		Element_StraightLine edge0_ = null;
+
 		#endregion properties
 
 		#region editor modding
@@ -122,14 +124,14 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		public void Init( Field f, float d, Vector2[] bl, float h, float a, Color c )
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] bl, float h, float a, Color c )
 		{
 			if (bl.Length != 2)
 			{
 				throw new System.Exception( "bl.Length should be 2, not " + bl.Length.ToString( ) + " when trying to init " + gameObject.name );
 			}
 
-			base.Init( f, d );
+			base.Init( gf, f, d );
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -147,14 +149,14 @@ namespace RJWard.Geometry
 			SetDirty( );
 		}
 
-		public void InitSquare( Field f, float d, Vector2[] bl, Color c )
+		public void InitSquare( GeometryFactory gf, Field f, float d, Vector2[] bl, Color c )
 		{
 			if (bl.Length != 2)
 			{
 				throw new System.Exception( "bl.Length should be 2, not " + bl.Length.ToString( ) + " when trying to init " + gameObject.name );
 			}
 
-			Init( f, d, bl, Vector2.Distance( bl[0], bl[1] ), 90f, c );
+			Init(gf, f, d, bl, Vector2.Distance( bl[0], bl[1] ), 90f, c );
 		}
 
 		public void ChangeBaseline( int n ) // n = 1,2,3 for the 3 other sides (in order retrieved by GetVertices)
@@ -207,12 +209,21 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Parallelograms (" + this.GetType( ).ToString( ) + ") can currently only be cloned from Parallelograms, not " + src.GetType( ).ToString( ) );
 			}
-			Init( p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.cachedMaterial.GetColor( "_Color" ) );
+			Init( p.geometryFactory, p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.cachedMaterial.GetColor( "_Color" ) );
 		}
 
 		public override ElementBase Clone( string name )
 		{
 			return this.Clone< Element_Parallelogram >( name );
+		}
+
+		private void OnDestroy()
+		{
+			if (edge0_ != null)
+			{
+				GameObject.Destroy( edge0_.gameObject );
+				edge0_ = null;
+			}
 		}
 
 		#endregion creation
@@ -292,6 +303,26 @@ namespace RJWard.Geometry
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
+			Vector2[] edge0Ends = new Vector2[2];
+			edge0Ends[0] = pts[0];
+			edge0Ends[1] = pts[1];
+
+			if (edge0_ == null)
+			{
+
+				edge0_ = geometryFactory.AddStraightLineToField(
+					field,
+					"Edge0",
+					depth - 0.01f,
+					edge0Ends,
+					0.05f,
+					Color.black
+					);
+			}
+			else
+			{
+				edge0_.SetEnds( edge0Ends );
+			}
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
 				Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );
@@ -310,6 +341,10 @@ namespace RJWard.Geometry
 		protected override void HandleAlphaChanged( )
 		{
 			cachedMaterial.SetFloat( "_Alpha", alpha );
+			if (edge0_ != null)
+			{
+				edge0_.SetAlpha( alpha );
+			}
 		}
 
 		#endregion Non-geometrical Appaarance
@@ -321,6 +356,10 @@ namespace RJWard.Geometry
 			if (h != height_)
 			{
 				height_ = h;
+				if (edge0_ != null)
+				{
+					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : alpha );
+				}
 				SetDirty( );
 			}
 		}

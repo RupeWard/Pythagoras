@@ -109,14 +109,14 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		public void Init( Field f, float d, Vector2[] es, float w, Color c )
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, float w, Color c )
 		{
 			if (es.Length != 2)
 			{
 				throw new System.Exception( "es.Length should be 2, not " + es.Length + " on trying to Init " + gameObject.name );
 			}
 
-			base.Init( f, d );
+			base.Init( gf, f, d );
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -157,6 +157,17 @@ namespace RJWard.Geometry
 			return pts;
 		}
 
+		public void SetEnds(Vector2[] vs)
+		{
+			if (vs.Length != 2)
+			{
+				throw new System.ArgumentException( "SetEnds must be passed 2 ends not " + vs.Length );
+			}
+			ends_[0] = vs[0];
+			ends_[1] = vs[1];
+			SetDirty( );
+		}
+
 		#endregion Setup
 
 		#region  creation
@@ -168,7 +179,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
 			}
-			Init( s.field, s.depth, s.ends_.ToArray( ), s.width_, s.colour );
+			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), s.width_, s.colour );
 		}
 
 		public override ElementBase Clone( string name )

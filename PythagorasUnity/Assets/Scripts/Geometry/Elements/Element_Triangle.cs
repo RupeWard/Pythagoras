@@ -65,14 +65,14 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		public void Init( Field f, float d, Vector2[] vs, Color c )
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] vs, Color c )
 		{
 			if (vs.Length != 3)
 			{
 				throw new System.Exception( "vs.Length should be 3, not " + vs.Length + " on trying to Init " + gameObject.name );
 			}
 
-			base.Init( f, d );
+			base.Init( gf, f, d );
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -88,7 +88,7 @@ namespace RJWard.Geometry
 			SetDirty( );
 		}
 
-		public void InitRightAngled( Field f, float d, Vector2[] hypotenuseEnds, float angle, Color c )
+		public void InitRightAngled(  GeometryFactory gf, Field f, float d, Vector2[] hypotenuseEnds, float angle, Color c )
 		{
 			if (hypotenuseEnds.Length != 2)
 			{
@@ -100,7 +100,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "angle in right triangle should be <90, not " + angle + " on trying to Init (right-angled) " + gameObject.name );
 			}
 
-			base.Init( f, d );
+			base.Init( gf, f, d );
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -142,7 +142,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Triangles can currently only be cloned as Triangles" );
 			}
-			Init( t.field, t.depth, t.vertices_.ToArray( ), t.cachedMaterial.GetColor( "_Color" ) );
+			Init( t.geometryFactory, t.field, t.depth, t.vertices_.ToArray( ), t.cachedMaterial.GetColor( "_Color" ) );
 		}
 
 		public override ElementBase Clone( string name )
