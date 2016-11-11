@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
@@ -21,6 +22,8 @@ namespace RJWard.Geometry
 		#region private data
 
 		private ProofStageBase currentStage_ = null;
+
+		private HashSet<ProofStageBase> stages_ = new HashSet<ProofStageBase>( );
 
 		const float MAXSPEED = 100f;
 		 
@@ -44,6 +47,70 @@ namespace RJWard.Geometry
 		}
 
 		#endregion properties
+
+		#region Setup
+
+		public void RegisterStage( ProofStageBase stage)
+		{
+			if (stages_.Contains( stage ))
+			{
+				Debug.LogWarning( "ProofEngine already contains stage " + stage.name );
+			}
+			else
+			{
+				stages_.Add( stage );
+			}
+		}
+
+		public void RegisterStageFollowing( ProofStageBase stage, ProofStageBase previous )
+		{
+			RegisterStage( stage );
+			ConnectStages( previous, stage );
+		}
+
+		public void ConnectStages( ProofStageBase first, ProofStageBase second )
+		{
+			ConnectStages( ProofEngine.EDirection.Forward, first, second );
+			ConnectStages( ProofEngine.EDirection.Reverse, first, second );
+		}
+
+		private void ConnectStages( ProofEngine.EDirection direction, ProofStageBase first, ProofStageBase second )
+		{
+			switch (direction)
+			{
+				case ProofEngine.EDirection.Forward:
+					{
+						first.SetNextStage( second );
+						break;
+					}
+				case ProofEngine.EDirection.Reverse:
+					{
+						second.SetPreviousStage( first );
+						break;
+					}
+			}
+		}
+
+		public void SkipStageInReverse( ProofStageBase stage)
+		{
+			foreach ( ProofStageBase s in stages_)
+			{
+				if (s.PreviousStage == stage)
+				{
+					s.SetPreviousStage( stage.PreviousStage );
+				}
+			}
+		}
+
+		public void SkipStagesInReverse( HashSet< ProofStageBase > stages)
+		{
+			foreach (ProofStageBase s in stages)
+			{
+				SkipStageInReverse( s );
+			}
+		}
+
+		#endregion Setup
 
 		#region callbacks
 
@@ -238,7 +305,7 @@ namespace RJWard.Geometry
 
 		#region Process
 
-		public void Init( ProofStageBase b)
+		public void Start( ProofStageBase b)
 		{
 			currentStage_ = b;
 			if (onDirectionChangedAction != null)

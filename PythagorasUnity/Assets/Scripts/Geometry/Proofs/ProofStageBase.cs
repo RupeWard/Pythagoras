@@ -117,6 +117,15 @@ namespace RJWard.Geometry
 			return result;
 		}
 
+		public ProofStageBase NextStage
+		{
+			get { return nextStage_; }
+		}
+
+		public ProofStageBase PreviousStage
+		{
+			get { return previousStage_; }
+		}
 
 		#endregion properties
 
@@ -215,12 +224,6 @@ namespace RJWard.Geometry
 					}
 			}
 			return changed;
-		}
-
-		static public void ConnectStages(ProofStageBase first, ProofStageBase second)
-		{
-			first.SetNextStage( second );
-			second.SetPreviousStage( first );
 		}
 
 		#endregion setters

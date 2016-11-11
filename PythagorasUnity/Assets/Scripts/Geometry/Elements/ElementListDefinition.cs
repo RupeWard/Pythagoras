@@ -11,7 +11,7 @@ namespace RJWard.Geometry
 	*/
 	public class ElementListDefinition : RJWard.Core.IDebugDescribable
 	{
-		static public bool DEBUG_ELEMENTLISTDEFN = true;
+		static public bool DEBUG_ELEMENTLISTDEFN = false;
 
 		#region private data
 

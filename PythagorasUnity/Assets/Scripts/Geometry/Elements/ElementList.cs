@@ -16,7 +16,7 @@ namespace RJWard.Geometry
 		static private bool THROW_EXCEPTIONS = false; 
 #endif
 
-		static public bool DEBUG_ELEMENTLIST = true;
+		static public bool DEBUG_ELEMENTLIST = false;
 
 		#region private data
 
