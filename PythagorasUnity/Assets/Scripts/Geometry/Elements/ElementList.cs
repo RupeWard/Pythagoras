@@ -218,6 +218,72 @@ namespace RJWard.Geometry
 			return RemoveElementOfType< T >( n, true );
 		}
 
+		/* Remove element called n from the list if it exists and is of given type
+
+			destroy = also destroy the GO 
+
+			returns true if element was found and removed
+		*/
+		public bool RemoveElementOfType( string n, System.Type t, bool destroy ) 
+		{
+			if (DEBUG_ELEMENTLIST)
+			{
+				//				Debug.LogWarning( "RemoveElementOfType< " + typeof( T ).ToString( ) + "( '" + n + "', " + destroy + " )" );
+			}
+
+			bool success = false;
+			if (elements_.ContainsKey( n ))
+			{
+				if (elements_[n].GetType() != t)
+				{
+					Debug.LogWarning( "Element '" + n + "' to remove is a " + elements_[n].GetType( ) + " not a " + t.ToString( ) + " in " + this.DebugDescribe( ) );
+				}
+				else
+				{
+					if (DEBUG_ELEMENTLIST)
+					{
+						Debug.LogWarning( "Removing element '" + n + "' from " + this.DebugDescribe( ) );
+					}
+					if (destroy)
+					{
+						GameObject.Destroy( elements_[n].gameObject );
+					}
+					elements_.Remove( n );
+					success = true;
+				}
+			}
+			else
+			{
+				if (DEBUG_ELEMENTLIST)
+				{
+					Debug.LogWarning( "No element '" + n + "' to remove in " + this.DebugDescribe( ) );
+				}
+			}
+			return success;
+		}
+
+		// Helper - remove without destroying
+		public bool RemoveElementOfType( string n, System.Type t )
+		{
+			return RemoveElementOfType( n, t, false );
+		}
+
+		// Helper - remove and destroy
+		public bool DestroyElementOfType( string n, System.Type t )
+		{
+			return RemoveElementOfType( n, t, true );
+		}
+
+		public bool RemoveElementMatching( KeyValuePair<string, System.Type> kvp )
+		{
+			return RemoveElementOfType( kvp.Key, kvp.Value );
+		}
+
+		public bool DestroyElementMatching( KeyValuePair<string, System.Type> kvp )
+		{
+			return DestroyElementOfType( kvp.Key, kvp.Value );
+		}
+
 		/* Remove all elements
 
 			destroy - also destroy them
@@ -305,6 +371,33 @@ namespace RJWard.Geometry
 			return RemoveElement( eb, true );
 		}
 
+		public int DestroyAll(ElementListDefinition eld)
+		{
+			int nDone = 0;
+			foreach (KeyValuePair< string, System.Type> kvp in eld.elements)
+			{
+				if (HasElementMatching( kvp ))
+				{
+					if (DestroyElementMatching( kvp ))
+					{
+						nDone++;
+						if (DEBUG_ELEMENTLIST)
+						{
+							Debug.LogError( "ElementList " + name_ + " destroying element " + kvp.Key + " because in definition list " + eld.name );
+						}
+					}
+				}
+				else
+				{
+					if (DEBUG_ELEMENTLIST)
+					{
+						Debug.Log( "ElementList " + name_ + " found no element " + kvp.ToString() + " to destroy ");
+					}
+				}
+			}
+			return nDone;
+		}
+
 		#endregion modifiers
 
 		#region accessors
@@ -338,6 +431,11 @@ namespace RJWard.Geometry
 		public ElementBase GetRequiredElement( string n )
 		{
 			return GetElement( n, true );
+		}
+
+		public bool HasElement(string n)
+		{
+			return GetElement( n ) != null;
 		}
 
 		/* Pop: Retrieve element by name and also remove from list
@@ -403,7 +501,76 @@ namespace RJWard.Geometry
 		{
 			return GetElementOfType< T >( n, true );
 		}
-		
+
+		public bool HasElementOfType< T >(string n) where T : ElementBase
+		{
+			return GetElementOfType<T>( n ) != null;
+		}
+
+		/* Retrieve element by name, if of type
+
+			as generic version above but with type-checking
+			returns base value pointer
+		*/
+		public ElementBase GetElementOfType( string n, System.Type t, bool required ) 
+		{
+			ElementBase result = null;
+			ElementBase element = null;
+			if (false == elements_.TryGetValue( n, out element ))
+			{
+				if (required)
+				{
+					throw new System.Exception( "ElementList '" + name_ + "' does not contain required element called '" + n + "'" );
+				}
+			}
+			else
+			{
+				if (element.GetType() != t)
+				{
+					Debug.LogWarning( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + t.ToString( ) );
+					if (required)
+					{
+						throw new System.Exception( "ElementList '" + name_ + "' contains an element called '" + n + "' but it is a " + element.GetType( ).ToString( ) + " rather than a " + t.ToString( ) );
+					}
+				}
+				else
+				{
+					result = element;
+				}
+			}
+			return result;
+		}
+
+		public ElementBase GetElementOfType( string n, System.Type t )
+		{
+			return GetElementOfType( n, t, false );
+		}
+
+		public ElementBase GetRequiredElementOfType( string n, System.Type t )
+		{
+			return GetElementOfType( n, t, true );
+		}
+
+		public ElementBase GetElementMatching ( KeyValuePair< string, System.Type > kvp)
+		{
+			return GetElementOfType( kvp.Key, kvp.Value );
+		}
+
+		public ElementBase GetRequiredElementMatching( KeyValuePair<string, System.Type> kvp )
+		{
+			return GetRequiredElementOfType( kvp.Key, kvp.Value );
+		}
+
+		public bool HasElementOfType( string n, System.Type t)
+		{
+			return GetElementOfType( n, t ) != null;
+		}
+
+		public bool HasElementMatching( KeyValuePair<string, System.Type> kvp )
+		{
+			return GetElementMatching( kvp ) != null;
+		}
+
 		#endregion accessors
 
 		#region IDebugDescribable

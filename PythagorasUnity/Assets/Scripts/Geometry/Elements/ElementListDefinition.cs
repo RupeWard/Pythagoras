@@ -32,6 +32,11 @@ namespace RJWard.Geometry
 			get { return name_; }
 		}
 
+		public Dictionary< string, System.Type > elements
+		{
+			get { return elements_; }
+		}
+
 		#endregion properties
 
 		#region Setup
@@ -127,7 +132,7 @@ namespace RJWard.Geometry
 						success = false;
 						if (DEBUG_ELEMENTLISTDEFN)
 						{
-							sb.Append( "\nINVALID because '"+n+"' in list is type "+el.GetType().ToString()+" insyead of " + elements_[n].ToString() );
+							sb.Append( "\nINVALID because '"+n+"' in list is type "+el.GetType().ToString()+" instead of " + elements_[n].ToString() );
 						}
 						else
 						{
