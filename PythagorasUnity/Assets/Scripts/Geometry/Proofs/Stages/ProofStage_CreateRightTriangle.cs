@@ -46,6 +46,7 @@ namespace RJWard.Geometry
 
 		private void CreateTriangleIfNeeded( )
 		{
+			triangle_ = elements.GetElementOfType< Element_Triangle >( triangleName_ );
 			if (triangle_ == null)
 			{
 				triangle_ = geometryFactory.AddRightTriangleToField(

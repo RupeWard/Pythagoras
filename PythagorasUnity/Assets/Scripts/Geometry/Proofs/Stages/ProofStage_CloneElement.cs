@@ -63,8 +63,12 @@ namespace RJWard.Geometry
 
 		private void CreateCloneIfNeeded()
 		{
-			if (cloneElement_ == null)
+			if (cloneElement_ == null || elements.GetElementOfType( cloneName_, srcType_ ) == null)
 			{
+				if (cloneElement_ != null)
+				{
+					Debug.LogWarning( "CloneElement isn't null" );
+				}
 				ElementBase srcElement = elements.GetRequiredElement( srcName_ );
 
 				cloneElement_ = geometryFactory.CreateClone(

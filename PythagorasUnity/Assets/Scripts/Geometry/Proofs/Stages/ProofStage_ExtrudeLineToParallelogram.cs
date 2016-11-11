@@ -62,6 +62,7 @@ namespace RJWard.Geometry
 
 		private void CreateParallelogramIfNeeded( )
 		{
+			parallelogram_ = elements.GetElementOfType< Element_Parallelogram >( parallelogramName_ );
 			if (parallelogram_ == null)
 			{
 				Element_StraightLine line = elements.GetRequiredElementOfType< Element_StraightLine >( lineName_ );

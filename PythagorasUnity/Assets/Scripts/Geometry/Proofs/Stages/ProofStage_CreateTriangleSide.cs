@@ -63,6 +63,7 @@ namespace RJWard.Geometry
 
 		private void CreateLineIfNeeded( )
 		{
+			line_ = elements.GetElementOfType< Element_StraightLine >( lineName_ );
 			if (line_ == null)
 			{
 				Element_Triangle triangle = elements.GetRequiredElementOfType<Element_Triangle>( triangleName_ );
