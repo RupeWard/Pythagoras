@@ -24,6 +24,8 @@ namespace RJWard.Geometry
 		private ElementListDefinition startRequiredElementListDefinition_ = null;
 		private ElementListDefinition endRequiredElementListDefinition_ = null;
 
+		private ElementListDefinition startReversedDestroyElementListDefinition_ = null;
+
 		private ElementList elements_ = null;
 
 		private float currentTimeSeconds_ = 0f;
@@ -84,6 +86,11 @@ namespace RJWard.Geometry
 		protected ElementListDefinition endRequiredElementListDefinition
 		{
 			set { endRequiredElementListDefinition_ = value; }
+		}
+
+		public ElementListDefinition startReversedDestroyElementListDefinition
+		{
+			set { startReversedDestroyElementListDefinition_ = value; }
 		}
 
 		protected ElementList elements
@@ -292,6 +299,10 @@ namespace RJWard.Geometry
 				case ProofEngine.EDirection.Reverse:
 					{
 						currentTimeSeconds_ = durationSeconds_;
+						if (startReversedDestroyElementListDefinition_ != null)
+						{
+							elements_.DestroyAll( startReversedDestroyElementListDefinition_ );
+						}
 						if (endRequiredElementListDefinition_ != null)
 						{
 							if (false == endRequiredElementListDefinition_.Validate( elements_, true ))

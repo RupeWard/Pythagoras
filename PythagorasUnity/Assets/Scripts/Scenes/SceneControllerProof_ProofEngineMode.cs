@@ -193,6 +193,15 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[0]
 			);
 
+		createSquare1_Stage.startReversedDestroyElementListDefinition
+			= new ElementListDefinition(
+				"CreateSquare1_Stage Reversed Start DestroyList",
+				new Dictionary< string, System.Type >( )
+				{ 
+					{  shadowSquareNames_[0], typeof(Element_Parallelogram) }
+				}
+			);
+
 		createSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
 		proofEngine_.RegisterStageFollowing(createSquare1_Stage, createSide1_Stage);
@@ -229,6 +238,15 @@ public partial class SceneControllerProof : SceneController_Base
 			90f,
 			square1Colour,
 			parallelogramNames_[1]
+			);
+
+		createSquare2_Stage.startReversedDestroyElementListDefinition
+			= new ElementListDefinition(
+				"CreateSquare2_Stage Reversed Start DestroyList",
+				new Dictionary< string, System.Type >( )
+				{
+					{  shadowSquareNames_[1], typeof(Element_Parallelogram) }
+				}
 			);
 
 		createSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
@@ -273,8 +291,6 @@ public partial class SceneControllerProof : SceneController_Base
 				)
 			);
 
-		//shearSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
-
 		proofEngine_.RegisterStageFollowing( shearSquare1_Stage , createShadowSquare1_Stage);
 		
 		ProofStage_CloneElement createShadowSquare2_Stage = new ProofStage_CloneElement(
@@ -314,8 +330,6 @@ public partial class SceneControllerProof : SceneController_Base
 				GeometryHelpers.EAngleModifier.Supplementary
 				)
 			);
-
-		//shearSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
 		proofEngine_.RegisterStageFollowing( shearSquare2_Stage , createShadowSquare2_Stage );
 
