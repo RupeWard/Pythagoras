@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class Element_Triangle : ElementBase, RJWard.Core.IDebugDescribable
+	public class Element_Triangle : Element2DBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_TRIANGLE = true;
 		public static readonly bool DEBUG_TRIANGLE_VERBOSE = false;
