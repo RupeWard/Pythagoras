@@ -15,6 +15,7 @@ namespace RJWard.Geometry
 		public GameObject trianglePrefab;
 		public GameObject parallelogramPrefab;
 		public GameObject straightLinePrefab;
+		public GameObject circlePrefab;
 		public GameObject lineSegmentPrefab;
 
 		#endregion prefabs
@@ -86,6 +87,16 @@ namespace RJWard.Geometry
 			Element_StraightLine straightLine = straightLineGO.GetComponent< Element_StraightLine >( );
 			straightLine.Init( this, f, d, es, w, c );
 			return straightLine;
+		}
+
+		// Instantiate a Circle in a Field and set it up
+		public Element_Circle AddCircleToField( Field f, string n, float d, Vector2 ce, float r, Color c )
+		{
+			GameObject circleGO = GameObject.Instantiate< GameObject >( circlePrefab ) as GameObject;
+			circleGO.name = n;
+			Element_Circle circle = circleGO.GetComponent< Element_Circle >( );
+			circle.Init( this, f, d, ce, r, c );
+			return circle;
 		}
 
 		public Element_StraightLine CreateStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour, bool internalSide)

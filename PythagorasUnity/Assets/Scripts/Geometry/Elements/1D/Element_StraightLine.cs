@@ -217,12 +217,9 @@ namespace RJWard.Geometry
 			}
 
 #if UNITY_EDITOR
-			for (int i = 0; i < 2; i++)
-			{
-				modEnds[i] = ends_[i];
-			}
-			modWidth = decorator1D.width;
+			SetModdingValues( );
 #endif
+
 			Vector2[] pts = GetVertices( );
 
 			Mesh mesh = GetMesh( );

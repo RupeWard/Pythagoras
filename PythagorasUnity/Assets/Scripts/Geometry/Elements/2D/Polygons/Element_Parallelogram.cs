@@ -124,7 +124,12 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		public void Init( GeometryFactory gf, Field f, float d, Vector2[] bl, float h, float a, Color c )
+		public void Init( 
+			GeometryFactory gf, Field f, float d, // for base 
+			Vector2[] bl, 
+			float h, 
+			float a, 
+			Color c )
 		{
 			if (bl.Length != 2)
 			{
@@ -150,7 +155,10 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		public void InitSquare( GeometryFactory gf, Field f, float d, Vector2[] bl, Color c )
+		public void InitSquare( 
+			GeometryFactory gf, Field f, float d, // for base
+			Vector2[] bl, 
+			Color c )
 		{
 			if (bl.Length != 2)
 			{
@@ -303,12 +311,7 @@ namespace RJWard.Geometry
 			}
 
 #if UNITY_EDITOR
-			for (int i = 0; i < 2; i++)
-			{
-				modBaseVertices[i] = baseVertices_[i];
-			}
-			modHeight = height_;
-			modAngle = angle_;
+			SetModdingValues( );
 #endif
 			Vector2[] vertices = GetVertices( );
 

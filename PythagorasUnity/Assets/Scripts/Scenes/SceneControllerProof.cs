@@ -204,6 +204,16 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.red
 				)
 			);
+			testElements.AddElement(
+				"TestCircle",
+				geometryFactory_.AddCircleToField(
+					mainField_,
+					"TestCircle",
+					-0.3f,
+					new Vector2( 0.5f, 0.5f ),
+					1f,
+					Color.yellow )
+                );
 		}
 #endif
 

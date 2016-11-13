@@ -65,7 +65,10 @@ namespace RJWard.Geometry
 
 		#region Setup
 
-		public void Init( GeometryFactory gf, Field f, float d, Vector2[] vs, Color c )
+		public void Init( 
+			GeometryFactory gf, Field f, float d, // for base
+			Vector2[] vs, 
+			Color c )
 		{
 			if (vs.Length != 3)
 			{
@@ -89,7 +92,11 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		public void InitRightAngled(  GeometryFactory gf, Field f, float d, Vector2[] hypotenuseEnds, float angle, Color c )
+		public void InitRightAngled(  
+			GeometryFactory gf, Field f, float d,  // for base
+			Vector2[] hypotenuseEnds, 
+			float angle, 
+			Color c )
 		{
 			if (hypotenuseEnds.Length != 2)
 			{
@@ -192,10 +199,7 @@ namespace RJWard.Geometry
 			}
 
 #if UNITY_EDITOR
-			for (int i = 0; i < 3; i++)
-			{
-				modVertices[i] = vertices_[i];
-			}
+			SetModdingValues( );
 #endif
 			Mesh mesh = GetMesh( );
 
