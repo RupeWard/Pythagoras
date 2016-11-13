@@ -143,6 +143,7 @@ namespace RJWard.Geometry
 			SetAngleDegrees(a);
 
 			decorator = new ElementDecorator_Parallelogram( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
 
 			if (DEBUG_PARALLELOGRAM)
 			{

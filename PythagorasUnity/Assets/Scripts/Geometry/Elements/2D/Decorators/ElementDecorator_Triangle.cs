@@ -19,5 +19,6 @@ namespace RJWard.Geometry
 		#region setters
 
 		#endregion setters
+
 	}
 }

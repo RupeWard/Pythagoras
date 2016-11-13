@@ -83,6 +83,7 @@ namespace RJWard.Geometry
 			}
 
 			decorator = new ElementDecorator_Triangle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
 
 			if (DEBUG_TRIANGLE)
 			{
@@ -131,6 +132,7 @@ namespace RJWard.Geometry
 			vertices_[2] = X + perp * h;
 
 			decorator = new ElementDecorator_Triangle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
 
 			if (DEBUG_TRIANGLE)
 			{

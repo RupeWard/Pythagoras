@@ -13,11 +13,40 @@ namespace RJWard.Geometry
 			System.Action<float> wca )
 			: base(c,a,cca,aca)
 		{
-			widthChangedAction_ = wca;
-			width = w;
+			widthChangedAction_ += wca;
+			width_ = w;
+		}
+
+		public void AddActions( System.Action<Color> cca, System.Action<float> aca, System.Action<float> wca )
+		{
+			base.AddActions(cca, aca);
+			if (wca != null)
+			{
+				widthChangedAction_ += wca;
+				wca( width_ );
+			}
+		}
+
+		public void RemoveActions( System.Action<Color> cca, System.Action<float> aca, System.Action<float> wca )
+		{
+			base.RemoveActions( cca, aca );
+			if (wca != null)
+			{
+				widthChangedAction_ -= wca;
+			}
 		}
 
 		#endregion Setup
+
+		#region applier
+
+		public override void Apply( )
+		{
+			base.Apply( );
+			DoWidthChangedAction( );
+		}
+
+		#endregion applier
 
 		#region width
 
@@ -30,15 +59,24 @@ namespace RJWard.Geometry
 				if (!Mathf.Approximately(width_, value))
 				{
 					width_ = value;
-					if (widthChangedAction_ != null)
-					{
-						widthChangedAction_( width_ );
-					}
+					DoWidthChangedAction( );
 				}
 			}
 		}
 
 		private System.Action<float> widthChangedAction_;
+
+		private void DoWidthChangedAction()
+		{
+			if (widthChangedAction_ != null)
+			{
+				widthChangedAction_( width_ );
+			}
+			else
+			{
+				Debug.LogWarning( "No widthChangedAction" );
+			}
+		}
 
 		#endregion alpha
 
@@ -50,5 +88,15 @@ namespace RJWard.Geometry
 		}
 
 		#endregion setters
+
+		#region IDebugDescribable
+
+		protected override void DebugDescribeDetails( System.Text.StringBuilder sb )
+		{
+			sb.Append( " W=" ).Append( width_ );
+		}
+
+		#endregion IDebugDescribable
+
 	}
 }

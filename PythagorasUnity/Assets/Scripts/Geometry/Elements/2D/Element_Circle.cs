@@ -125,6 +125,7 @@ namespace RJWard.Geometry
 			SetRadius( r );
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
 
 			if (DEBUG_CIRCLE)
 			{

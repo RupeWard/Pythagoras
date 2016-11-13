@@ -15,7 +15,7 @@ namespace RJWard.Geometry
 	public class Element_Curve: Element1DBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_CURVE = true;
-		public static readonly bool DEBUG_CURVE_VERBOSE = false;
+		public static readonly bool DEBUG_CURVE_VERBOSE = true;
 
 		#region private data
 
@@ -45,7 +45,7 @@ namespace RJWard.Geometry
 			{
 				if (DEBUG_CURVE)
 				{
-					Debug.Log( "Modded " + gameObject.name );
+					Debug.Log( "Modded '" + gameObject.name +"'");
 				}
 				SetMeshDirty( );
 			}
@@ -81,7 +81,7 @@ namespace RJWard.Geometry
 			points_ = new List<Vector2>( pts );
 			closed_ = cl;
 
-			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
+			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, null ); // No width changed action as handled in full by segments
 
 			if (DEBUG_CURVE)
 			{
@@ -173,15 +173,6 @@ namespace RJWard.Geometry
 		}
 
 		#endregion Mesh
-
-		#region geometry helpers
-
-		protected void HandleWidthChanged( float w)
-		{
-			SetMeshDirty( );
-		}
-
-		#endregion geometry helpers
 
 		#region Non-geometrical Appaarance
 

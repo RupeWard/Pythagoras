@@ -3,8 +3,10 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
-	abstract public class ElementDecoratorBase 
+	abstract public class ElementDecoratorBase : RJWard.Core.IDebugDescribable
 	{
+		public static bool DEBUG_DECORATORS = true;
+
 		#region Setup
 
 		protected ElementDecoratorBase( 
@@ -13,13 +15,51 @@ namespace RJWard.Geometry
 			System.Action< Color > cca, 
 			System.Action< float > aca )
 		{
-			colourChangedAction_ = cca;
-			alphaChangedAction_ = aca;
-			colour = c;
-			alpha = a;
+			colourChangedAction_ += cca;
+			alphaChangedAction_ += aca;
+			colour_ = c;
+			alpha_ = a;
+		}
+
+		// Use this in element's Init when using a shared decorator
+		public void AddActions( System.Action<Color> cca, System.Action<float> aca )
+		{
+			if (cca != null)
+			{
+				colourChangedAction_ += cca;
+				cca( colour_ );
+			}
+			if (aca != null)
+			{
+				alphaChangedAction_ += aca;
+				aca( alpha_ );
+			}
+		}
+
+		// Use this in element's OnDestroy when decoratoir might be shared
+		public void RemoveActions( System.Action<Color> cca, System.Action<float> aca )
+		{
+			if (cca != null)
+			{
+				colourChangedAction_ -= cca;
+			}
+			if (aca != null)
+			{
+				alphaChangedAction_ -= aca;
+			}
 		}
 
 		#endregion Setup
+
+		#region applier
+
+		public virtual void Apply()
+		{
+			DoColourChangedaction( );
+			DoAlphaChangedAction( );
+		}
+
+		#endregion applier
 
 		#region Colour
 
@@ -32,15 +72,27 @@ namespace RJWard.Geometry
 				if (colour_ != value)
 				{
 					colour_ = value;
-					if (colourChangedAction_ != null)
-					{
-						colourChangedAction_( colour_ );
-					}
+					DoColourChangedaction( );
 				}
 			}
 		}
 
 		private System.Action<Color> colourChangedAction_;
+
+		private void DoColourChangedaction()
+		{
+			if (colourChangedAction_ != null)
+			{
+				colourChangedAction_( colour_ );
+			}
+			else
+			{
+				if (DEBUG_DECORATORS)
+				{
+					Debug.LogWarning( "No colourChangedAction" );
+				}
+			}
+		}
 
 		#endregion Colour
 
@@ -55,15 +107,27 @@ namespace RJWard.Geometry
 				if (!Mathf.Approximately(alpha_, value))
 				{
 					alpha_ = value;
-					if (alphaChangedAction_ != null)
-					{
-						alphaChangedAction_( alpha_ );
-					}
+					DoAlphaChangedAction( );
 				}
 			}
 		}
 
 		private System.Action<float> alphaChangedAction_;
+
+		private void DoAlphaChangedAction()
+		{
+			if (alphaChangedAction_ != null)
+			{
+				alphaChangedAction_( alpha_ );
+			}
+			else
+			{
+				if (DEBUG_DECORATORS)
+				{
+					Debug.LogWarning( "No alphaChangedAction" );
+				}
+			}
+		}
 
 		#endregion alpha
 
@@ -76,5 +140,19 @@ namespace RJWard.Geometry
 		}
 
 		#endregion setters
+
+		#region IDebugDescribable
+
+		public void DebugDescribe( System.Text.StringBuilder sb)
+		{
+			sb.Append( GetType( ).ToString( ) + ": " );
+			sb.Append( " C=" ).Append( colour_ );
+			sb.Append( " A=" ).Append( alpha_ );
+			DebugDescribeDetails( sb );
+		}
+
+		virtual protected void DebugDescribeDetails( System.Text.StringBuilder sb ) { } // override as required
+
+		#endregion IDebugDescribable
 	}
 }

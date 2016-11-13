@@ -113,6 +113,7 @@ namespace RJWard.Geometry
 			InitHelper( gf, f, d, es );
 
 			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
+			decorator.Apply( );
 
 			if (DEBUG_STRAIGHTLINE)
 			{
@@ -127,7 +128,13 @@ namespace RJWard.Geometry
 		{
 			InitHelper( gf, f, d, es );
 
+			if (dec == null)
+			{
+				Debug.LogWarning( "null decorator passed to init" );
+			}
 			decorator = dec;
+//			decorator1D.AddActions( HandleColourChanged, HandleAlphaChanged, HandleWidthChanged );
+			decorator1D.AddActions( null, null, HandleWidthChanged ); // no colour/alpha changers needed as handled in full by owner (eg curve)
 
 			if (DEBUG_STRAIGHTLINE)
 			{
@@ -212,6 +219,16 @@ namespace RJWard.Geometry
 			return this.Clone< Element_StraightLine >( name );
 		}
 
+		private void OnDestroy()
+		{
+			// in case it's a shared decorator
+			// decorator1D.RemoveActions( HandleColourChanged, HandleAlphaChanged, HandleWidthChanged );
+			if (decorator1D != null)
+			{
+				decorator1D.RemoveActions( null, null, HandleWidthChanged );
+			}
+		}
+
 		#endregion creation
 
 		#region Mesh
@@ -271,6 +288,17 @@ namespace RJWard.Geometry
 
 		protected void HandleWidthChanged( float w)
 		{
+			if (DEBUG_STRAIGHTLINE_VERBOSE)
+			{
+				if (decorator != null)
+				{
+					Debug.Log( name + ": Width changed to " + w + " in decorator [" + decorator.DebugDescribe( ) + "]" );
+				}
+				else
+				{
+					Debug.LogWarning( name + ": Width changed to " + w + " but null decorator " );
+				}
+			}
 			SetMeshDirty( );
 		}
 
