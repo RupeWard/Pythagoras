@@ -15,13 +15,13 @@ namespace RJWard.Geometry
 		public static readonly bool DEBUG_CIRCLE = true;
 		public static readonly bool DEBUG_CIRCLE_VERBOSE = true;
 
-		private static readonly float minRadius = 0.5f;
+		private static readonly float minRadius = 0.05f;
 
 		#region private data
 
 		private Vector2 centre_;
 		private float radius_ = 0f;
-		private float minSectorEdgeLength_ = 0.1f;
+		private float minSectorEdgeLength_ = 0.02f;
 
 		Element_Curve perimeter_ = null;
 
@@ -45,15 +45,13 @@ namespace RJWard.Geometry
 			}
 			if (modRadius != radius_)
 			{
-				if (modRadius >= minRadius)
+				if (modRadius < minRadius)
 				{
-					radius_ = modRadius;
-					modded = true;
+					Debug.LogWarning( "modRadius out of range at " + modRadius + ", fixing to minimum of " + minRadius );
+					modRadius = radius_;
 				}
-				else
-				{
-					Debug.LogWarning( "modRadius out of range at " + modRadius );
-				}
+				radius_ = modRadius;
+				modded = true;
 			}
 			
 			if (modded)
@@ -76,6 +74,36 @@ namespace RJWard.Geometry
 
 		#endregion in-editor modding 
 
+		#region setters
+
+		public void SetRadius(float r)
+		{
+			if (r < minRadius)
+			{
+				if (DEBUG_CIRCLE)
+				{
+					Debug.LogWarning( "Trying to set circle radius that's too small, reducing radius from " + r + " to " + minRadius );
+				}
+				r = minRadius;
+			}
+			if (! Mathf.Approximately(radius_, r))
+			{
+				radius_ = r;
+				SetMeshDirty( );
+			}
+		}
+
+		public void SetCentre(Vector2 c)
+		{
+			if ( Vector2.Distance(c, centre_) > Mathf.Epsilon)
+			{
+				centre_ = c;
+				SetMeshDirty( );
+			}
+		}
+
+		#endregion setters
+
 		#region Setup
 
 		// Helper to work out number of sectors from min edge length
@@ -93,16 +121,8 @@ namespace RJWard.Geometry
 		{
 			base.Init( gf, f, d);
 
-			centre_ = ce;
-			radius_ = r;
-			if (radius_ < minRadius)
-			{
-				if (DEBUG_CIRCLE)
-				{
-					Debug.LogWarning( "Trying to create a circle that's too small, reducing radius from " + r + " to " + minRadius );
-				}
-				radius_ = minRadius;
-			}
+			SetCentre( ce );
+			SetRadius( r );
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 
