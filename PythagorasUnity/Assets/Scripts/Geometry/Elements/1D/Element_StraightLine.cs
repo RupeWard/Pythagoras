@@ -12,7 +12,7 @@ namespace RJWard.Geometry
 {
 	public class Element_StraightLine: Element1DBase, RJWard.Core.IDebugDescribable
 	{
-		public static readonly bool DEBUG_STRAIGHTLINE = true;
+		public static readonly bool DEBUG_STRAIGHTLINE = false;
 		public static readonly bool DEBUG_STRAIGHTLINE_VERBOSE = false;
 
 		#region private data
