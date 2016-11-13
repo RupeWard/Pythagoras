@@ -79,6 +79,7 @@ namespace RJWard.Geometry
 			base.Init( gf, f, d );
 
 			points_ = new List<Vector2>( pts );
+			closed_ = cl;
 
 			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
 
@@ -161,7 +162,7 @@ namespace RJWard.Geometry
 				segmentEnds[0] = segmentEnds[1];
 				segmentEnds[1] = points_[0];
 
-				Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + points_.Count, segmentEnds );
+				Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + (points_.Count -1), segmentEnds );
 				segments_.Add( segment );
 			}
 
