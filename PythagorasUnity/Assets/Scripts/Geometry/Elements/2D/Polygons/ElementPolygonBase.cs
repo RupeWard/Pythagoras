@@ -90,7 +90,10 @@ namespace RJWard.Geometry
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
-				edges_[i].gameObject.SetActive( show );
+				if (edges_[i] != null)
+				{
+					edges_[i].gameObject.SetActive( show );
+				}
 			}
 		}
 
