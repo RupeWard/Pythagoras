@@ -98,7 +98,7 @@ namespace RJWard.Geometry
 			{
 				modEnds[i] = ends_[i];
 			}
-			modWidth = Decorator<ElementDecorator1DBase>( ).width;
+			modWidth = decorator1D.width;
 #endif
 		}
 
@@ -167,8 +167,13 @@ namespace RJWard.Geometry
 			{
 				throw new System.ArgumentException( "SetEnds must be passed 2 ends not " + vs.Length );
 			}
-			ends_[0] = vs[0];
-			ends_[1] = vs[1];
+			SetEnds( vs[0], vs[1] );
+		}
+
+		public void SetEnds(Vector2 v0, Vector2 v1)
+		{
+			ends_[0] = v0;
+			ends_[1] = v1;
 			SetMeshDirty( );
 		}
 
