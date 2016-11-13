@@ -27,7 +27,7 @@ namespace RJWard.Geometry
 			get { return width_; }
 			set
 			{
-				if (width_ != value)
+				if (!Mathf.Approximately(width_, value))
 				{
 					width_ = value;
 					if (widthChangedAction_ != null)

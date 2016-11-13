@@ -52,7 +52,7 @@ namespace RJWard.Geometry
 			get { return alpha_; }
 			set
 			{
-				if (alpha_ != value)
+				if (!Mathf.Approximately(alpha_, value))
 				{
 					alpha_ = value;
 					if (alphaChangedAction_ != null)
