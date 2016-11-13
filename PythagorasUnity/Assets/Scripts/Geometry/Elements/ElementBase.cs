@@ -53,10 +53,10 @@ namespace RJWard.Geometry
 			get { return depth_; }
 		}
 
-		private bool isDirty_ = false;
-		protected void SetDirty( )
+		private bool isMeshDirty_ = false;
+		protected void SetMeshDirty( )
 		{
-			isDirty_ = true;
+			isMeshDirty_ = true;
 		}
 
 		private ElementDecoratorBase decorator_;
@@ -158,7 +158,7 @@ namespace RJWard.Geometry
 
 		private void Update( )
 		{
-			if (isDirty_)
+			if (isMeshDirty_)
 			{
 				AdjustMesh( );
 			}
@@ -177,7 +177,7 @@ namespace RJWard.Geometry
 #if UNITY_EDITOR
 			SetModdingValues( );
 #endif
-			isDirty_ = false;
+			isMeshDirty_ = false;
 		}
 
 		// Call this from derived classes' Init functions
@@ -186,7 +186,7 @@ namespace RJWard.Geometry
 			geometryFactory_ = gf;
 			SetField( f );
 			depth_ = d;
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		private void SetField( Field f )
@@ -196,7 +196,7 @@ namespace RJWard.Geometry
 			cachedTransform_.localScale = Vector3.one;
 			cachedTransform_.localRotation = Quaternion.identity;
 			cachedTransform_.localPosition = Vector3.zero;
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		// Called from Awake(), override in derived classes for additional functionality
@@ -205,7 +205,7 @@ namespace RJWard.Geometry
 		public void SetDepth( float d )
 		{
 			depth_ = d;
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		#endregion Setup

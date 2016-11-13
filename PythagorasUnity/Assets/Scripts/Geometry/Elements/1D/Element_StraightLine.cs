@@ -76,9 +76,9 @@ namespace RJWard.Geometry
 					modded = true;
 				}
 			}
-			if (modWidth != Decorator< ElementDecorator1DBase > ().width)
+			if (modWidth != decorator1D.width)
 			{
-				Decorator<ElementDecorator1DBase>( ).width = modWidth;
+				decorator1D.width = modWidth;
 				modded = true;
 			}
 			if (modded)
@@ -87,7 +87,7 @@ namespace RJWard.Geometry
 				{
 					Debug.Log( "Modded " + gameObject.name );
 				}
-				SetDirty( );
+				SetMeshDirty( );
 			}
 		}
 
@@ -128,7 +128,7 @@ namespace RJWard.Geometry
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec )
@@ -151,7 +151,7 @@ namespace RJWard.Geometry
 			Vector3 perp = Vector3.Cross( direction, s_normal ).normalized;
 			Vector2 perp2 = perp;
 
-			float offset = 0.5f * Decorator< ElementDecorator1DBase >().width;
+			float offset = 0.5f * decorator1D.width;
 
 			pts[0] = ends_[0] + offset * perp2;
 			pts[1] = ends_[1] + offset * perp2;
@@ -169,7 +169,7 @@ namespace RJWard.Geometry
 			}
 			ends_[0] = vs[0];
 			ends_[1] = vs[1];
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		#endregion Setup
@@ -183,7 +183,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
 			}
-			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), Decorator< ElementDecorator1DBase >() );
+			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), decorator1D );
 		}
 
 		public override ElementBase Clone( string name )
@@ -216,7 +216,7 @@ namespace RJWard.Geometry
 			{
 				modEnds[i] = ends_[i];
 			}
-			modWidth = Decorator< ElementDecorator1DBase >().width;
+			modWidth = decorator1D.width;
 #endif
 			Vector2[] pts = GetVertices( );
 
@@ -253,7 +253,7 @@ namespace RJWard.Geometry
 
 		protected void HandleWidthChanged( float w)
 		{
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		#endregion geometry helpers
@@ -282,7 +282,7 @@ namespace RJWard.Geometry
 				sb.Append( ends_[i] ).Append( " " );
 			}
 
-			sb.Append( " width=" ).Append( Decorator< ElementDecorator1DBase >().width );
+			sb.Append( " width=" ).Append( decorator1D.width );
 			sb.Append( " d=" ).Append( depth );
 
 			sb.Append( " pts=" );

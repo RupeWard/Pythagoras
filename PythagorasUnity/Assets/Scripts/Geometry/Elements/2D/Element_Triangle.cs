@@ -47,7 +47,7 @@ namespace RJWard.Geometry
 				{
 					Debug.Log( "Modded " + gameObject.name );
 				}
-				SetDirty( );
+				SetMeshDirty( );
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "vs.Length should be 3, not " + vs.Length + " on trying to Init " + gameObject.name );
 			}
 
-			base.Init( gf, f, d );
+			base.Init( gf, f, d, 3 );
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -86,7 +86,7 @@ namespace RJWard.Geometry
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		public void InitRightAngled(  GeometryFactory gf, Field f, float d, Vector2[] hypotenuseEnds, float angle, Color c )
@@ -130,7 +130,7 @@ namespace RJWard.Geometry
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		#endregion Setup
@@ -144,7 +144,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Triangles can currently only be cloned as Triangles" );
 			}
-			Init( t.geometryFactory, t.field, t.depth, t.vertices_.ToArray( ), t.cachedMaterial.GetColor( "_Color" ) );
+			Init( t.geometryFactory, t.field, t.depth, t.vertices_.ToArray( ), decorator.colour );
 		}
 
 		public override ElementBase Clone( string name )

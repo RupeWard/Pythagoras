@@ -88,7 +88,7 @@ namespace RJWard.Geometry
 				{
 					Debug.Log( "Modded " + gameObject.name );
 				}
-				SetDirty( );
+				SetMeshDirty( );
 			}
 		}
 
@@ -131,7 +131,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "bl.Length should be 2, not " + bl.Length.ToString( ) + " when trying to init " + gameObject.name );
 			}
 
-			base.Init( gf, f, d );
+			base.Init( gf, f, d, 4 );
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -147,7 +147,7 @@ namespace RJWard.Geometry
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		public void InitSquare( GeometryFactory gf, Field f, float d, Vector2[] bl, Color c )
@@ -196,7 +196,7 @@ namespace RJWard.Geometry
 				angle_ = 180f - angle_;
 				height_ = area / BaseLength( );
 			}
-			SetDirty( );
+			SetMeshDirty( );
 		}
 
 		#endregion Setup
@@ -360,7 +360,7 @@ namespace RJWard.Geometry
 				{
 					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : decorator.alpha);
 				}
-				SetDirty( );
+				SetMeshDirty( );
 			}
 		}
 
@@ -369,7 +369,7 @@ namespace RJWard.Geometry
 			if (a != angle_)
 			{
 				angle_ = a;
-				SetDirty( );
+				SetMeshDirty( );
 			}
 		}
 
