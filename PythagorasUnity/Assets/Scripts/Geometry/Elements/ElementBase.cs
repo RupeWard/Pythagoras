@@ -220,15 +220,25 @@ namespace RJWard.Geometry
 		#region Mesh
 
 		// Creates the mesh if it doesn't yet exist
-		protected Mesh GetMesh( )
+		protected Mesh GetMesh( bool remake )
 		{
 			Mesh mesh = cachedMeshFilter_.sharedMesh;
-			if (mesh == null)
+			if (mesh == null || remake)
 			{
 				cachedMeshFilter_.sharedMesh = new Mesh( );
 				mesh = cachedMeshFilter_.sharedMesh;
 			}
 			return mesh;
+		}
+
+		protected Mesh GetMesh()
+		{
+			return GetMesh( false );
+		}
+
+		protected Mesh RecreateMesh()
+		{
+			return GetMesh( true );
 		}
 
 		abstract protected void DoAdjustMesh( );

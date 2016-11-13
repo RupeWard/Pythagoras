@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	// NOTE: Currently adds nothing to base but probably will later 
 	public class ElementDecorator_StraightLine : ElementDecorator1DBase
 	{
 		#region Setup

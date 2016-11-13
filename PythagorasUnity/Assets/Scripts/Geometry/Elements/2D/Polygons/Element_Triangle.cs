@@ -144,7 +144,7 @@ namespace RJWard.Geometry
 			Element_StraightLine edge = geometryFactory.AddStraightLineToField(
 				field,
 				name+" Edge_" + n.ToString( ),
-				-GeometryHelpers.internalLayerSeparation,
+				depth-GeometryHelpers.internalLayerSeparation,
 				new Vector2[]
 				{
 						vertices_[ modIndex(n)],

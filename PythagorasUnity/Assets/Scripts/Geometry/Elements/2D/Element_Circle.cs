@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 /*
-	Triangle element
+	Circle element
 
-	Defined by its 3 vertices
-
-	TODO: handle co-linear case (not bothering with yet as not expecting to encounter it)
+	Defined by its centre and radius
 */
 
 namespace RJWard.Geometry
@@ -15,13 +13,17 @@ namespace RJWard.Geometry
 	public class Element_Circle : Element2DBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_CIRCLE = true;
-		public static readonly bool DEBUG_CIRCLE_VERBOSE = false;
+		public static readonly bool DEBUG_CIRCLE_VERBOSE = true;
+
+		private static readonly float minRadius = 0.5f;
 
 		#region private data
 
 		private Vector2 centre_;
 		private float radius_ = 0f;
 		private float minSectorEdgeLength_ = 0.1f;
+
+		Element_Curve perimeter_ = null;
 
 		#endregion private data
 
@@ -43,8 +45,15 @@ namespace RJWard.Geometry
 			}
 			if (modRadius != radius_)
 			{
-				radius_ = modRadius;
-				modded = true;
+				if (modRadius >= minRadius)
+				{
+					radius_ = modRadius;
+					modded = true;
+				}
+				else
+				{
+					Debug.LogWarning( "modRadius out of range at " + modRadius );
+				}
 			}
 			
 			if (modded)
@@ -69,6 +78,7 @@ namespace RJWard.Geometry
 
 		#region Setup
 
+		// Helper to work out number of sectors from min edge length
 		public static int GetNumSectors( float radius, float minSectorEdgeLength)
 		{
 			float perimeter = 2f * Mathf.PI * radius;
@@ -85,6 +95,14 @@ namespace RJWard.Geometry
 
 			centre_ = ce;
 			radius_ = r;
+			if (radius_ < minRadius)
+			{
+				if (DEBUG_CIRCLE)
+				{
+					Debug.LogWarning( "Trying to create a circle that's too small, reducing radius from " + r + " to " + minRadius );
+				}
+				radius_ = minRadius;
+			}
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 
@@ -96,26 +114,6 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		/*
-		private Element_StraightLine CreateEdge(int n)
-		{
-			Element_StraightLine edge = geometryFactory.AddStraightLineToField(
-				field,
-				name+" Edge_" + n.ToString( ),
-				-GeometryHelpers.internalLayerSeparation,
-				new Vector2[]
-				{
-						vertices_[ modIndex(n)],
-						vertices_[modIndex(n+1)]
-				},
-				Element2DBase.defaultEdgeWidth,
-				decorator.colour );
-			edge.cachedTransform.SetParent( cachedTransform );
-			edge.gameObject.tag = "Edge";
-			SetEdge( n, edge );
-			return edge;
-		}
-	*/
 		#endregion Setup
 
 		#region creation
@@ -164,13 +162,18 @@ namespace RJWard.Geometry
 
 			float angleStep = (2f * Mathf.PI) / numSectors;
 
+			List< Vector2 > perimeterPoints = new List< Vector2 >( );
+
 			for (int i = 0; i < numSectors; i++)
 			{
 				float angle = angleStep * i;
-				 
-				verts[i] = new Vector3( centre_.x + radius_ * Mathf.Sin(angle), centre_.y + radius_ * Mathf.Cos( angle ), depth );
-				uvs[i] = Vector2.zero;
-				normals[i] = s_normal;
+
+				Vector2 perimeterPoint = new Vector2( centre_.x + radius_ * Mathf.Sin( angle ), centre_.y + radius_ * Mathf.Cos( angle ) );
+				perimeterPoints.Add( perimeterPoint );
+
+				verts[1+i] = new Vector3( perimeterPoint.x, perimeterPoint.y, depth );
+				uvs[1+i] = Vector2.zero;
+				normals[1+i] = s_normal;
 			}
 
 			List<int> tris = new List<int>( );
@@ -183,27 +186,36 @@ namespace RJWard.Geometry
 				tris.Add( 1 + nexti );
 			}
 
+			if (mesh.vertexCount > verts.Length) // Mesh fails when reducing number of vertices (because it immediately checks against triangles
+			{
+				mesh.Clear( );
+			}
+
 			mesh.vertices = verts;
-			mesh.triangles = tris.ToArray();
 			mesh.uv = uvs;
 			mesh.normals = normals;
+			mesh.triangles = tris.ToArray( );
 
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
-			/*
-			for (int i = 0; i < 3; i++)
+			// TODO don't always destroy/create
+			if (perimeter_ != null)
 			{
-				Element1DBase edge = GetEdge( i );
-				if (edge == null)
-				{
-					edge = CreateEdge( i );
-				}
-				else
-				{
-					(edge as Element_StraightLine).SetEnds( vertices_[modIndex( i )], vertices_[modIndex(i + 1)] );
-				}
-			}*/
+				GameObject.Destroy( perimeter_.gameObject );
+				perimeter_ = null;
+			}
+
+			perimeter_ = geometryFactory.AddCurveToField(
+				field,
+				name + " Perimeter",
+				depth-GeometryHelpers.internalLayerSeparation,
+				perimeterPoints,
+				true,
+				Element2DBase.defaultEdgeWidth,
+				Color.cyan
+				);
+			perimeter_.cachedTransform.SetParent( cachedTransform );
 
 			if (DEBUG_CIRCLE_VERBOSE)
 			{
@@ -234,6 +246,7 @@ namespace RJWard.Geometry
 			sb.Append( "Circle '" ).Append( gameObject.name ).Append(": ");
 			sb.Append( "'C = " ).Append(centre_.ToString());
 			sb.Append( " R = " ).Append( radius_ );
+			sb.Append( " N = " ).Append( GetNumSectors( radius_, minSectorEdgeLength_ ) );
 			sb.Append( " d=" ).Append( depth );
 		}
 

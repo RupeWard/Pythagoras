@@ -5,7 +5,7 @@ using System.Collections.Generic;
 /*
 	StraightLine element
 
-	Defined by its 2 ends and a width
+	Defined by its 2 ends 
 */
 
 namespace RJWard.Geometry
@@ -110,6 +110,35 @@ namespace RJWard.Geometry
 
 		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, float w, Color c )
 		{
+			InitHelper( gf, f, d, es );
+
+			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
+
+			if (DEBUG_STRAIGHTLINE)
+			{
+				Debug.Log( "Init() " + this.DebugDescribe( ) );
+			}
+
+			SetMeshDirty( );
+		}
+
+		// For when we want to use a shared decorator
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec )
+		{
+			InitHelper( gf, f, d, es );
+
+			decorator = dec;
+
+			if (DEBUG_STRAIGHTLINE)
+			{
+				Debug.Log( "Init() with decorator " + this.DebugDescribe( ) );
+			}
+
+			SetMeshDirty( );
+		}
+
+		private void InitHelper(GeometryFactory gf, Field f, float d, Vector2[] es)
+		{
 			if (es.Length != 2)
 			{
 				throw new System.Exception( "es.Length should be 2, not " + es.Length + " on trying to Init " + gameObject.name );
@@ -121,19 +150,6 @@ namespace RJWard.Geometry
 			{
 				ends_[i] = es[i];
 			}
-			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
-
-			if (DEBUG_STRAIGHTLINE)
-			{
-				Debug.Log( "Init() " + this.DebugDescribe( ) );
-			}
-
-			SetMeshDirty( );
-		}
-
-		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec )
-		{
-			Init( gf, f, d, es, dec.width, dec.colour );
 		}
 
 		Vector2 GetDirection( )
@@ -141,7 +157,7 @@ namespace RJWard.Geometry
 			return ends_[1] - ends_[0];
 		}
 
-		// Computes the 4 vertices from the baseline, height, and angle
+		// Computes the 4 vertices from the ends and width
 		private Vector2[] GetVertices( )
 		{
 			Vector2[] pts = new Vector2[4];
@@ -188,7 +204,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
 			}
-			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), decorator1D );
+			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), s.decorator1D.width, s.decorator1D.colour );
 		}
 
 		public override ElementBase Clone( string name )

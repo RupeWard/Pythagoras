@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	/*
+		Base class for polygons (2D elements with straight edges)
+	*/
 	abstract public class ElementPolygonBase : Element2DBase
 	{
 		static public bool DEBUG_POLYGONBASE = true;

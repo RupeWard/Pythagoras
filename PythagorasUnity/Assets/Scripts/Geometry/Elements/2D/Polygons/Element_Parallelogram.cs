@@ -178,7 +178,7 @@ namespace RJWard.Geometry
 					edge = geometryFactory.AddStraightLineToField(
 					  field,
 					  name + " Edge_" + i.ToString( ),
-					  -GeometryHelpers.internalLayerSeparation,
+					  depth-GeometryHelpers.internalLayerSeparation,
 					  new Vector2[]
 					  {
 						vertices[i],
@@ -391,6 +391,7 @@ namespace RJWard.Geometry
 			if (h != height_)
 			{
 				height_ = h;
+
 				if (edge0_ != null)
 				{
 					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : decorator.alpha);

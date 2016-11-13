@@ -17,6 +17,7 @@ namespace RJWard.Geometry
 		public GameObject straightLinePrefab;
 		public GameObject circlePrefab;
 		public GameObject lineSegmentPrefab;
+		public GameObject curvePrefab;
 
 		#endregion prefabs
 
@@ -99,6 +100,28 @@ namespace RJWard.Geometry
 			return circle;
 		}
 
+		// Instantiate a line segment (as a StraightLine) and set it up using its parent curve's properties 
+		public Element_StraightLine AddLineSegmentToCurve( Element_Curve curve, string n, Vector2[] es )
+		{
+			GameObject segmentGO = GameObject.Instantiate< GameObject >( lineSegmentPrefab ) as GameObject;
+			segmentGO.name = n;
+			Element_StraightLine segment = segmentGO.GetComponent< Element_StraightLine >( );
+			segment.Init( this, curve.field, curve.depth, es, curve.decorator1D );
+			segment.cachedTransform.SetParent( curve.cachedTransform );
+			return segment;
+		}
+
+		// Instantiate a Curve in a Field and set it up
+		public Element_Curve AddCurveToField( Field f, string n, float d, List< Vector2 > pts, bool closed, float w, Color c )
+		{
+			GameObject curveGO = GameObject.Instantiate< GameObject >( curvePrefab ) as GameObject;
+			curveGO.name = n;
+			Element_Curve curve = curveGO.GetComponent< Element_Curve >( );
+			curve.Init( this, f, d, pts, closed, w, c );
+			return curve;
+		}
+
+		// Create a straight line element from specifed side of a triangle
 		public Element_StraightLine CreateStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour, bool internalSide)
 		{
 			return AddStraightLineToField(
@@ -120,6 +143,7 @@ namespace RJWard.Geometry
 		{
 			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
 		}
+		
 
 		public ElementBase CreateClone( string n, ElementBase srcElement, float relativeDepth, Color colour )
 		{
