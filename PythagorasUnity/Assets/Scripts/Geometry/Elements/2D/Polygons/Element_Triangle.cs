@@ -169,7 +169,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Triangles can currently only be cloned as Triangles" );
 			}
-			Init( t.geometryFactory, t.field, t.depth, t.vertices_.ToArray( ), decorator.colour );
+			Init( t.geometryFactory, t.field, t.depth, t.vertices_.ToArray( ), t.decorator.colour );
 		}
 
 		public override ElementBase Clone( string name )
