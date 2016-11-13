@@ -16,7 +16,7 @@ namespace RJWard.Geometry
 
 		#region inspector data
 
-		public bool useSharedMaterial = true;
+		public bool useSharedMaterial = false;
 		
 		#endregion inspector data
 

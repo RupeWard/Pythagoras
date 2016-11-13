@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class Element_Parallelogram : Element2DBase, RJWard.Core.IDebugDescribable
+	public class Element_Parallelogram : ElementPolygonBase, RJWard.Core.IDebugDescribable
 	{
 		public static bool DEBUG_PARALLELOGRAM = true;
 		public static bool DEBUG_PARALLELOGRAM_VERBOSE = false;
