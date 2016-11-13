@@ -38,12 +38,12 @@ namespace RJWard.Geometry
 		override protected void CheckIfModded( )
 		{
 			bool modded = false;
-			if (modCentre != centre_)
+			if (Vector2.Distance( modCentre, centre_) > Mathf.Epsilon)
 			{
 				centre_ = modCentre;
 				modded = true;
 			}
-			if (modRadius != radius_)
+			if (!Mathf.Approximately(modRadius, radius_))
 			{
 				if (modRadius < minRadius)
 				{
