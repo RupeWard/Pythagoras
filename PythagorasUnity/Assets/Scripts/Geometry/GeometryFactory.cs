@@ -18,6 +18,7 @@ namespace RJWard.Geometry
 		public GameObject circlePrefab;
 		public GameObject lineSegmentPrefab;
 		public GameObject curvePrefab;
+		public GameObject sectorPrefab;
 
 		#endregion prefabs
 
@@ -99,6 +100,17 @@ namespace RJWard.Geometry
 			circle.Init( this, f, d, ce, r, c );
 			return circle;
 		}
+
+		// Instantiate a Sector in a Field and set it up
+		public Element_Sector AddSectorToField( Field f, string n, float d, Vector2 ce, float r, float ae, float ad, Color c )
+		{
+			GameObject sectorGO = GameObject.Instantiate< GameObject >( sectorPrefab ) as GameObject;
+			sectorGO.name = n;
+			Element_Sector sector = sectorGO.GetComponent< Element_Sector >( );
+			sector.Init( this, f, d, ce, r, ae, ad, c );
+			return sector;
+		}
+
 
 		// Instantiate a line segment (as a StraightLine) and set it up using its parent curve's properties 
 		public Element_StraightLine AddLineSegmentToCurve( Element_Curve curve, string n, Vector2[] es )

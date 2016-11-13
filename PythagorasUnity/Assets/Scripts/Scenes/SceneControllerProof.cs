@@ -214,6 +214,19 @@ public partial class SceneControllerProof : SceneController_Base
 					1f,
 					Color.yellow )
                 );
+			testElements.AddElement(
+				"TestSector",
+				geometryFactory_.AddSectorToField(
+					mainField_,
+					"TestSector",
+					-0.4f,
+					new Vector2( 0f,2f),
+					0.5f,
+					45f,
+					10f,
+					Color.gray
+					)
+				);
 		}
 #endif
 
