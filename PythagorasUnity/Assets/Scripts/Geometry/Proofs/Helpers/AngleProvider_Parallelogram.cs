@@ -34,8 +34,8 @@ namespace RJWard.Geometry
 			float result = 0f;
 
 			Element_Parallelogram parallelogram = elements.GetRequiredElementOfType< Element_Parallelogram >( parallelogramName_ );
-			float rawAngle = parallelogram.GetAngle(angleNumber_);
-			result = GeometryHelpers.ModifyAngle( rawAngle, eModifier_ );
+			float rawAngle = parallelogram.GetAngleDegrees(angleNumber_);
+			result = GeometryHelpers.ModifyAngleDegrees( rawAngle, eModifier_ );
 			return result;
 		}
 

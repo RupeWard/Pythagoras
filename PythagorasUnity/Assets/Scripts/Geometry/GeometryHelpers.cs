@@ -33,7 +33,7 @@ namespace RJWard.Geometry
 		}
 
 		// Applies modifier to angle
-		public static float ModifyAngle(float rawAngle, EAngleModifier eModifier)
+		public static float ModifyAngleDegrees(float rawAngle, EAngleModifier eModifier)
 		{
 			float result = rawAngle;
 			switch (eModifier)

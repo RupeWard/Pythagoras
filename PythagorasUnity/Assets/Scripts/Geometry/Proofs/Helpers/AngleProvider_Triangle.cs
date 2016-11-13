@@ -35,7 +35,7 @@ namespace RJWard.Geometry
 
 			Element_Triangle triangle = elements.GetRequiredElementOfType< Element_Triangle >( triangleName_ );
 			float rawAngle = triangle.GetInternalAngleDegrees( angleNumber_ );
-			result = GeometryHelpers.ModifyAngle( rawAngle, eModifier_ );
+			result = GeometryHelpers.ModifyAngleDegrees( rawAngle, eModifier_ );
 			return result;
 		}
 
