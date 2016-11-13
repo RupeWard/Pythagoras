@@ -101,7 +101,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "angle in right triangle should be <90, not " + angle + " on trying to Init (right-angled) " + gameObject.name );
 			}
 
-			base.Init( gf, f, d );
+			base.Init( gf, f, d, 3 );
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -129,8 +129,26 @@ namespace RJWard.Geometry
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
-
 			SetMeshDirty( );
+		}
+
+		private Element_StraightLine CreateEdge(int n)
+		{
+			Element_StraightLine edge = geometryFactory.AddStraightLineToField(
+				field,
+				name+" Edge_" + n.ToString( ),
+				-GeometryHelpers.internalLayerSeparation,
+				new Vector2[]
+				{
+						vertices_[ modIndex(n)],
+						vertices_[modIndex(n+1)]
+				},
+				Element2DBase.defaultEdgeWidth,
+				Color.cyan /* decorator.colour*/ );
+			edge.cachedTransform.SetParent( cachedTransform );
+			edge.gameObject.tag = "Edge";
+			SetEdge( n, edge );
+			return edge;
 		}
 
 		#endregion Setup
@@ -153,6 +171,15 @@ namespace RJWard.Geometry
 		}
 
 		#endregion creation
+
+		#region Element2DBase
+
+		protected override Vector2[] GetVertices( )
+		{
+			return vertices_.ToArray();
+		}
+
+		#endregion Element2DBase
 
 		#region Mesh
 
@@ -191,6 +218,18 @@ namespace RJWard.Geometry
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
+			for (int i = 0; i < 3; i++)
+			{
+				Element1DBase edge = GetEdge( i );
+				if (edge == null)
+				{
+					edge = CreateEdge( i );
+				}
+				else
+				{
+					(edge as Element_StraightLine).SetEnds( vertices_[modIndex( i )], vertices_[modIndex(i + 1)] );
+				}
+			}
 			if (DEBUG_TRIANGLE_VERBOSE)
 			{
 				Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );

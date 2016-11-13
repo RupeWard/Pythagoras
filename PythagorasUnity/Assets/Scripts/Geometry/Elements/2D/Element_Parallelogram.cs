@@ -160,6 +160,35 @@ namespace RJWard.Geometry
 			Init(gf, f, d, bl, Vector2.Distance( bl[0], bl[1] ), 90f, c );
 		}
 
+		private void SetEdges( Vector2[] vertices)
+		{
+			for (int i = 0; i< 4; i++)
+			{
+				Element_StraightLine edge = GetEdge( i ) as Element_StraightLine;
+				if (edge == null)
+				{
+					edge = geometryFactory.AddStraightLineToField(
+					  field,
+					  name + " Edge_" + i.ToString( ),
+					  -GeometryHelpers.internalLayerSeparation,
+					  new Vector2[]
+					  {
+						vertices[i],
+						vertices[modIndex(i+1)]
+					  },
+					  Element2DBase.defaultEdgeWidth,
+					  Color.cyan /* decorator.colour*/ );
+					edge.cachedTransform.SetParent( cachedTransform );
+					edge.gameObject.tag = "Edge";
+					SetEdge( i, edge );
+				}
+				else
+				{
+					edge.SetEnds( vertices[i], vertices[modIndex( i + 1 )] );
+				}                
+			}
+		}
+
 		public void ChangeBaseline( int n ) // n = 1,2,3 for the 3 other sides (in order retrieved by GetVertices)
 		{
 			if (n < 0 || n > 3)
@@ -232,7 +261,7 @@ namespace RJWard.Geometry
 		#region Mesh
 
 		// Computes the 4 vertices from the baseline, height, and angle
-		private Vector2[] GetVertices( )
+		override protected Vector2[] GetVertices( )
 		{
 			Vector2[] pts = new Vector2[4];
 
@@ -281,7 +310,7 @@ namespace RJWard.Geometry
 			modHeight = height_;
 			modAngle = angle_;
 #endif
-			Vector2[] pts = GetVertices( );
+			Vector2[] vertices = GetVertices( );
 
 			Mesh mesh = GetMesh( );
 
@@ -291,7 +320,7 @@ namespace RJWard.Geometry
 
 			for (int i = 0; i < 4; i++)
 			{
-				verts[i] = new Vector3( pts[i].x, pts[i].y, depth );
+				verts[i] = new Vector3( vertices[i].x, vertices[i].y, depth );
 				uvs[i] = s_uvs[i];
 				normals[i] = s_normal;
 			}
@@ -305,8 +334,8 @@ namespace RJWard.Geometry
 			mesh.Optimize( );
 
 			Vector2[] edge0Ends = new Vector2[2];
-			edge0Ends[0] = pts[0];
-			edge0Ends[1] = pts[1];
+			edge0Ends[0] = vertices[0];
+			edge0Ends[1] = vertices[1];
 
 			if (edge0_ == null)
 			{
@@ -323,6 +352,9 @@ namespace RJWard.Geometry
 			{
 				edge0_.SetEnds( edge0Ends );
 			}
+
+			SetEdges( vertices );
+
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
 				Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );

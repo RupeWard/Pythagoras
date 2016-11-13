@@ -97,7 +97,7 @@ namespace RJWard.Geometry
 			decorator.colour = c;
 		}
 
-		public void SetAlpha( float a)
+		public virtual void SetAlpha( float a)
 		{
 			decorator.alpha = a;
 		}
@@ -181,7 +181,8 @@ namespace RJWard.Geometry
 		}
 
 		// Call this from derived classes' Init functions
-		protected void Init( GeometryFactory gf, Field f, float d )
+		// override with exception in classes when required (eg 2D base class where the numVertices must be set)
+		protected virtual void Init( GeometryFactory gf, Field f, float d )
 		{
 			geometryFactory_ = gf;
 			SetField( f );
@@ -230,7 +231,7 @@ namespace RJWard.Geometry
 
 		#region Creation
 
-		public T Clone< T >( string name, float d ) where T : ElementBase
+		virtual public T Clone< T >( string name, float d ) where T : ElementBase
 		{
 			GameObject go = GameObject.Instantiate( this.gameObject ) as GameObject;
 			go.name = name;
