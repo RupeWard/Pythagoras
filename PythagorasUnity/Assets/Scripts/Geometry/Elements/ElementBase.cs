@@ -14,6 +14,12 @@ namespace RJWard.Geometry
 		public readonly static bool DEBUG_ELEMENT = true;
 		public readonly static bool DEBUG_ELEMENT_VERBOSE = true;
 
+		#region inspector data
+
+		public bool useSharedMaterial = true;
+		
+		#endregion inspector data
+
 		#region private hooks
 
 		private Transform cachedTransform_ = null;
@@ -150,7 +156,7 @@ namespace RJWard.Geometry
 			cachedTransform_ = transform;
 			cachedMeshFilter_ = GetComponent<MeshFilter>( );
 			cachedMeshRenderer_ = GetComponent<MeshRenderer>( );
-			cachedMaterial_ = new Material( cachedMeshRenderer_.sharedMaterial );
+			cachedMaterial_ = (useSharedMaterial)?(cachedMeshRenderer_.sharedMaterial):(cachedMeshRenderer_.material);
 			cachedMeshRenderer_.material = cachedMaterial_;
 
 			PostAwake( );

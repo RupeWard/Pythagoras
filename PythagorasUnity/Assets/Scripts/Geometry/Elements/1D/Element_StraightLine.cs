@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class Element_StraightLine : Element1DBase, RJWard.Core.IDebugDescribable
+	public class Element_StraightLine: Element1DBase, RJWard.Core.IDebugDescribable
 	{
 		public static readonly bool DEBUG_STRAIGHTLINE = true;
 		public static readonly bool DEBUG_STRAIGHTLINE_VERBOSE = false;

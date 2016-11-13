@@ -15,6 +15,7 @@ namespace RJWard.Geometry
 		public GameObject trianglePrefab;
 		public GameObject parallelogramPrefab;
 		public GameObject straightLinePrefab;
+		public GameObject lineSegmentPrefab;
 
 		#endregion prefabs
 
