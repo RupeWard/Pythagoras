@@ -159,6 +159,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStage( createTriangle_Stage );
 
+		// TODO remove once triangles have their own sides
 		ProofStage_CreateTriangleSide createSide1_Stage = new ProofStage_CreateTriangleSide(
 			"Create Side 1",
 			"This is side 1",
@@ -169,7 +170,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainTriangleName_,
 			1,
 			true,
-			-0.01f,
+			-GeometryHelpers.internalLayerSeparation,
 			0.01f,
 			Color.black,
 			triangleSideNames_[1]
@@ -206,6 +207,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStageFollowing(createSquare1_Stage, createSide1_Stage);
 
+		// TODO remove once triangles have their own sides
 		ProofStage_CreateTriangleSide createSide2_Stage = new ProofStage_CreateTriangleSide(
 			"Create Side 2",
 			"This is side 2",
@@ -216,7 +218,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainTriangleName_,
 			2,
 			true,
-			-0.01f,
+			-GeometryHelpers.internalLayerSeparation,
 			0.01f,
 			Color.black,
 			triangleSideNames_[2]
@@ -262,7 +264,7 @@ public partial class SceneControllerProof : SceneController_Base
 			HandleProofStageFinished,
 			parallelogramNames_[0],
 			typeof( Element_Parallelogram ),
-			0.01f,
+			GeometryHelpers.externalLayerSeparation,
 			shadowColour,
 			shadowSquareNames_[0]
 			);
@@ -302,7 +304,7 @@ public partial class SceneControllerProof : SceneController_Base
 			HandleProofStageFinished,
 			parallelogramNames_[1],
 			typeof( Element_Parallelogram ),
-			0.01f,
+			GeometryHelpers.externalLayerSeparation,
 			shadowColour,
 			shadowSquareNames_[1]
 		);

@@ -9,6 +9,7 @@ namespace RJWard.Geometry
 
 		private int numVertices_ = 0;
 
+		
 		#endregion private data 
 
 		#region properties
