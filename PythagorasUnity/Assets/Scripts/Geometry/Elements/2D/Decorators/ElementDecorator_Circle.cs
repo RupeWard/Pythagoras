@@ -4,6 +4,7 @@ using System.Collections;
 namespace RJWard.Geometry
 {
 	// NOTE: Currently adds nothing to base but probably will later 
+	// Also used for Sector
 	public class ElementDecorator_Circle : ElementDecorator2DBase
 	{
 		#region Setup
