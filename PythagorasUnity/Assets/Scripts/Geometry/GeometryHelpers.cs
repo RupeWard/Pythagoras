@@ -5,6 +5,12 @@ namespace RJWard.Geometry
 {
 	public static class GeometryHelpers 
 	{
+		#region tags
+
+		public const string Tag_SubElement = "SubElement";
+
+		#endregion tags
+
 		#region element layering
 
 		static public float internalLayerSeparation = 0.01f; // use for distance between layers of the same element (eg a polygon and its sides)

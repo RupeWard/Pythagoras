@@ -119,11 +119,11 @@ namespace RJWard.Geometry
 			}
 		}
 
-		private void FindAndDestroyAllEdges( )
+		private void FindAndDestroyAllSubElements( )
 		{
 			foreach (Transform tr in cachedTransform)
 			{
-				if (tr.tag == "Edge")
+				if (tr.tag == GeometryHelpers.Tag_SubElement)
 				{
 					GameObject.Destroy( tr.gameObject );
 				}
@@ -178,7 +178,7 @@ namespace RJWard.Geometry
 			}
 			// Cloning process instantiates from the source sobject so edges get copied but not set up. Need to find and destroy them.
 			// TODO possible just destroy all children on cloning? Will there ever be subobjects that we want to keep?
-			e.FindAndDestroyAllEdges( );
+			e.FindAndDestroyAllSubElements( );
 			return clone;
 		}
 

@@ -184,9 +184,9 @@ namespace RJWard.Geometry
 						vertices[modIndex(i+1)]
 					  },
 					  Element2DBase.defaultEdgeWidth,
-					  Color.cyan /* decorator.colour*/ );
+					  Color.cyan /* TODO: decorator.colour*/ );
 					edge.cachedTransform.SetParent( cachedTransform );
-					edge.gameObject.tag = "Edge";
+					edge.gameObject.tag = GeometryHelpers.Tag_SubElement;
 					SetEdge( i, edge );
 				}
 				else
@@ -326,7 +326,6 @@ namespace RJWard.Geometry
 
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
-
 
 			SetEdges( vertices );
 
