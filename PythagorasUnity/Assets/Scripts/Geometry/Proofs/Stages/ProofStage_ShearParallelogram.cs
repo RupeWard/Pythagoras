@@ -120,7 +120,7 @@ namespace RJWard.Geometry
 			{
 				parallelogram_.SetAlpha( shearAlpha_ );
 			}
-			parallelogram_.SetAngle(Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
+			parallelogram_.SetAngleDegrees(Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
 		}
 
 		protected override void HandleFinished( )
@@ -130,12 +130,12 @@ namespace RJWard.Geometry
 			{
 				case ProofEngine.EDirection.Forward:
                     {
-						parallelogram_.SetAngle( parallelogramTargetAngle_ );
+						parallelogram_.SetAngleDegrees( parallelogramTargetAngle_ );
 						break;
 					}
 				case ProofEngine.EDirection.Reverse:
 					{
-						parallelogram_.SetAngle( parallelogramStartAngle_);
+						parallelogram_.SetAngleDegrees( parallelogramStartAngle_);
 						if (baselineNumber_ != 0)
 						{
 							parallelogram_.ChangeBaseline( 4 - baselineNumber_ );

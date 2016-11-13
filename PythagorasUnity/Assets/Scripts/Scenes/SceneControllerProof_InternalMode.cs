@@ -278,10 +278,10 @@ public partial class SceneControllerProof : SceneController_Base
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime * initialSpeed;
-			parallelogram0.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
+			parallelogram0.SetAngleDegrees( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelogram0.SetAngle( targetAngle );
+		parallelogram0.SetAngleDegrees( targetAngle );
 		yield return null;
 
 		elapsed = 0f;
@@ -335,10 +335,10 @@ public partial class SceneControllerProof : SceneController_Base
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime * initialSpeed;
-			parallelogram1.SetAngle( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
+			parallelogram1.SetAngleDegrees( Mathf.Lerp( 90f, targetAngle, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelogram1.SetAngle( targetAngle );
+		parallelogram1.SetAngleDegrees( targetAngle );
 		yield return null;
 
 		elapsed = 0f;
@@ -422,17 +422,17 @@ public partial class SceneControllerProof : SceneController_Base
 		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[0] );
 		parallelogram0.ChangeBaseline( 1 );
 
-		float startingAngle = parallelogram0.angle;
+		float startingAngle = parallelogram0.angleDegrees;
 		parallelogram0.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime * initialSpeed;
-			parallelogram0.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			parallelogram0.SetAngleDegrees( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelogram0.SetAngle( 90f );
+		parallelogram0.SetAngleDegrees( 90f );
 		yield return null;
 
 		yield return StartCoroutine( RemoveShadowParallelogramCR( 0 ) );
@@ -472,17 +472,17 @@ public partial class SceneControllerProof : SceneController_Base
 
 		parallelogram1.ChangeBaseline( 3 );
 
-		float startingAngle = parallelogram1.angle;
+		float startingAngle = parallelogram1.angleDegrees;
 		parallelogram1.SetAlpha( shearAlpha );
 
 		float elapsed = 0f;
 		while (elapsed < shearSquareDuration)
 		{
 			elapsed += Time.deltaTime * initialSpeed;
-			parallelogram1.SetAngle( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
+			parallelogram1.SetAngleDegrees( Mathf.Lerp( startingAngle, 90f, elapsed / shearSquareDuration ) );
 			yield return null;
 		}
-		parallelogram1.SetAngle( 90f );
+		parallelogram1.SetAngleDegrees( 90f );
 		yield return null;
 
 		yield return StartCoroutine( RemoveShadowParallelogramCR( 1 ) );
