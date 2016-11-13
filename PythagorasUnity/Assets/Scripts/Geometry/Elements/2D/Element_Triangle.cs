@@ -79,12 +79,13 @@ namespace RJWard.Geometry
 				vertices_[i] = vs[i];
 			}
 
+			decorator = new ElementDecorator_Triangle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+
 			if (DEBUG_TRIANGLE)
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetColour( c );
 			SetDirty( );
 		}
 
@@ -122,12 +123,13 @@ namespace RJWard.Geometry
 
 			vertices_[2] = X + perp * h;
 
+			decorator = new ElementDecorator_Triangle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+
 			if (DEBUG_TRIANGLE)
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetColour( c );
 			SetDirty( );
 		}
 
@@ -294,16 +296,15 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		override protected void HandleColourChanged( )
+		override protected void HandleColourChanged( Color c)
 		{
-			cachedMaterial.SetColor( "_Color", colour );
+			cachedMaterial.SetColor( "_Color", c );
 		}
 
-		override protected void HandleAlphaChanged( )
+		override protected void HandleAlphaChanged( float a )
 		{
-			cachedMaterial.SetFloat( "_Alpha", alpha );
+			cachedMaterial.SetFloat( "_Alpha", a );
 		}
-
 
 		#endregion Non-geometrical Appaarance
 

@@ -140,12 +140,13 @@ namespace RJWard.Geometry
 			height_ = h;
 			angle_ = a;
 
+			decorator = new ElementDecorator_Parallelogram( c, 1f, HandleColourChanged, HandleAlphaChanged );
+
 			if (DEBUG_PARALLELOGRAM)
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetColour( c );
 			SetDirty( );
 		}
 
@@ -209,7 +210,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Parallelograms (" + this.GetType( ).ToString( ) + ") can currently only be cloned from Parallelograms, not " + src.GetType( ).ToString( ) );
 			}
-			Init( p.geometryFactory, p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.cachedMaterial.GetColor( "_Color" ) );
+			Init( p.geometryFactory, p.field, p.depth, p.baseVertices_.ToArray( ), p.height_, p.angle_, p.decorator.colour );
 		}
 
 		public override ElementBase Clone( string name )
@@ -309,7 +310,6 @@ namespace RJWard.Geometry
 
 			if (edge0_ == null)
 			{
-
 				edge0_ = geometryFactory.AddStraightLineToField(
 					field,
 					"Edge0",
@@ -333,17 +333,17 @@ namespace RJWard.Geometry
 
 		#region Non-geometrical Appaarance
 
-		protected override void HandleColourChanged( )
+		protected override void HandleColourChanged( Color c)
 		{
-			cachedMaterial.SetColor( "_Color", colour );
+			cachedMaterial.SetColor( "_Color", c );
 		}
 
-		protected override void HandleAlphaChanged( )
+		protected override void HandleAlphaChanged( float a )
 		{
-			cachedMaterial.SetFloat( "_Alpha", alpha );
+			cachedMaterial.SetFloat( "_Alpha", a );
 			if (edge0_ != null)
 			{
-				edge0_.SetAlpha( alpha );
+				edge0_.SetAlpha( a );
 			}
 		}
 
@@ -358,7 +358,7 @@ namespace RJWard.Geometry
 				height_ = h;
 				if (edge0_ != null)
 				{
-					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : alpha );
+					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : decorator.alpha);
 				}
 				SetDirty( );
 			}

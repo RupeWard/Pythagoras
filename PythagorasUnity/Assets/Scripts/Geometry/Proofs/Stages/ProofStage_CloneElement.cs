@@ -88,7 +88,7 @@ namespace RJWard.Geometry
 		protected override void DoUpdateView( )
 		{
 			CreateCloneIfNeeded( );
-			cloneElement_.SetAlpha(Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
+			cloneElement_.SetAlpha(Mathf.Lerp( 0f, 1f, currentTimeFractional ));
 		}
 
 		protected override void HandleFinished( )

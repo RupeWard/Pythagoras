@@ -59,6 +59,19 @@ namespace RJWard.Geometry
 			isDirty_ = true;
 		}
 
+		private ElementDecoratorBase decorator_;
+		protected ElementDecoratorBase decorator
+		{
+			get { return decorator_; }
+			set { decorator_ = value; }
+		}
+
+		protected T Decorator< T >() where T : ElementDecoratorBase
+		{
+			return decorator_ as T;
+		}
+
+		/*
 		private Color colour_; // TODO replace with some kind of decorator
 		public Color colour
 		{
@@ -70,14 +83,26 @@ namespace RJWard.Geometry
 		{
 			get { return alpha_; }
 		}
+		*/
 
 		#endregion private data
 
 		#region Non-geometrical Appaarance
 
-		abstract protected void HandleColourChanged( );
-		abstract protected void HandleAlphaChanged( );
+		abstract protected void HandleColourChanged( Color c);
+		abstract protected void HandleAlphaChanged( float a);
 
+		public void SetColour( Color c)
+		{
+			decorator.colour = c;
+		}
+
+		public void SetAlpha( float a)
+		{
+			decorator.alpha = a;
+		}
+
+		/*
 		public void SetColour( Color c )
 		{
 			if (colour_ != c)
@@ -101,6 +126,7 @@ namespace RJWard.Geometry
 			SetColour( c );
 			SetAlpha( a );
 		}
+		*/
 
 		#endregion Non-geometrical Appaarance
 
@@ -140,7 +166,6 @@ namespace RJWard.Geometry
 			CheckIfModded( );
 #endif
 		}
-
 
 		#endregion MB Flow
 

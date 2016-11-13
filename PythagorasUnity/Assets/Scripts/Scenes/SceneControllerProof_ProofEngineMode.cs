@@ -32,7 +32,7 @@ public partial class SceneControllerProof : SceneController_Base
 
     private void SetForwardButtonDirection( ProofEngine.EDirection dirn )
 	{
-		if (DEBUG_PROOF)
+		if (UIManager.DEBUG_UI)
 		{
 			Debug.LogWarning( "SetForwardButtonDirection to " + dirn );
 		}

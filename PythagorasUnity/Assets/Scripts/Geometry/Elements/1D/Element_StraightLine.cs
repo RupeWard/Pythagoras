@@ -18,7 +18,6 @@ namespace RJWard.Geometry
 		#region private data
 
 		private List< Vector2 > ends_ = new List< Vector2 >( 2 ) { Vector3.zero, Vector3.zero }; // the vertices
-		private float width_ = 0.1f;
 
 		#endregion private data
 
@@ -77,9 +76,9 @@ namespace RJWard.Geometry
 					modded = true;
 				}
 			}
-			if (modWidth != width_)
+			if (modWidth != Decorator< ElementDecorator1DBase > ().width)
 			{
-				width_ = modWidth;
+				Decorator<ElementDecorator1DBase>( ).width = modWidth;
 				modded = true;
 			}
 			if (modded)
@@ -99,7 +98,7 @@ namespace RJWard.Geometry
 			{
 				modEnds[i] = ends_[i];
 			}
-			modWidth = width_;
+			modWidth = Decorator<ElementDecorator1DBase>( ).width;
 #endif
 		}
 
@@ -122,15 +121,19 @@ namespace RJWard.Geometry
 			{
 				ends_[i] = es[i];
 			}
-			width_ = w;
+			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
 
 			if (DEBUG_STRAIGHTLINE)
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
 
-			SetColour( c );
 			SetDirty( );
+		}
+
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec )
+		{
+			Init( gf, f, d, es, dec.width, dec.colour );
 		}
 
 		Vector2 GetDirection( )
@@ -148,7 +151,8 @@ namespace RJWard.Geometry
 			Vector3 perp = Vector3.Cross( direction, s_normal ).normalized;
 			Vector2 perp2 = perp;
 
-			float offset = 0.5f * width_;
+			float offset = 0.5f * Decorator< ElementDecorator1DBase >().width;
+
 			pts[0] = ends_[0] + offset * perp2;
 			pts[1] = ends_[1] + offset * perp2;
 			pts[2] = ends_[1] - offset * perp2;
@@ -179,7 +183,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": StraightLines can currently only be cloned as StraightLines" );
 			}
-			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), s.width_, s.colour );
+			Init( s.geometryFactory, s.field, s.depth, s.ends_.ToArray( ), Decorator< ElementDecorator1DBase >() );
 		}
 
 		public override ElementBase Clone( string name )
@@ -212,7 +216,7 @@ namespace RJWard.Geometry
 			{
 				modEnds[i] = ends_[i];
 			}
-			modWidth = width_;
+			modWidth = Decorator< ElementDecorator1DBase >().width;
 #endif
 			Vector2[] pts = GetVertices( );
 
@@ -247,18 +251,23 @@ namespace RJWard.Geometry
 
 		#region geometry helpers
 
+		protected void HandleWidthChanged( float w)
+		{
+			SetDirty( );
+		}
+
 		#endregion geometry helpers
 
 		#region Non-geometrical Appaarance
 
-		override protected void HandleColourChanged( )
+		override protected void HandleColourChanged( Color c)
 		{
-			cachedMaterial.SetColor( "_Color", colour );
+			cachedMaterial.SetColor( "_Color", c );
 		}
 
-		override protected void HandleAlphaChanged(  )
+		override protected void HandleAlphaChanged( float a )
 		{
-			cachedMaterial.SetFloat( "_Alpha", alpha );
+			cachedMaterial.SetFloat( "_Alpha", a );
 		}
 
 		#endregion Non-geometrical Appaarance
@@ -273,7 +282,7 @@ namespace RJWard.Geometry
 				sb.Append( ends_[i] ).Append( " " );
 			}
 
-			sb.Append( " width=" ).Append( width_ );
+			sb.Append( " width=" ).Append( Decorator< ElementDecorator1DBase >().width );
 			sb.Append( " d=" ).Append( depth );
 
 			sb.Append( " pts=" );
