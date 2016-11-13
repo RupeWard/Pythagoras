@@ -48,7 +48,6 @@ namespace RJWard.Geometry
 			return result;
         }
 
-		Element_StraightLine edge0_ = null;
 
 		#endregion properties
 
@@ -255,14 +254,6 @@ namespace RJWard.Geometry
 			return this.Clone< Element_Parallelogram >( name );
 		}
 
-		private void OnDestroy()
-		{
-			if (edge0_ != null)
-			{
-				GameObject.Destroy( edge0_.gameObject );
-				edge0_ = null;
-			}
-		}
 
 		#endregion creation
 
@@ -336,25 +327,6 @@ namespace RJWard.Geometry
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
-			Vector2[] edge0Ends = new Vector2[2];
-			edge0Ends[0] = vertices[0];
-			edge0Ends[1] = vertices[1];
-
-			if (edge0_ == null)
-			{
-				edge0_ = geometryFactory.AddStraightLineToField(
-					field,
-					"Edge0",
-					depth - 0.01f,
-					edge0Ends,
-					0.05f,
-					Color.black
-					);
-			}
-			else
-			{
-				edge0_.SetEnds( edge0Ends );
-			}
 
 			SetEdges( vertices );
 
@@ -376,10 +348,6 @@ namespace RJWard.Geometry
 		protected override void HandleAlphaChanged( float a )
 		{
 			cachedMaterial.SetFloat( "_Alpha", a );
-			if (edge0_ != null)
-			{
-				edge0_.SetAlpha( a );
-			}
 		}
 
 		#endregion Non-geometrical Appaarance
@@ -391,11 +359,7 @@ namespace RJWard.Geometry
 			if (h != height_)
 			{
 				height_ = h;
-
-				if (edge0_ != null)
-				{
-					edge0_.SetAlpha( height_ < Mathf.Epsilon ? 0f : decorator.alpha);
-				}
+				ShowAllEdges( height_ > Mathf.Epsilon );
 				SetMeshDirty( );
 			}
 		}
