@@ -177,6 +177,12 @@ namespace RJWard.Geometry
 
 		#region Setup
 
+		protected void SetSharedMaterial (Material m)
+		{
+			cachedMaterial_ = m;
+			cachedMeshRenderer_.sharedMaterial = cachedMaterial_;
+		}
+
 		private void AdjustMesh( )
 		{
 			DoAdjustMesh( );
@@ -188,12 +194,22 @@ namespace RJWard.Geometry
 
 		// Call this from derived classes' Init functions
 		// override with exception in classes when required (eg 2D base class where the numVertices must be set)
-		protected virtual void Init( GeometryFactory gf, Field f, float d )
+		protected virtual void Init( GeometryFactory gf, Field f, float d, Material mat )
 		{
 			geometryFactory_ = gf;
 			SetField( f );
 			depth_ = d;
+			if (mat != null)
+			{
+				useSharedMaterial = true;
+				SetSharedMaterial( mat );
+			}
 			SetMeshDirty( );
+		}
+
+		protected virtual void Init( GeometryFactory gf, Field f, float d)
+		{
+			Init( gf, f, d, null );
 		}
 
 		private void SetField( Field f )

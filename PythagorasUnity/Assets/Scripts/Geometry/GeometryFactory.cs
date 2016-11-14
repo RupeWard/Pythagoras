@@ -153,7 +153,7 @@ namespace RJWard.Geometry
 			GameObject segmentGO = GameObject.Instantiate< GameObject >( lineSegmentPrefab ) as GameObject;
 			segmentGO.name = n;
 			Element_StraightLine segment = segmentGO.GetComponent< Element_StraightLine >( );
-			segment.Init( this, curve.field, curve.depth, es, curve.decorator1D );
+			segment.Init( this, curve.field, curve.depth, es, curve.decorator1D, curve.cachedMaterial );
 			segment.cachedTransform.SetParent( curve.cachedTransform );
 			return segment;
 		}

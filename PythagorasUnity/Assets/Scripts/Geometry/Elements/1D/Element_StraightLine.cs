@@ -110,7 +110,7 @@ namespace RJWard.Geometry
 
 		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, float w, Color c )
 		{
-			InitHelper( gf, f, d, es );
+			InitHelper( gf, f, d, es, null );
 
 			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, HandleWidthChanged );
 			decorator.Apply( );
@@ -124,9 +124,9 @@ namespace RJWard.Geometry
 		}
 
 		// For when we want to use a shared decorator
-		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec )
+		public void Init( GeometryFactory gf, Field f, float d, Vector2[] es, ElementDecorator1DBase dec, Material mat )
 		{
-			InitHelper( gf, f, d, es );
+			InitHelper( gf, f, d, es, mat );
 
 			if (dec == null)
 			{
@@ -144,14 +144,14 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		private void InitHelper(GeometryFactory gf, Field f, float d, Vector2[] es)
+		private void InitHelper(GeometryFactory gf, Field f, float d, Vector2[] es, Material mat)
 		{
 			if (es.Length != 2)
 			{
 				throw new System.Exception( "es.Length should be 2, not " + es.Length + " on trying to Init " + gameObject.name );
 			}
 
-			base.Init( gf, f, d );
+			base.Init( gf, f, d, mat );
 
 			for (int i = 0; i < 2; i++)
 			{
