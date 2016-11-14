@@ -237,28 +237,7 @@ namespace RJWard.Geometry
 				}
 			}
 
-			Element_StraightLine[] lines = new Element_StraightLine[2];
-
-			for (int i = 0; i < 3; i++)
-			{
-                if (GetAngleElement( i ) != null)
-				{
-					DestroyAngleElement( i );					
-                }
-				lines[0] = GetEdgeElement( i ) as Element_StraightLine;
-				lines[1] = GetEdgeElement( modIndex( i + 1 ) ) as Element_StraightLine;
-
-				Element_Sector angleElement = geometryFactory.AddSectorBetweenLines(
-					name + " Angle_" + i.ToString( ),
-					GeometryHelpers.internalLayerSeparation,
-					lines,
-					0.2f,
-					Color.red );
-				angleElement.cachedTransform.SetParent( cachedTransform );
-				angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
-
-				SetAngleElement( i, angleElement );
-			}
+			CreateAllAngleElements( );
 
 			if (DEBUG_TRIANGLE_VERBOSE)
 			{
