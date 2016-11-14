@@ -37,31 +37,26 @@ namespace RJWard.Geometry
 
 		override protected void CheckIfModded( )
 		{
-			bool modded = false;
 			if (Vector2.Distance( modCentre, centre_) > Mathf.Epsilon)
 			{
-				centre_ = modCentre;
-				modded = true;
+				if (SetCentre(modCentre))
+				{
+					if (DEBUG_CIRCLE)
+					{
+						Debug.Log( "Modded " + gameObject.name +" centre");
+					}
+				}
 			}
 			if (!Mathf.Approximately(modRadius, radius_))
 			{
-				if (modRadius < minRadius)
+				if (SetRadius(modRadius))
 				{
-					Debug.LogWarning( "modRadius out of range at " + modRadius + ", fixing to minimum of " + minRadius );
-					modRadius = radius_;
+					if (DEBUG_CIRCLE)
+					{
+						Debug.Log( "Modded " + gameObject.name + " radius" );
+					}
 				}
-				radius_ = modRadius;
-				modded = true;
-			}
-			
-			if (modded)
-			{
-				if (DEBUG_CIRCLE)
-				{
-					Debug.Log( "Modded " + gameObject.name );
-				}
-				SetMeshDirty( );
-			}
+			}			
 		}
 
 		protected override void SetModdingValues( )
@@ -76,8 +71,9 @@ namespace RJWard.Geometry
 
 		#region setters
 
-		public void SetRadius(float r)
+		public bool SetRadius(float r)
 		{
+			bool changed = false;
 			if (r < minRadius)
 			{
 				if (DEBUG_CIRCLE)
@@ -89,17 +85,22 @@ namespace RJWard.Geometry
 			if (! Mathf.Approximately(radius_, r))
 			{
 				radius_ = r;
+				changed = true;
 				SetMeshDirty( );
 			}
+			return changed;
 		}
 
-		public void SetCentre(Vector2 c)
+		public bool SetCentre(Vector2 c)
 		{
+			bool changed = false;
 			if ( Vector2.Distance(c, centre_) > Mathf.Epsilon)
 			{
 				centre_ = c;
+				changed = true;
 				SetMeshDirty( );
 			}
+			return changed;
 		}
 
 		#endregion setters
