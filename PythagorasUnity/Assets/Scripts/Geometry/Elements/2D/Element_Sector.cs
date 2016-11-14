@@ -15,6 +15,8 @@ namespace RJWard.Geometry
 		public static readonly bool DEBUG_SECTOR = true;
 		public static readonly bool DEBUG_SECTOR_VERBOSE = true;
 
+		private static readonly float rightAngleTolerance = 0.1f;
+
 		private static readonly float minRadius = 0.05f;
 
 		#region private data
@@ -25,6 +27,8 @@ namespace RJWard.Geometry
 		private float angleDirectionDegrees_ = 0f;
 
 		private float minSectorEdgeLength_ = 0.02f;
+
+		private bool isAngleMarker = false;
 
 		Element_Curve arcElement_ = null;
 		Element_StraightLine[] edgeElements_ = new Element_StraightLine[2];
@@ -182,6 +186,10 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
+		public void SetAngleMarker()
+		{
+			isAngleMarker = true;
+		}
 
 		#endregion Setup
 
@@ -217,7 +225,9 @@ namespace RJWard.Geometry
 #if UNITY_EDITOR
 			SetModdingValues( );
 #endif
-			int numSectors = GetNumSectors( radius_, angleExtentDegrees_, minSectorEdgeLength_ );
+			bool doRightAngle = (isAngleMarker && RJWard.Core.CSharpExtensions.EqualsApprox( angleExtentDegrees_, 90f, rightAngleTolerance ));
+
+			int numSectors = (doRightAngle)?(2):( GetNumSectors( radius_, angleExtentDegrees_, minSectorEdgeLength_ ));
 
 			Mesh mesh = GetMesh( );
 			
@@ -235,17 +245,49 @@ namespace RJWard.Geometry
 
 				List<Vector2> perimeterPoints = new List<Vector2>( );
 
-				for (int i = 0; i <= numSectors; i++)
+				if (doRightAngle)
 				{
-					float angle = Mathf.Deg2Rad * angleDirectionDegrees_ + angleStep * i;
+					float d = radius_ / Mathf.Sqrt( 2 );
 
-					Vector2 perimeterPoint = new Vector2( centre_.x + radius_ * Mathf.Cos( angle ), centre_.y + radius_ * Mathf.Sin( angle ) );
-					perimeterPoints.Add( perimeterPoint );
+					float angle0 = Mathf.Deg2Rad * angleDirectionDegrees_;
+					Vector2 perimeterPoint0 = new Vector2( centre_.x + d * Mathf.Cos( angle0 ), centre_.y + d * Mathf.Sin( angle0 ) );
 
-					verts[1 + i] = new Vector3( perimeterPoint.x, perimeterPoint.y, depth );
-					uvs[1 + i] = Vector2.zero;
-					normals[1 + i] = s_normal;
+					verts[1] = new Vector3( perimeterPoint0.x, perimeterPoint0.y, depth );
+					uvs[1] = Vector2.zero;
+					normals[1] = s_normal;
+
+					float angle2 = angle0 + Mathf.Deg2Rad * angleExtentDegrees_;
+					Vector2 perimeterPoint2 = new Vector2( centre_.x + d * Mathf.Cos( angle2 ), centre_.y + d * Mathf.Sin( angle2 ) );
+
+					verts[3] = new Vector3( perimeterPoint2.x, perimeterPoint2.y, depth );
+					uvs[3] = Vector2.zero;
+					normals[3] = s_normal;
+
+					Vector2 perimeterPoint1 = perimeterPoint2 + (perimeterPoint0 - centre_);
+
+					verts[2] = new Vector3( perimeterPoint1.x, perimeterPoint1.y, depth );
+					uvs[2] = Vector2.zero;
+					normals[2] = s_normal;
+
+					perimeterPoints.Add( perimeterPoint0 );
+					perimeterPoints.Add( perimeterPoint1 );
+					perimeterPoints.Add( perimeterPoint2 );
 				}
+				else
+				{
+					for (int i = 0; i <= numSectors; i++)
+					{
+						float angle = Mathf.Deg2Rad * angleDirectionDegrees_ + angleStep * i;
+
+						Vector2 perimeterPoint = new Vector2( centre_.x + radius_ * Mathf.Cos( angle ), centre_.y + radius_ * Mathf.Sin( angle ) );
+						perimeterPoints.Add( perimeterPoint );
+
+						verts[1 + i] = new Vector3( perimeterPoint.x, perimeterPoint.y, depth );
+						uvs[1 + i] = Vector2.zero;
+						normals[1 + i] = s_normal;
+					}
+				}
+
 
 				List<int> tris = new List<int>( );
 				for (int i = 0; i < numSectors; i++)

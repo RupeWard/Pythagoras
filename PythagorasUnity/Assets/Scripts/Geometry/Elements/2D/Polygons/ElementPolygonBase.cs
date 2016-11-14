@@ -227,10 +227,9 @@ namespace RJWard.Geometry
 					Color.red );
 				angleElement.cachedTransform.SetParent( cachedTransform );
 				angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
-
+				angleElement.SetAngleMarker( );
 				SetAngleElement( i, angleElement );
 			}
-
 		}
 
 		protected void CreateAllAngleElements()
