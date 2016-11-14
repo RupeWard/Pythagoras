@@ -327,6 +327,7 @@ namespace RJWard.Geometry
 			mesh.Optimize( );
 
 			SetEdgeElements( vertices );
+			CreateAllAngleElements( );
 
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
