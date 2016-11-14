@@ -310,55 +310,75 @@ namespace RJWard.Geometry
 				mesh.RecalculateBounds( );
 				mesh.Optimize( );
 
-				// TODO don't always destroy/create
-				DestroySubElements( );
-
+				// TODO dependent on whether we want to show it
 				if (perimeterPoints.Count > 1)
 				{
-					arcElement_ = geometryFactory.AddCurveToField(
-						field,
-						name + " Perimeter",
-						depth - GeometryHelpers.internalLayerSeparation,
-						perimeterPoints,
-						false,
-						Element2DBase.defaultEdgeWidth,
-						Color.cyan // TODO use decorator
-						);
-					arcElement_.cachedTransform.SetParent( cachedTransform );
+					if (arcElement_ != null)
+					{
+						arcElement_.SetPoints( perimeterPoints );
+						ShowArc( ); 
+					}
+					else
+					{
+						arcElement_ = geometryFactory.AddCurveToField(
+							field,
+							name + " Perimeter",
+							depth - GeometryHelpers.internalLayerSeparation,
+							perimeterPoints,
+							false,
+							Element2DBase.defaultEdgeWidth,
+							Color.cyan // TODO use decorator
+							);
+						arcElement_.cachedTransform.SetParent( cachedTransform );
+					}
 				}
 				else
 				{
-					Debug.LogWarning( "Only " + perimeterPoints.Count + " perimeter points" );
+					HideArc( );
+					if (DEBUG_SECTOR)
+					{
+						Debug.LogWarning( "Only " + perimeterPoints.Count + " perimeter points" );
+					}
 				}
 
+				// TODO dependent on whether we want to show them
+
 				// refactor into loop and function
-				Vector2[] edgeEnds = new Vector2[] { verts[0], verts[1] };
+				Vector2[] edgeEnds = new Vector2[2];// { verts[0], verts[1] };
 
-				edgeElements_[0] = geometryFactory.AddStraightLineToField(
-					field,
-					name + " Edge_0",
-					depth - GeometryHelpers.internalLayerSeparation,
-					edgeEnds,
-					Element2DBase.defaultEdgeWidth,
-					Color.cyan );// TODO use decorator
-				edgeElements_[0].cachedTransform.SetParent( cachedTransform );
-
-				edgeEnds[0] = verts[verts.Length - 1];
-				edgeEnds[1] = verts[0];
-
-				edgeElements_[1] = geometryFactory.AddStraightLineToField(
-					field,
-					name + " Edge_1",
-					depth - GeometryHelpers.internalLayerSeparation,
-					edgeEnds,
-					Element2DBase.defaultEdgeWidth,
-					Color.cyan );// TODO use decorator
-				edgeElements_[1].cachedTransform.SetParent( cachedTransform );
+				for (int i = 0; i < 2; i++)
+				{
+					if (i == 0)
+					{
+						edgeEnds[0] = verts[0];
+						edgeEnds[1] = verts[1];
+					}
+					else
+					{
+						edgeEnds[0] = verts[verts.Length - 1];
+						edgeEnds[1] = verts[0];
+					}
+					if (edgeElements_[i] != null)
+					{
+						edgeElements_[i].SetEnds( edgeEnds );
+					}
+					else
+					{
+						edgeElements_[i] = geometryFactory.AddStraightLineToField(
+							field,
+							name + " Edge_"+i,
+							depth - GeometryHelpers.internalLayerSeparation,
+							edgeEnds,
+							Element2DBase.defaultEdgeWidth,
+							Color.cyan );// TODO use decorator
+						edgeElements_[i].cachedTransform.SetParent( cachedTransform );
+					}
+				}
 			}
 			else
 			{
 				mesh.Clear( );
-				DestroySubElements( );
+				DestroyAllSubElements( );
 			}
 			if (DEBUG_SECTOR_VERBOSE)
 			{
@@ -366,23 +386,108 @@ namespace RJWard.Geometry
 			}
 		}
 
-		private void DestroySubElements()
+		public void DestroyArc()
 		{
 			if (arcElement_ != null)
 			{
 				GameObject.Destroy( arcElement_.gameObject );
 				arcElement_ = null;
 			}
+		}
+
+		public void DestroyEdge(int n)
+		{
+			if (edgeElements_[n] != null)
+			{
+				GameObject.Destroy( edgeElements_[n].gameObject );
+				edgeElements_[n] = null;
+			}
+		}
+
+		public void DestroyBothEdges()
+		{
 			for (int i = 0; i < 2; i++)
 			{
-				if (edgeElements_[i] != null)
-				{
-					GameObject.Destroy( edgeElements_[i].gameObject );
-					edgeElements_[i] = null;
-				}
+				DestroyEdge( i );
 			}
-
 		}
+
+		private void DestroyAllSubElements()
+		{
+			DestroyArc( );
+			DestroyBothEdges( );
+		}
+
+		public void ShowArc( bool b )
+		{
+			if (arcElement_ != null)
+			{
+				arcElement_.gameObject.SetActive( b );
+			}
+		}
+
+		public void ShowArc( )
+		{
+			ShowArc( true );
+		}
+
+		public void HideArc( )
+		{
+			ShowArc( false );
+		}
+
+		public void ShowEdge( int n, bool b )
+		{
+			if (edgeElements_[n] != null)
+			{
+				edgeElements_[n].gameObject.SetActive( b );
+			}
+		}
+
+		public void ShowEdge( int n)
+		{
+			ShowEdge( n, true );
+		}
+
+		public void HideEdge( int n )
+		{
+			ShowEdge( n, false );
+		}
+
+		public void ShowBothEdges( bool b)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				ShowEdge( i, b );
+			}
+		}
+
+		public void ShowBothEdges( )
+		{
+			ShowBothEdges( true );
+		}
+
+		public void HideBothEdges( )
+		{
+			ShowBothEdges( false );
+		}
+
+		public void ShowAllSubElements( bool b)
+		{
+			ShowArc( b );
+			ShowBothEdges( b );
+		}
+
+		public void ShowAllSubElements( )
+		{
+			ShowAllSubElements( true );
+		}
+
+		public void HideAllSubElements( )
+		{
+			ShowAllSubElements( false);
+		}
+
 		#endregion Mesh
 
 		#region Non-geometrical Appaarance
