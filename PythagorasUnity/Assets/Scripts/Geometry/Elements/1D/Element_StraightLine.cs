@@ -17,7 +17,7 @@ namespace RJWard.Geometry
 
 		#region private data
 
-		private List< Vector2 > ends_ = new List< Vector2 >( 2 ) { Vector3.zero, Vector3.zero }; // the vertices
+		private List< Vector2 > ends_ = new List< Vector2 >( ) { Vector3.zero, Vector3.zero }; // the vertices
 
 		#endregion private data
 
@@ -62,32 +62,33 @@ namespace RJWard.Geometry
 #if UNITY_EDITOR
 		// for in-editor modification
 
-		public Vector2[] modEnds = new Vector2[2];
+		public Vector2[] modEnds = new Vector2[] { new Vector2( ), new Vector2( ) };
 		public float modWidth = 0f;
 
 		override protected void CheckIfModded( )
 		{
-			bool modded = false;
 			for (int i = 0; i < 2; i++)
 			{
-				if (modEnds[i] != ends_[i])
+				if (Vector2.Distance( modEnds[i], ends_[i]) > Mathf.Epsilon)
 				{
-					ends_[i] = modEnds[i];
-					modded = true;
+					if (SetEnd( i, modEnds[i] ))
+					{
+						if (DEBUG_STRAIGHTLINE)
+						{
+							Debug.Log( "Modded " + gameObject.name +" end #"+i);
+						}
+					}
 				}
 			}
-			if (modWidth != decorator1D.width)
+			if (!Mathf.Approximately( modWidth, decorator1D.width))
 			{
-				decorator1D.width = modWidth;
-				modded = true;
-			}
-			if (modded)
-			{
-				if (DEBUG_STRAIGHTLINE)
+				if (SetWidth(modWidth))
 				{
-					Debug.Log( "Modded " + gameObject.name );
+					if (DEBUG_STRAIGHTLINE)
+					{
+						Debug.Log( "Modded " + gameObject.name + " width" );
+					}
 				}
-				SetMeshDirty( );
 			}
 		}
 
@@ -153,10 +154,7 @@ namespace RJWard.Geometry
 
 			base.Init( gf, f, d, mat );
 
-			for (int i = 0; i < 2; i++)
-			{
-				ends_[i] = es[i];
-			}
+			SetEnds( es );
 		}
 
 		public Vector2 GetDirection( )
@@ -192,20 +190,53 @@ namespace RJWard.Geometry
 			return pts;
 		}
 
-		public void SetEnds(Vector2[] vs)
+		public bool SetEnds(Vector2[] vs)
 		{
 			if (vs.Length != 2)
 			{
 				throw new System.ArgumentException( "SetEnds must be passed 2 ends not " + vs.Length );
 			}
-			SetEnds( vs[0], vs[1] );
+			return SetEnds( vs[0], vs[1] );
 		}
 
-		public void SetEnds(Vector2 v0, Vector2 v1)
+		public bool SetEnds(Vector2 v0, Vector2 v1)
 		{
-			ends_[0] = v0;
-			ends_[1] = v1;
-			SetMeshDirty( );
+			bool changed = false;
+			changed |= SetEnd( 0, v0 );
+			changed |= SetEnd( 1, v1 );
+			return changed;
+		}
+
+		public bool SetEnd(int n, Vector2 v)
+		{
+			bool changed = false;
+			if (Vector2.Distance(ends_[n], v) > Mathf.Epsilon)
+			{
+				ends_[n] = v;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+		public bool SetWidth( float f )
+		{
+			bool changed = false;
+			if (f < 0)
+			{
+				if (DEBUG_STRAIGHTLINE)
+				{
+					Debug.LogWarning( "SetWidth given width < 0, adjusting" );
+				}
+				f = 0;
+			}
+			if (!Mathf.Approximately(f, decorator1D.width))
+			{
+				decorator1D.width = modWidth;
+				changed = true;
+				// No need to set mesh dirty, this is handled by decorator 
+			}
+			return changed;
 		}
 
 		#endregion Setup
