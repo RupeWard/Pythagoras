@@ -47,39 +47,51 @@ namespace RJWard.Geometry
 
 		override protected void CheckIfModded( )
 		{
-			bool modded = false;
-			if (modCentre != centre_)
+			if (Vector2.Distance( modCentre, centre_) > Mathf.Epsilon)
 			{
-				centre_ = modCentre;
-				modded = true;
+				if (SetCentre(modCentre))
+				{
+					if (DEBUG_SECTOR)
+					{
+						Debug.Log( "Modded " + gameObject.name + " centre" );
+					}
+				}
 			}
-			if (modRadius != radius_)
+			if (!Mathf.Approximately(modRadius, radius_))
 			{
 				if (modRadius < minRadius)
 				{
 					Debug.LogWarning( "modRadius out of range at " + modRadius + ", fixing to minimum of " + minRadius );
 					modRadius = radius_;
 				}
-				radius_ = modRadius;
-				modded = true;
-			}
-			if (modAngleExtentDegrees != angleExtentDegrees_)
-			{
-				angleExtentDegrees_ = modAngleExtentDegrees;
-				modded = true;
-			}
-			if (modAngleDirectionDegrees != angleDirectionDegrees_)
-			{
-				angleDirectionDegrees_ = modAngleDirectionDegrees;
-				modded = true;
-			}
-			if (modded)
-			{
-				if (DEBUG_SECTOR)
+				if (SetRadius(modRadius))
 				{
-					Debug.Log( "Modded " + gameObject.name );
+					if (DEBUG_SECTOR)
+					{
+						Debug.Log( "Modded " + gameObject.name + " radius" );
+					}
 				}
-				SetMeshDirty( );
+			}
+
+			if (!Mathf.Approximately(modAngleExtentDegrees, angleExtentDegrees_))
+			{
+				if (SetAngleExtentDegrees( modAngleExtentDegrees ))
+				{
+					if (DEBUG_SECTOR)
+					{
+						Debug.Log( "Modded " + gameObject.name + " angleExtent" );
+					}
+				}
+			}
+			if (!Mathf.Approximately(modAngleDirectionDegrees, angleDirectionDegrees_))
+			{
+				if (SetAngleDirectionDegrees( modAngleDirectionDegrees ))
+				{
+					if (DEBUG_SECTOR)
+					{
+						Debug.Log( "Modded " + gameObject.name + " angleDirection" );
+					}
+				}
 			}
 		}
 
@@ -114,18 +126,10 @@ namespace RJWard.Geometry
 		{
 			base.Init( gf, f, d);
 
-			centre_ = ce;
-			radius_ = r;
-			if (radius_ < minRadius)
-			{
-				if (DEBUG_SECTOR)
-				{
-					Debug.LogWarning( "Trying to create a sector that's too small, reducing radius from " + r + " to " + minRadius );
-				}
-				radius_ = minRadius;
-			}
-			angleExtentDegrees_ = ae;
-			angleDirectionDegrees_ = ad;
+			SetCentre(ce);
+			SetRadius(r);
+			SetAngleExtentDegrees(ae);
+			SetAngleDirectionDegrees(ad);
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 			decorator.Apply( );
@@ -150,15 +154,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( "StraightLines passed to Element_Sector.Init are parallel. " + lines[0].DebugDescribe( ) + " " + lines[1].DebugDescribe( ) );
 			}
-			radius_ = r;
-			if (radius_ < minRadius)
-			{
-				if (DEBUG_SECTOR)
-				{
-					Debug.LogWarning( "Trying to create a sector that's too small, reducing radius from " + r + " to " + minRadius );
-				}
-				radius_ = minRadius;
-			}
+			SetRadius(r);
 
 			Vector2 line0direction = -1f * lines[0].GetDirection( );
 			float angleDirectionLine0 = Mathf.Rad2Deg * Mathf.Atan2( line0direction.y, line0direction.x ); // angle of line 0
@@ -166,14 +162,14 @@ namespace RJWard.Geometry
 			Vector2 line1direction = lines[1].GetDirection( );
 			float angleDirectionLine1 = Mathf.Rad2Deg * Mathf.Atan2( line1direction.y, line1direction.x ); // angle of line 1
 
-			angleDirectionDegrees_ = angleDirectionLine1;
+			SetAngleDirectionDegrees(angleDirectionLine1);
 			
 			while (angleDirectionLine0 < angleDirectionDegrees_)
 			{
 				angleDirectionLine0 += 360f;
 			}
 
-			angleExtentDegrees_ = angleDirectionLine0 - angleDirectionDegrees_;
+			SetAngleExtentDegrees(angleDirectionLine0 - angleDirectionDegrees_);
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 			decorator.Apply( );
@@ -189,6 +185,106 @@ namespace RJWard.Geometry
 		public void SetAngleMarker()
 		{
 			isAngleMarker = true;
+		}
+
+		public bool SetAngleExtentDegrees(float f)
+		{
+			bool changed = false;
+			if (f > 360f)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Angle " + f + " out of range in SetAngleExtentDegrees , adjusting" );
+					while (f > 360f)
+					{
+						f -= 360f;
+					}
+				}
+			}
+			if (f < 0f)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Angle " + f + " out of range in SetAngleExtentDegrees , adjusting" );
+					while (f < 0f)
+					{
+						f += 360f;
+					}
+				}
+			}
+			if (!Mathf.Approximately(f, angleExtentDegrees_))
+			{
+				angleExtentDegrees_ = f;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+		public bool SetAngleDirectionDegrees( float f )
+		{
+			bool changed = false;
+			if (f > 360f)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Angle " + f + " out of range in SetAngleDirectionDegrees, adjusting" );
+				}
+				while (f > 360f)
+				{
+					f -= 360f;
+				}
+			}
+			if (f < 0f)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Angle " + f + " out of range in SetAngleDirectionDegrees, adjusting" );
+				}
+				while (f < 0f)
+				{
+					f += 360f;
+				}
+			}
+			if (!Mathf.Approximately(f, angleDirectionDegrees_))
+			{
+				angleDirectionDegrees_ = f;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+		public bool SetRadius( float f )
+		{
+			bool changed = false;
+			if (f < minRadius)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Radius " + f + " out of range in SetRadius, adjusting" );
+				}
+				f = minRadius;
+			}
+			if (!Mathf.Approximately( f, radius_))
+			{
+				radius_= f;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+		public bool SetCentre( Vector2 v )
+		{
+			bool changed = false;
+			if (Vector2.Distance( v, centre_) > Mathf.Epsilon)
+			{
+				centre_ = v;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
 		}
 
 		#endregion Setup
