@@ -188,7 +188,7 @@ public partial class SceneControllerProof : SceneController_Base
 			createSquareDuration,
 			HandleProofStageFinished,
 			triangleSideNames_[1],
-			0f,
+			-GeometryHelpers.externalLayerSeparation,
 			90f,
 			square0Colour,
 			parallelogramNames_[0]
@@ -236,7 +236,7 @@ public partial class SceneControllerProof : SceneController_Base
 			createSquareDuration,
 			HandleProofStageFinished,
 			triangleSideNames_[2],
-			0f,
+			-GeometryHelpers.externalLayerSeparation,
 			90f,
 			square1Colour,
 			parallelogramNames_[1]
