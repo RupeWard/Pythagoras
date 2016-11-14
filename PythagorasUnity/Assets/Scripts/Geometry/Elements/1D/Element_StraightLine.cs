@@ -209,6 +209,10 @@ namespace RJWard.Geometry
 
 		public bool SetEnd(int n, Vector2 v)
 		{
+			if (n < 0 || n > 1)
+			{
+				throw new System.ArgumentException( "Can't set end " + n );
+			}
 			bool changed = false;
 			if (Vector2.Distance(ends_[n], v) > Mathf.Epsilon)
 			{
