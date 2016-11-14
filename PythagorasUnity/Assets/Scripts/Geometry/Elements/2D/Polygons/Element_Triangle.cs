@@ -146,7 +146,7 @@ namespace RJWard.Geometry
 			Element_StraightLine edge = geometryFactory.AddStraightLineToField(
 				field,
 				name+" Edge_" + n.ToString( ),
-				depth-GeometryHelpers.internalLayerSeparation,
+				depth- 2f * GeometryHelpers.internalLayerSeparation,
 				new Vector2[]
 				{
 						vertices_[ modIndex(n)],
@@ -236,6 +236,30 @@ namespace RJWard.Geometry
 					(edgeElement as Element_StraightLine).SetEnds( vertices_[modIndex( i )], vertices_[modIndex(i + 1)] );
 				}
 			}
+
+			Element_StraightLine[] lines = new Element_StraightLine[2];
+
+			for (int i = 0; i < 3; i++)
+			{
+                if (GetAngleElement( i ) != null)
+				{
+					DestroyAngleElement( i );					
+                }
+				lines[0] = GetEdgeElement( i ) as Element_StraightLine;
+				lines[1] = GetEdgeElement( modIndex( i + 1 ) ) as Element_StraightLine;
+
+				Element_Sector angleElement = geometryFactory.AddSectorBetweenLines(
+					name + " Angle_" + i.ToString( ),
+					GeometryHelpers.internalLayerSeparation,
+					lines,
+					0.2f,
+					Color.red );
+				angleElement.cachedTransform.SetParent( cachedTransform );
+				angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
+
+				SetAngleElement( i, angleElement );
+			}
+
 			if (DEBUG_TRIANGLE_VERBOSE)
 			{
 				Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );

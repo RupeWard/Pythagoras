@@ -62,5 +62,42 @@ namespace RJWard.Geometry
 			return result;
 		}
 		#endregion angle modifers
+
+		#region computations
+
+		static public bool LineIntersectionPoint( Vector2[] line1, Vector2[] line2, ref Vector2 intersection )
+		{
+			if (line1.Length != 2 || line2.Length != 2)
+			{
+				throw new System.ArgumentException( "Line vector arrays passed to LineIntersectionPoint are " + line1.Length + " and " + line2.Length );
+			}
+
+			// Get A,B,C of first line - points : ps1 to pe1
+			float A1 = line1[1].y - line1[0].y;
+			float B1 = line1[0].x - line1[1].x;
+			float C1 = A1 * line1[0].x + B1 * line1[0].y;
+
+			// Get A,B,C of second line - points : ps2 to pe2
+			float A2 = line2[1].y - line2[0].y;
+			float B2 = line2[0].x - line2[1].x;
+			float C2 = A2 * line2[0].x + B2 * line2[0].y;
+
+			// Get delta and check if the lines are parallel
+			float delta = A1 * B2 - A2 * B1;
+			if (delta == 0)
+			{
+				return false;
+			}
+
+			// now set the Vector2 intersection point and return true
+			intersection.Set (
+				(B2 * C1 - B1 * C2) / delta,
+				(A1 * C2 - A2 * C1) / delta
+			);
+
+			return true;
+		}
+
+		#endregion computations
 	}
 }

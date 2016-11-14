@@ -124,6 +124,7 @@ namespace RJWard.Geometry
 			angleDirectionDegrees_ = ad;
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
 
 			if (DEBUG_SECTOR)
 			{
@@ -132,6 +133,55 @@ namespace RJWard.Geometry
 
 			SetMeshDirty( );
 		}
+
+		public void Init(
+			GeometryFactory gf, Field f, float d, // for base
+			Element_StraightLine[] lines,
+			float r,
+			Color c )
+		{
+			base.Init( gf, f, d );
+
+			if (false == Element_StraightLine.Intersection( lines[0], lines[1], ref centre_))
+			{
+				throw new System.Exception( "StraightLines passed to Element_Sector.Init are parallel. " + lines[0].DebugDescribe( ) + " " + lines[1].DebugDescribe( ) );
+			}
+			radius_ = r;
+			if (radius_ < minRadius)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "Trying to create a sector that's too small, reducing radius from " + r + " to " + minRadius );
+				}
+				radius_ = minRadius;
+			}
+
+			Vector2 line0direction = -1f * lines[0].GetDirection( );
+			float angleDirectionLine0 = Mathf.Rad2Deg * Mathf.Atan2( line0direction.y, line0direction.x ); // angle of line 0
+
+			Vector2 line1direction = lines[1].GetDirection( );
+			float angleDirectionLine1 = Mathf.Rad2Deg * Mathf.Atan2( line1direction.y, line1direction.x ); // angle of line 1
+
+			angleDirectionDegrees_ = angleDirectionLine1;
+			
+			while (angleDirectionLine0 < angleDirectionDegrees_)
+			{
+				angleDirectionLine0 += 360f;
+			}
+
+			angleExtentDegrees_ = angleDirectionLine0 - angleDirectionDegrees_;
+
+			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
+			decorator.Apply( );
+
+			if (DEBUG_SECTOR)
+			{
+				Debug.Log( "Init() " + this.DebugDescribe( ) );
+			}
+
+			SetMeshDirty( );
+		}
+
 
 		#endregion Setup
 
@@ -173,9 +223,9 @@ namespace RJWard.Geometry
 			
 			if (numSectors > 0)
 			{
-				Vector3[] verts = new Vector3[numSectors + 1];
-				Vector2[] uvs = new Vector2[numSectors + 1];
-				Vector3[] normals = new Vector3[numSectors + 1];
+				Vector3[] verts = new Vector3[numSectors + 2];
+				Vector2[] uvs = new Vector2[numSectors + 2];
+				Vector3[] normals = new Vector3[numSectors + 2];
 
 				verts[0] = new Vector3( centre_.x, centre_.y, depth );
 				uvs[0] = Vector2.zero;
@@ -185,7 +235,7 @@ namespace RJWard.Geometry
 
 				List<Vector2> perimeterPoints = new List<Vector2>( );
 
-				for (int i = 0; i < numSectors; i++)
+				for (int i = 0; i <= numSectors; i++)
 				{
 					float angle = Mathf.Deg2Rad * angleDirectionDegrees_ + angleStep * i;
 
@@ -198,7 +248,7 @@ namespace RJWard.Geometry
 				}
 
 				List<int> tris = new List<int>( );
-				for (int i = 0; i < numSectors - 1; i++)
+				for (int i = 0; i < numSectors; i++)
 				{
 					tris.Add( 0 );
 					tris.Add( 1 + i );

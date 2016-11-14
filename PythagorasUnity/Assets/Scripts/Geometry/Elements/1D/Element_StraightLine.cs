@@ -159,10 +159,18 @@ namespace RJWard.Geometry
 			}
 		}
 
-		Vector2 GetDirection( )
+		public Vector2 GetDirection( )
 		{
 			return ends_[1] - ends_[0];
 		}
+
+		/*
+		public float GetAngleDegrees()
+		{
+			Vector2 direction = GetDirection( );
+			return Mathf.Rad2Deg * Mathf.Atan2( direction.y, direction.x );
+		}
+		*/
 
 		// Computes the 4 vertices from the ends and width
 		private Vector2[] GetVertices( )
@@ -300,6 +308,11 @@ namespace RJWard.Geometry
 				}
 			}
 			SetMeshDirty( );
+		}
+
+		static public bool Intersection( Element_StraightLine line0, Element_StraightLine line1, ref Vector2 intersection)
+		{
+			return GeometryHelpers.LineIntersectionPoint( line0.GetEnds(), line1.GetEnds(), ref intersection );
 		}
 
 		#endregion geometry helpers

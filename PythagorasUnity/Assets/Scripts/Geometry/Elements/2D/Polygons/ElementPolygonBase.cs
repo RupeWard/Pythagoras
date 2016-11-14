@@ -15,7 +15,9 @@ namespace RJWard.Geometry
 		private int numVertices_ = 0;
 
 		private Element1DBase[] edgeElements_;
-		 
+
+		private Element_Sector[] angleElements_;
+
 		#endregion private data 
 
 		#region properties
@@ -73,7 +75,11 @@ namespace RJWard.Geometry
 
 		public void ShowEdgeElement(int n, bool show)
 		{
-			GetEdgeElement( n ).gameObject.SetActive( show );
+			Element1DBase edgeElement = GetEdgeElement( n );
+			if (edgeElement != null)
+			{
+				edgeElement.gameObject.SetActive( show );
+			}
 		}
 
 		public void ShowEdgeElement(int n)
@@ -107,17 +113,102 @@ namespace RJWard.Geometry
 			ShowAllEdgeElements( false );
 		}
 
-		private void DestroyAllEdgeElements()
+		public void DestroyEdgeElement(int n)
+		{
+			if (edgeElements_[n] != null)
+			{
+				GameObject.Destroy( edgeElements_[n].gameObject );
+				edgeElements_[n] = null;
+			}
+		}
+
+		public void DestroyAllEdgeElements()
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
-				if (edgeElements_[i] != null)
+				DestroyEdgeElement( i );
+			}
+		}
+
+		#endregion edges
+
+		#region angles
+
+		public Element_Sector GetAngleElement( int n )
+		{
+			return angleElements_[modIndex( n )];
+		}
+
+		protected void SetAngleElement( int n, Element_Sector a )
+		{
+			n = modIndex( n );
+			if (angleElements_[n] != null)
+			{
+				throw new System.Exception( "Element " + name + " already has an angle #" + n + ", destroying" );
+			}
+			angleElements_[n] = a;
+		}
+
+		public void ShowAngleElement( int n, bool show )
+		{
+			Element_Sector angleElement = GetAngleElement( n );
+			if (angleElement != null)
+			{
+				angleElement.gameObject.SetActive( show );
+			}
+		}
+
+		public void ShowAngleElement( int n )
+		{
+			ShowAngleElement( n, true );
+		}
+
+		public void HideAngleElement( int n )
+		{
+			ShowAngleElement( n, false );
+		}
+
+		public void ShowAllAngleElements( bool show )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				if (angleElements_[i] != null)
 				{
-					GameObject.Destroy( edgeElements_[i].gameObject );
-					edgeElements_[i] = null;
+					angleElements_[i].gameObject.SetActive( show );
 				}
 			}
 		}
+
+		public void ShowAllAngleElements( )
+		{
+			ShowAllAngleElements( true );
+		}
+
+		public void HideAngleElements( )
+		{
+			ShowAllAngleElements( false );
+		}
+
+		public void DestroyAngleElement(int n)
+		{
+			if (angleElements_[n] != null)
+			{
+				GameObject.Destroy( angleElements_[n] );
+				angleElements_[n] = null;
+			}
+		}
+
+		public void DestroyAllAngleElements( )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				DestroyAngleElement( i );
+			}
+		}
+
+		#endregion angles
+
+		#region subelements
 
 		private void FindAndDestroyAllSubElements( )
 		{
@@ -130,7 +221,7 @@ namespace RJWard.Geometry
 			}
 		}
 
-		#endregion edges
+		#endregion subelements
 
 		#region Non-geometrical Appaarance
 
@@ -139,10 +230,16 @@ namespace RJWard.Geometry
 			base.SetAlpha( a );
 			for (int i = 0; i < NumVertices; i++)
 			{
-				Element1DBase edgeElement = GetEdgeElement( i ); // may (should?) be possible to do this wthout needing to check ... timing!
+				Element1DBase edgeElement = GetEdgeElement( i ); 
 				if (edgeElement != null)
 				{
 					edgeElement.SetAlpha( a );
+				}
+
+				Element_Sector angleElement = GetAngleElement( i );
+				if (angleElement != null)
+				{
+					angleElement.SetAlpha( a );
 				}
 			}
 		}
@@ -157,6 +254,7 @@ namespace RJWard.Geometry
 			base.Init( gf, f, d );
 			numVertices_ = n;
 			edgeElements_ = new Element1DBase[numVertices_];
+			angleElements_ = new Element_Sector[numVertices_];
 		}
 
 		protected override void Init( GeometryFactory gf, Field f, float d )

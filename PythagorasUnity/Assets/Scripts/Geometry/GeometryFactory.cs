@@ -111,6 +111,41 @@ namespace RJWard.Geometry
 			return sector;
 		}
 
+		public Element_Sector AddSectorBetweenLines( string n, float relD, Element_StraightLine[] lines, float r, Color c )
+		{
+			if (lines.Length != 2)
+			{
+				throw new System.Exception( "GeometryFactory.AddSectorBetweenLines() needs 2 lines not " + lines.Length );
+			}
+
+			GameObject sectorGO = GameObject.Instantiate<GameObject>( sectorPrefab ) as GameObject;
+			sectorGO.name = n;
+			Element_Sector sector = sectorGO.GetComponent<Element_Sector>( );
+
+			float depth = 0f;
+			if (relD < 0f)
+			{
+				depth = Mathf.Min( lines[0].depth, lines[1].depth );
+				depth += relD;
+			}
+			else if (relD > 0f)
+			{
+				depth = Mathf.Max( lines[0].depth, lines[1].depth );
+				depth += relD;
+			}
+			else
+			{
+				depth = 0.5f * (lines[0].depth + lines[1].depth);
+			}
+
+			Field field = lines[0].field;
+			if (lines[1].field != field)
+			{
+				Debug.LogWarning( "Making a sector between 2 lines in different fields" );
+			}
+			sector.Init( this, field, depth, lines, r, c );
+			return sector;
+		}
 
 		// Instantiate a line segment (as a StraightLine) and set it up using its parent curve's properties 
 		public Element_StraightLine AddLineSegmentToCurve( Element_Curve curve, string n, Vector2[] es )
