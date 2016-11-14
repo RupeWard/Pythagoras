@@ -21,7 +21,7 @@ namespace RJWard.Geometry
 
 		private List< Element_StraightLine > segments_ = new List< Element_StraightLine >( ); // the segments
 
-		private List<Vector2> points_ = new List<Vector2>( );	// the points
+		private List< Vector2 > points_ = new List< Vector2 >( );	// the points
 		bool closed_ = true;									// extra segment created if closed
 
 		#endregion private data
@@ -78,7 +78,7 @@ namespace RJWard.Geometry
 
 			base.Init( gf, f, d );
 
-			points_ = new List<Vector2>( pts );
+			points_ = new List< Vector2 >( pts );
 			closed_ = cl;
 
 			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, null ); // No width changed action as handled in full by segments
@@ -91,14 +91,21 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		public void InitOpen( GeometryFactory gf, Field f, float d, List<Vector2> pts, bool cl, float w, Color c )
+		public void InitOpen( GeometryFactory gf, Field f, float d, List< Vector2 > pts, bool cl, float w, Color c )
 		{
 			Init( gf, f, d, pts, false, w, c );
 		}
 
-		public void InitClosed( GeometryFactory gf, Field f, float d, List<Vector2> pts, bool cl, float w, Color c )
+		public void InitClosed( GeometryFactory gf, Field f, float d, List< Vector2 > pts, bool cl, float w, Color c )
 		{
 			Init( gf, f, d, pts, true, w, c );
+		}
+
+		// TODO: check if they've actually changed
+		public void SetPoints( List< Vector2 > pts)
+		{
+			points_ = new List< Vector2 >( pts );
+			SetMeshDirty( );
 		}
 
 		#endregion Setup
@@ -136,6 +143,7 @@ namespace RJWard.Geometry
 			SetModdingValues( );
 #endif
 
+			/*
 			// TODO only destroy/create as needed
 			for (int i = 0; i < segments_.Count; i++)
 			{
@@ -145,16 +153,35 @@ namespace RJWard.Geometry
 				}
 			}
 			segments_.Clear( );
+			*/
+
+			int numSegmentsBefore = segments_.Count;
 
 			Vector2[] segmentEnds = new Vector2[2];
 
-			for (int i=0; i< points_.Count - 1; i++)
-			{
-				segmentEnds[0] = points_[i];
-				segmentEnds[1] = points_[i + 1];
+			int segmentNum = 0;
+			int numCreated = 0;
+			int numDeactivated = 0;
 
-				Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + i, segmentEnds );
-				segments_.Add( segment );
+			for (segmentNum = 0; segmentNum < points_.Count - 1; segmentNum++)
+			{
+				segmentEnds[0] = points_[segmentNum];
+				segmentEnds[1] = points_[segmentNum + 1];
+
+				if (segmentNum < numSegmentsBefore)
+				{
+					segments_[segmentNum].SetEnds( segmentEnds );
+					if (!segments_[segmentNum].gameObject.activeSelf)
+					{
+						segments_[segmentNum].gameObject.SetActive( true );
+					}
+				}
+				else
+				{
+					Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + segmentNum, segmentEnds );
+					segments_.Add( segment );
+					numCreated++;
+				}
 			}
 
 			if (closed_)
@@ -162,10 +189,34 @@ namespace RJWard.Geometry
 				segmentEnds[0] = segmentEnds[1];
 				segmentEnds[1] = points_[0];
 
-				Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + (points_.Count -1), segmentEnds );
-				segments_.Add( segment );
+				if (points_.Count < numSegmentsBefore)
+				{
+					segments_[segmentNum].SetEnds( segmentEnds );
+					if (!segments_[segmentNum].gameObject.activeSelf)
+					{
+						segments_[segmentNum].gameObject.SetActive( true );
+					}
+				}
+				else
+				{
+					Element_StraightLine segment = geometryFactory.AddLineSegmentToCurve( this, name + " Segment_" + segmentNum, segmentEnds );
+					segments_.Add( segment );
+					numCreated++;
+				}
+				segmentNum++;
+            }
+
+			while (segmentNum < numSegmentsBefore)
+			{
+				segments_[segmentNum].gameObject.SetActive( false );
+				numDeactivated++;
+				segmentNum++;
 			}
 
+			if (DEBUG_CURVE)
+			{
+				Debug.Log( "On adjusting mesh for Curve '" + name + "', numSegments " + numSegmentsBefore + " >> " + segments_.Count + " ( " + numCreated + " created, " + numDeactivated + " deactivated)" );
+			}
 			if (DEBUG_CURVE_VERBOSE)
 			{
 				Debug.Log( "DoAdjustMesh() " + this.DebugDescribe( ) );

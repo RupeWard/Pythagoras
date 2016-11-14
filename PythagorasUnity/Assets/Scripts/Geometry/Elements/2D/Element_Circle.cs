@@ -220,23 +220,23 @@ namespace RJWard.Geometry
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
-			// TODO don't always destroy/create
 			if (perimeterElement_ != null)
 			{
-				GameObject.Destroy( perimeterElement_.gameObject );
-				perimeterElement_ = null;
+				perimeterElement_.SetPoints( perimeterPoints );
 			}
-
-			perimeterElement_ = geometryFactory.AddCurveToField(
-				field,
-				name + " Perimeter",
-				depth-GeometryHelpers.internalLayerSeparation,
-				perimeterPoints,
-				true,
-				Element2DBase.defaultEdgeWidth,
-				Color.cyan
-				);
-			perimeterElement_.cachedTransform.SetParent( cachedTransform );
+			else
+			{
+				perimeterElement_ = geometryFactory.AddCurveToField(
+					field,
+					name + " Perimeter",
+					depth - GeometryHelpers.internalLayerSeparation,
+					perimeterPoints,
+					true,
+					Element2DBase.defaultEdgeWidth,
+					Color.cyan
+					);
+				perimeterElement_.cachedTransform.SetParent( cachedTransform );
+			}
 
 			if (DEBUG_CIRCLE_VERBOSE)
 			{
