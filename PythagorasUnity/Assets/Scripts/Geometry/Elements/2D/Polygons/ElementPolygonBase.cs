@@ -193,7 +193,7 @@ namespace RJWard.Geometry
 		{
 			if (angleElements_[n] != null)
 			{
-				GameObject.Destroy( angleElements_[n] );
+				GameObject.Destroy( angleElements_[n].gameObject );
 				angleElements_[n] = null;
 			}
 		}
