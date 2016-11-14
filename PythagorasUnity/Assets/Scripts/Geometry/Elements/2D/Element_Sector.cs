@@ -26,8 +26,8 @@ namespace RJWard.Geometry
 
 		private float minSectorEdgeLength_ = 0.02f;
 
-		Element_Curve perimeter_ = null;
-		Element_StraightLine[] edges_ = new Element_StraightLine[2];
+		Element_Curve arcElement_ = null;
+		Element_StraightLine[] edgeElements_ = new Element_StraightLine[2];
 
 		#endregion private data
 
@@ -219,11 +219,11 @@ namespace RJWard.Geometry
 				mesh.Optimize( );
 
 				// TODO don't always destroy/create
-				DestroyEdges( );
+				DestroySubElements( );
 
 				if (perimeterPoints.Count > 1)
 				{
-					perimeter_ = geometryFactory.AddCurveToField(
+					arcElement_ = geometryFactory.AddCurveToField(
 						field,
 						name + " Perimeter",
 						depth - GeometryHelpers.internalLayerSeparation,
@@ -232,7 +232,7 @@ namespace RJWard.Geometry
 						Element2DBase.defaultEdgeWidth,
 						Color.cyan // TODO use decorator
 						);
-					perimeter_.cachedTransform.SetParent( cachedTransform );
+					arcElement_.cachedTransform.SetParent( cachedTransform );
 				}
 				else
 				{
@@ -242,31 +242,31 @@ namespace RJWard.Geometry
 				// refactor into loop and function
 				Vector2[] edgeEnds = new Vector2[] { verts[0], verts[1] };
 
-				edges_[0] = geometryFactory.AddStraightLineToField(
+				edgeElements_[0] = geometryFactory.AddStraightLineToField(
 					field,
 					name + " Edge_0",
 					depth - GeometryHelpers.internalLayerSeparation,
 					edgeEnds,
 					Element2DBase.defaultEdgeWidth,
 					Color.cyan );// TODO use decorator
-				edges_[0].cachedTransform.SetParent( cachedTransform );
+				edgeElements_[0].cachedTransform.SetParent( cachedTransform );
 
 				edgeEnds[0] = verts[verts.Length - 1];
 				edgeEnds[1] = verts[0];
 
-				edges_[1] = geometryFactory.AddStraightLineToField(
+				edgeElements_[1] = geometryFactory.AddStraightLineToField(
 					field,
 					name + " Edge_1",
 					depth - GeometryHelpers.internalLayerSeparation,
 					edgeEnds,
 					Element2DBase.defaultEdgeWidth,
 					Color.cyan );// TODO use decorator
-				edges_[1].cachedTransform.SetParent( cachedTransform );
+				edgeElements_[1].cachedTransform.SetParent( cachedTransform );
 			}
 			else
 			{
 				mesh.Clear( );
-				DestroyEdges( );
+				DestroySubElements( );
 			}
 			if (DEBUG_SECTOR_VERBOSE)
 			{
@@ -274,19 +274,19 @@ namespace RJWard.Geometry
 			}
 		}
 
-		private void DestroyEdges()
+		private void DestroySubElements()
 		{
-			if (perimeter_ != null)
+			if (arcElement_ != null)
 			{
-				GameObject.Destroy( perimeter_.gameObject );
-				perimeter_ = null;
+				GameObject.Destroy( arcElement_.gameObject );
+				arcElement_ = null;
 			}
 			for (int i = 0; i < 2; i++)
 			{
-				if (edges_[i] != null)
+				if (edgeElements_[i] != null)
 				{
-					GameObject.Destroy( edges_[i].gameObject );
-					edges_[i] = null;
+					GameObject.Destroy( edgeElements_[i].gameObject );
+					edgeElements_[i] = null;
 				}
 			}
 
@@ -303,15 +303,15 @@ namespace RJWard.Geometry
 		override protected void HandleAlphaChanged( float a )
 		{
 			cachedMaterial.SetFloat( "_Alpha", a );
-			if (perimeter_ != null)
+			if (arcElement_ != null)
 			{
-				perimeter_.SetAlpha( a );
+				arcElement_.SetAlpha( a );
 			}
 			for (int i = 0; i<2; i++)
 			{
-				if (edges_[i] != null)
+				if (edgeElements_[i] != null)
 				{
-					edges_[i].SetAlpha( a );
+					edgeElements_[i].SetAlpha( a );
 				}
 			}
 		}

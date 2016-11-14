@@ -141,7 +141,7 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
-		private Element_StraightLine CreateEdge(int n)
+		private Element_StraightLine CreateEdgeElement(int n)
 		{
 			Element_StraightLine edge = geometryFactory.AddStraightLineToField(
 				field,
@@ -156,7 +156,7 @@ namespace RJWard.Geometry
 				Color.cyan /* TODO: decorator.colour*/ );
 			edge.cachedTransform.SetParent( cachedTransform );
 			edge.gameObject.tag = GeometryHelpers.Tag_SubElement;
-			SetEdge( n, edge );
+			SetEdgeElement( n, edge );
 			return edge;
 		}
 
@@ -226,14 +226,14 @@ namespace RJWard.Geometry
 
 			for (int i = 0; i < 3; i++)
 			{
-				Element1DBase edge = GetEdge( i );
-				if (edge == null)
+				Element1DBase edgeElement = GetEdgeElement( i );
+				if (edgeElement == null)
 				{
-					edge = CreateEdge( i );
+					edgeElement = CreateEdgeElement( i );
 				}
 				else
 				{
-					(edge as Element_StraightLine).SetEnds( vertices_[modIndex( i )], vertices_[modIndex(i + 1)] );
+					(edgeElement as Element_StraightLine).SetEnds( vertices_[modIndex( i )], vertices_[modIndex(i + 1)] );
 				}
 			}
 			if (DEBUG_TRIANGLE_VERBOSE)

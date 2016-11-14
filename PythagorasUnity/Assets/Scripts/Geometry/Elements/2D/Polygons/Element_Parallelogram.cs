@@ -166,14 +166,14 @@ namespace RJWard.Geometry
 			Init(gf, f, d, bl, Vector2.Distance( bl[0], bl[1] ), 90f, c );
 		}
 
-		private void SetEdges( Vector2[] vertices)
+		private void SetEdgeElements( Vector2[] vertices)
 		{
 			for (int i = 0; i< 4; i++)
 			{
-				Element_StraightLine edge = GetEdge( i ) as Element_StraightLine;
-				if (edge == null)
+				Element_StraightLine edgeElement = GetEdgeElement( i ) as Element_StraightLine;
+				if (edgeElement == null)
 				{
-					edge = geometryFactory.AddStraightLineToField(
+					edgeElement = geometryFactory.AddStraightLineToField(
 					  field,
 					  name + " Edge_" + i.ToString( ),
 					  depth-GeometryHelpers.internalLayerSeparation,
@@ -184,13 +184,13 @@ namespace RJWard.Geometry
 					  },
 					  Element2DBase.defaultEdgeWidth,
 					  Color.cyan /* TODO: decorator.colour*/ );
-					edge.cachedTransform.SetParent( cachedTransform );
-					edge.gameObject.tag = GeometryHelpers.Tag_SubElement;
-					SetEdge( i, edge );
+					edgeElement.cachedTransform.SetParent( cachedTransform );
+					edgeElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
+					SetEdgeElement( i, edgeElement );
 				}
 				else
 				{
-					edge.SetEnds( vertices[i], vertices[modIndex( i + 1 )] );
+					edgeElement.SetEnds( vertices[i], vertices[modIndex( i + 1 )] );
 				}                
 			}
 		}
@@ -326,7 +326,7 @@ namespace RJWard.Geometry
 			mesh.RecalculateBounds( );
 			mesh.Optimize( );
 
-			SetEdges( vertices );
+			SetEdgeElements( vertices );
 
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
@@ -357,7 +357,7 @@ namespace RJWard.Geometry
 			if (!Mathf.Approximately(h, height_))
 			{
 				height_ = h;
-				ShowAllEdges( height_ > Mathf.Epsilon );
+				ShowAllEdgeElements( height_ > Mathf.Epsilon );
 				SetMeshDirty( );
 			}
 		}

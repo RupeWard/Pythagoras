@@ -14,7 +14,7 @@ namespace RJWard.Geometry
 
 		private int numVertices_ = 0;
 
-		private Element1DBase[] edges_;
+		private Element1DBase[] edgeElements_;
 		 
 		#endregion private data 
 
@@ -56,65 +56,65 @@ namespace RJWard.Geometry
 
 		#region edges
 
-		public Element1DBase GetEdge(int n)
+		public Element1DBase GetEdgeElement(int n)
 		{
-			return edges_[ modIndex(n) ];
+			return edgeElements_[ modIndex(n) ];
 		}
 
-		protected void SetEdge(int n, Element1DBase e )
+		protected void SetEdgeElement(int n, Element1DBase e )
 		{
 			n = modIndex( n );
-			if (edges_[n] != null)
+			if (edgeElements_[n] != null)
 			{
 				throw new System.Exception( "Element " + name + " already has an edge #" + n +", destroying");
 			}
-			edges_[n] = e;
+			edgeElements_[n] = e;
 		}
 
-		public void ShowEdge(int n, bool show)
+		public void ShowEdgeElement(int n, bool show)
 		{
-			GetEdge( n ).gameObject.SetActive( show );
+			GetEdgeElement( n ).gameObject.SetActive( show );
 		}
 
-		public void ShowEdge(int n)
+		public void ShowEdgeElement(int n)
 		{
-			ShowEdge( n, true );
+			ShowEdgeElement( n, true );
 		}
 
-		public void HideEdge( int n )
+		public void HideEdgeElement( int n )
 		{
-			ShowEdge( n, false );
+			ShowEdgeElement( n, false );
 		}
 
-		public void ShowAllEdges(bool show)
+		public void ShowAllEdgeElements(bool show)
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
-				if (edges_[i] != null)
+				if (edgeElements_[i] != null)
 				{
-					edges_[i].gameObject.SetActive( show );
+					edgeElements_[i].gameObject.SetActive( show );
 				}
 			}
 		}
 
-		public void ShowAllEdges()
+		public void ShowAllEdgeElements()
 		{
-			ShowAllEdges( true );
+			ShowAllEdgeElements( true );
 		}
 
-		public void HideEdges()
+		public void HideEdgeElements()
 		{
-			ShowAllEdges( false );
+			ShowAllEdgeElements( false );
 		}
 
-		private void DestroyAllEdges()
+		private void DestroyAllEdgeElements()
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
-				if (edges_[i] != null)
+				if (edgeElements_[i] != null)
 				{
-					GameObject.Destroy( edges_[i].gameObject );
-					edges_[i] = null;
+					GameObject.Destroy( edgeElements_[i].gameObject );
+					edgeElements_[i] = null;
 				}
 			}
 		}
@@ -139,10 +139,10 @@ namespace RJWard.Geometry
 			base.SetAlpha( a );
 			for (int i = 0; i < NumVertices; i++)
 			{
-				Element1DBase edge = GetEdge( i ); // may (should?) be possible to do this wthout needing to check ... timing!
-				if (edge != null)
+				Element1DBase edgeElement = GetEdgeElement( i ); // may (should?) be possible to do this wthout needing to check ... timing!
+				if (edgeElement != null)
 				{
-					edge.SetAlpha( a );
+					edgeElement.SetAlpha( a );
 				}
 			}
 		}
@@ -156,7 +156,7 @@ namespace RJWard.Geometry
 		{
 			base.Init( gf, f, d );
 			numVertices_ = n;
-			edges_ = new Element1DBase[numVertices_];
+			edgeElements_ = new Element1DBase[numVertices_];
 		}
 
 		protected override void Init( GeometryFactory gf, Field f, float d )
@@ -177,7 +177,6 @@ namespace RJWard.Geometry
 				throw new System.Exception( "Cloning " + name + " doesn't give an ElementPolygonBase" );
 			}
 			// Cloning process instantiates from the source sobject so edges get copied but not set up. Need to find and destroy them.
-			// TODO possible just destroy all children on cloning? Will there ever be subobjects that we want to keep?
 			e.FindAndDestroyAllSubElements( );
 			return clone;
 		}

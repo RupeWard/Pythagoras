@@ -23,7 +23,7 @@ namespace RJWard.Geometry
 		private float radius_ = 0f;
 		private float minSectorEdgeLength_ = 0.02f;
 
-		Element_Curve perimeter_ = null;
+		Element_Curve perimeterElement_ = null;
 
 		#endregion private data
 
@@ -221,13 +221,13 @@ namespace RJWard.Geometry
 			mesh.Optimize( );
 
 			// TODO don't always destroy/create
-			if (perimeter_ != null)
+			if (perimeterElement_ != null)
 			{
-				GameObject.Destroy( perimeter_.gameObject );
-				perimeter_ = null;
+				GameObject.Destroy( perimeterElement_.gameObject );
+				perimeterElement_ = null;
 			}
 
-			perimeter_ = geometryFactory.AddCurveToField(
+			perimeterElement_ = geometryFactory.AddCurveToField(
 				field,
 				name + " Perimeter",
 				depth-GeometryHelpers.internalLayerSeparation,
@@ -236,7 +236,7 @@ namespace RJWard.Geometry
 				Element2DBase.defaultEdgeWidth,
 				Color.cyan
 				);
-			perimeter_.cachedTransform.SetParent( cachedTransform );
+			perimeterElement_.cachedTransform.SetParent( cachedTransform );
 
 			if (DEBUG_CIRCLE_VERBOSE)
 			{
@@ -256,6 +256,10 @@ namespace RJWard.Geometry
 		override protected void HandleAlphaChanged( float a )
 		{
 			cachedMaterial.SetFloat( "_Alpha", a );
+			if (perimeterElement_ != null)
+			{
+				perimeterElement_.SetAlpha( a );
+			}
 		}
 
 		#endregion Non-geometrical Appaarance
