@@ -61,32 +61,38 @@ namespace RJWard.Geometry
 
 		override protected void CheckIfModded( )
 		{
-			bool modded = false;
 			for (int i = 0; i < 2; i++)
 			{
 				if (Vector2.Distance( modBaseVertices[i], baseVertices_[i]) > Mathf.Epsilon)
 				{
-					baseVertices_[i] = modBaseVertices[i];
-					modded = true;
+					if (SetBaseVertex(i, modBaseVertices[i]))
+					{
+						if (DEBUG_PARALLELOGRAM)
+						{
+							Debug.Log( "Modded " + gameObject.name +" base vertex "+i);
+						}
+					}
 				}
 			}
 			if (!Mathf.Approximately(modHeight, height_))
 			{
-				height_ = modHeight;
-				modded = true;
-			}
-			if (!Mathf.Approximately(modAngleDegrees, angleDegrees_))
-			{
-				angleDegrees_ = modAngleDegrees;
-				modded = true;
-			}
-			if (modded)
-			{
-				if (DEBUG_PARALLELOGRAM)
+				if (SetHeight(modHeight))
 				{
-					Debug.Log( "Modded " + gameObject.name );
+					if (DEBUG_PARALLELOGRAM)
+					{
+						Debug.Log( "Modded " + gameObject.name + " heeight" );
+					}
 				}
-				SetMeshDirty( );
+			}
+			if (!Mathf.Approximately( modAngleDegrees, angleDegrees_ ))
+			{
+				if (SetAngleDegrees( modAngleDegrees ))
+				{
+					if (DEBUG_PARALLELOGRAM)
+					{
+						Debug.Log( "Modded " + gameObject.name + " angle degrees" );
+					}
+				}
 			}
 		}
 
@@ -135,10 +141,7 @@ namespace RJWard.Geometry
 
 			base.Init( gf, f, d, 4 );
 
-			for (int i = 0; i < 2; i++)
-			{
-				baseVertices_[i] = bl[i];
-			}
+			SetBaseVertices( bl );
 			SetHeight( h );
 			SetAngleDegrees(a);
 
@@ -212,26 +215,22 @@ namespace RJWard.Geometry
 			Vector2[] vertices = GetVertices( );
 			if (n == 2)
 			{
-				baseVertices_[0] = vertices[2];
-				baseVertices_[1] = vertices[3];
+				SetBaseVertices(vertices[2], vertices[3]);
 			}
 			else
 			{
 				float area = Area( );
 				if (n == 1)
 				{
-					baseVertices_[0] = vertices[1];
-					baseVertices_[1] = vertices[2];
+					SetBaseVertices(vertices[1], vertices[2]);
 				}
 				else
 				{
-					baseVertices_[0] = vertices[3];
-					baseVertices_[1] = vertices[0];
+					SetBaseVertices(vertices[3], vertices[0]);
 				}
-				angleDegrees_ = 180f - angleDegrees_;
-				height_ = area / BaseLength( );
+				SetAngleDegrees(180f - angleDegrees_);
+				SetHeight(area / BaseLength( ));
 			}
-			SetMeshDirty( );
 		}
 
 		#endregion Setup
@@ -353,23 +352,61 @@ namespace RJWard.Geometry
 
 		#region shapeChangers
 
-		public void SetHeight( float h )
+		public bool SetBaseVertex(int i, Vector2 v)
 		{
+			if (i < 0 || i > 1)
+			{
+				throw new System.ArgumentException( "Can't set base vertex " + i );
+			}
+			bool changed = false;
+			if (Vector2.Distance( v, baseVertices_[i]) > Mathf.Epsilon)
+			{
+				baseVertices_[i] = v;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+		public bool SetBaseVertices(Vector2 v0, Vector2 v1)
+		{
+			bool changed = false;
+			changed |= SetBaseVertex( 0, v0 );
+			changed |= SetBaseVertex( 1, v1 );
+			return changed;
+		}
+
+		public bool SetBaseVertices(Vector2[] vs)
+		{
+			if (vs.Length != 2)
+			{
+				throw new System.ArgumentException( "Can;t set basline using array length " + vs.Length );
+			}
+			return SetBaseVertices( vs[0], vs[1] );
+		}
+
+		public bool SetHeight( float h )
+		{
+			bool changed = false;
 			if (!Mathf.Approximately(h, height_))
 			{
 				height_ = h;
-				ShowAllEdgeElements( height_ > Mathf.Epsilon );
+				ShowAllEdgeElements( height_ > Mathf.Epsilon ); // TODO also dependent on whether we ant to!
 				SetMeshDirty( );
 			}
+			return changed;
 		}
 
-		public void SetAngleDegrees( float a )
+		public bool SetAngleDegrees( float a )
 		{
+			bool changed = false;
 			if (!Mathf.Approximately(a, angleDegrees_))
 			{
 				angleDegrees_ = a;
+				changed = true;
 				SetMeshDirty( );
 			}
+			return changed;
 		}
 
 		#endregion shapeChangers
