@@ -15,7 +15,7 @@ namespace RJWard.Geometry
 		public static readonly bool DEBUG_SECTOR = true;
 		public static readonly bool DEBUG_SECTOR_VERBOSE = true;
 
-		private static readonly float rightAngleTolerance = 0.1f;
+		private static readonly float rightAngleTolerance = 0.5f;
 
 		private static readonly float minRadius = 0.05f;
 
@@ -126,18 +126,7 @@ namespace RJWard.Geometry
 		{
 			base.Init( gf, f, d);
 
-			SetCentre(ce);
-			SetRadius(r);
-			SetAngleExtentDegrees(ae);
-			SetAngleDirectionDegrees(ad);
-
-			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
-			decorator.Apply( );
-
-			if (DEBUG_SECTOR)
-			{
-				Debug.Log( "Init() " + this.DebugDescribe( ) );
-			}
+			InitHelper( ce, r, ae, ad, c );
 
 			SetMeshDirty( );
 		}
@@ -150,11 +139,11 @@ namespace RJWard.Geometry
 		{
 			base.Init( gf, f, d );
 
-			if (false == Element_StraightLine.Intersection( lines[0], lines[1], ref centre_))
+			Vector2 centre = Vector2.zero;
+			if (false == Element_StraightLine.Intersection( lines[0], lines[1], ref centre))
 			{
 				throw new System.Exception( "StraightLines passed to Element_Sector.Init are parallel. " + lines[0].DebugDescribe( ) + " " + lines[1].DebugDescribe( ) );
 			}
-			SetRadius(r);
 
 			Vector2 line0direction = -1f * lines[0].GetDirection( );
 			float angleDirectionLine0 = Mathf.Rad2Deg * Mathf.Atan2( line0direction.y, line0direction.x ); // angle of line 0
@@ -169,7 +158,18 @@ namespace RJWard.Geometry
 				angleDirectionLine0 += 360f;
 			}
 
-			SetAngleExtentDegrees(angleDirectionLine0 - angleDirectionDegrees_);
+			InitHelper( centre, r, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1, c );
+
+			SetMeshDirty( );
+		}
+
+		private void InitHelper( Vector2 ce,
+			float r,
+			float ae,
+			float ad,
+			Color c )
+		{
+			InitHelper( ce, r, ae, ad );
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 			decorator.Apply( );
@@ -178,8 +178,49 @@ namespace RJWard.Geometry
 			{
 				Debug.Log( "Init() " + this.DebugDescribe( ) );
 			}
+		}
 
-			SetMeshDirty( );
+		private bool InitHelper( Vector2 ce,
+			float r,
+			float ae,
+			float ad
+			)
+		{
+			bool changed = false;
+
+			changed |= SetCentre( ce );
+			changed |= SetRadius( r );
+			changed |= SetAngleExtentDegrees( ae );
+			changed |= SetAngleDirectionDegrees( ad );
+
+			return changed;
+		}
+
+		public void SetContainingLines( Element_StraightLine[] lines)
+		{
+			if (lines.Length != 2)
+			{
+				throw new System.ArgumentException( "SetContainingLines needs 2 lines not " + lines.Length );
+			}
+			Vector2 centre = Vector2.zero;
+			if (false == Element_StraightLine.Intersection( lines[0], lines[1], ref centre ))
+			{
+				throw new System.Exception( "StraightLines passed to Element_Sector.Init are parallel. " + lines[0].DebugDescribe( ) + " " + lines[1].DebugDescribe( ) );
+			}
+
+			Vector2 line0direction = -1f * lines[0].GetDirection( );
+			float angleDirectionLine0 = Mathf.Rad2Deg * Mathf.Atan2( line0direction.y, line0direction.x ); // angle of line 0
+
+			Vector2 line1direction = lines[1].GetDirection( );
+			float angleDirectionLine1 = Mathf.Rad2Deg * Mathf.Atan2( line1direction.y, line1direction.x ); // angle of line 1
+			SetAngleDirectionDegrees( angleDirectionLine1 );
+
+			while (angleDirectionLine0 < angleDirectionLine1)
+			{
+				angleDirectionLine0 += 360f;
+			}
+
+			InitHelper( centre, radius_, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1);
 		}
 
 		public void SetAngleMarker()
@@ -235,13 +276,14 @@ namespace RJWard.Geometry
 					f -= 360f;
 				}
 			}
-			if (f < 0f)
+			
+			if (f <= -360f)
 			{
 				if (DEBUG_SECTOR)
 				{
 					Debug.LogWarning( "Angle " + f + " out of range in SetAngleDirectionDegrees, adjusting" );
 				}
-				while (f < 0f)
+				while (f <= -360f)
 				{
 					f += 360f;
 				}
@@ -615,7 +657,7 @@ namespace RJWard.Geometry
 
 		public void DebugDescribe( System.Text.StringBuilder sb )
 		{
-			sb.Append( "Circle '" ).Append( gameObject.name ).Append(": ");
+			sb.Append( "Sector '" ).Append( gameObject.name ).Append(": ");
 			sb.Append( "'C = " ).Append(centre_.ToString());
 			sb.Append( " R = " ).Append( radius_ );
 			sb.Append( " A ext = " ).Append( angleExtentDegrees_);

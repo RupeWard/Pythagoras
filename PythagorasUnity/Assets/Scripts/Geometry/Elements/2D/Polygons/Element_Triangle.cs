@@ -237,7 +237,7 @@ namespace RJWard.Geometry
 				}
 			}
 
-			CreateAllAngleElements( );
+			SetAllAngleElements( );
 
 			if (DEBUG_TRIANGLE_VERBOSE)
 			{

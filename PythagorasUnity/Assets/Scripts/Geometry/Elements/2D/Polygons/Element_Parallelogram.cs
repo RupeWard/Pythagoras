@@ -326,7 +326,7 @@ namespace RJWard.Geometry
 			mesh.Optimize( );
 
 			SetEdgeElements( vertices );
-			CreateAllAngleElements( );
+			SetAllAngleElements( );
 
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
@@ -380,7 +380,7 @@ namespace RJWard.Geometry
 		{
 			if (vs.Length != 2)
 			{
-				throw new System.ArgumentException( "Can;t set basline using array length " + vs.Length );
+				throw new System.ArgumentException( "Can't set baseline using array length " + vs.Length );
 			}
 			return SetBaseVertices( vs[0], vs[1] );
 		}
@@ -391,7 +391,7 @@ namespace RJWard.Geometry
 			if (!Mathf.Approximately(h, height_))
 			{
 				height_ = h;
-				ShowAllEdgeElements( height_ > Mathf.Epsilon ); // TODO also dependent on whether we ant to!
+				ShowAllSubElements( height_ > Mathf.Epsilon ); // TODO also dependent on whether we want to!
 				SetMeshDirty( );
 			}
 			return changed;

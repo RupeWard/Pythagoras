@@ -143,6 +143,7 @@ public partial class SceneControllerProof : SceneController_Base
 #if UNITY_EDITOR
 		if (testMode)
 		{
+			/*
 			testElements.AddElement(
 				"TestTri",
 				geometryFactory_.AddTriangleToField(
@@ -158,6 +159,7 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.blue
 					)
 				);
+				*/
 			testElements.AddElement(
 				"TestPar",
 				geometryFactory_.AddParallelogramToField(
@@ -174,6 +176,7 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.green
 					)
 				);
+			/*
 			testElements.AddElement(
 				"TestRightTri",
 				geometryFactory_.AddRightTriangleToField(
@@ -214,6 +217,7 @@ public partial class SceneControllerProof : SceneController_Base
 					1f,
 					Color.yellow )
                 );
+				*/
 			testElements.AddElement(
 				"TestSector",
 				geometryFactory_.AddSectorToField(

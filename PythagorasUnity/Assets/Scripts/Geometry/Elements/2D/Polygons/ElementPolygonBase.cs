@@ -206,12 +206,9 @@ namespace RJWard.Geometry
 			}
 		}
 
+		// TODO whether this is called should depend only on whether the edges are changed
 		protected void CreateAngleElement(int i)
 		{
-			if (GetAngleElement( i ) != null)
-			{
-				DestroyAngleElement( i );
-			}
 			Element_StraightLine[] lines = new Element_StraightLine[2];
 
 			lines[0] = GetEdgeElement( i ) as Element_StraightLine;
@@ -219,20 +216,39 @@ namespace RJWard.Geometry
 
 			if (lines[0] != null && lines[1] != null)
 			{
-				Element_Sector angleElement = geometryFactory.AddSectorBetweenLines(
-					name + " Angle_" + i.ToString( ),
-					GeometryHelpers.internalLayerSeparation,
-					lines,
-					0.2f,
-					Color.red );
-				angleElement.cachedTransform.SetParent( cachedTransform );
-				angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
-				angleElement.SetAngleMarker( );
-				SetAngleElement( i, angleElement );
+				Element_Sector angleElement = GetAngleElement( i );
+				if (angleElement != null)
+				{
+					angleElement.SetContainingLines( lines );
+				}
+				else
+				{
+					angleElement = geometryFactory.AddSectorBetweenLines(
+						name + " Angle_" + i.ToString( ),
+						GeometryHelpers.internalLayerSeparation,
+						lines,
+						0.2f,
+						Color.red );
+					angleElement.cachedTransform.SetParent( cachedTransform );
+					angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
+					angleElement.SetAngleMarker( );
+					SetAngleElement( i, angleElement );
+				}
+			}
+			else
+			{
+				if (DEBUG_POLYGONBASE)
+				{
+					Debug.LogWarning( "Null line" );
+				}
+				if (GetAngleElement( i )!= null)
+				{
+					DestroyAngleElement( i );
+				}
 			}
 		}
 
-		protected void CreateAllAngleElements()
+		protected void SetAllAngleElements()
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
@@ -253,6 +269,22 @@ namespace RJWard.Geometry
 					GameObject.Destroy( tr.gameObject );
 				}
 			}
+		}
+
+		public void ShowAllSubElements(bool b)
+		{
+			ShowAllAngleElements( b );
+			ShowAllEdgeElements( b );
+		}
+
+		public void ShowAllSubElements( )
+		{
+			ShowAllSubElements( true );
+		}
+
+		public void HideAllSubElements( )
+		{
+			ShowAllSubElements( false);
 		}
 
 		#endregion subelements
