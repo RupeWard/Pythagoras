@@ -143,18 +143,6 @@ namespace RJWard.Geometry
 			SetModdingValues( );
 #endif
 
-			/*
-			// TODO only destroy/create as needed
-			for (int i = 0; i < segments_.Count; i++)
-			{
-				if (segments_[i] != null)
-				{
-					GameObject.Destroy( segments_[i].gameObject );
-				}
-			}
-			segments_.Clear( );
-			*/
-
 			int numSegmentsBefore = segments_.Count;
 
 			Vector2[] segmentEnds = new Vector2[2];
