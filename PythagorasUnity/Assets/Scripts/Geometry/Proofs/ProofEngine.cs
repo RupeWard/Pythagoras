@@ -336,6 +336,7 @@ namespace RJWard.Geometry
 			else
 			{
 				ChangeDirection( );
+				currentStage_.SetTimeRunning( true );
 				if (DEBUG_PROOFENGINE)
 				{
 					Debug.Log( "ChangeToFollowingStage(" + b.name + " ) has no following stage, so changed direction instead" );

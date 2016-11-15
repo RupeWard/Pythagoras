@@ -39,6 +39,8 @@ namespace RJWard.Geometry
 			{ ProofEngine.EDirection.Reverse, false }
 		};
 
+		private bool isTimeRunning_ = false;
+
 		#endregion private data 
 
 		#region properties
@@ -314,6 +316,7 @@ namespace RJWard.Geometry
 					}
 			}
 
+			isTimeRunning_ = true;
 			// derived class
 			HandleInit( ); 
 		}
@@ -321,6 +324,25 @@ namespace RJWard.Geometry
 		#endregion Setup
 
 		#region Process
+
+		public void SetTimeRunning(bool b)
+		{
+			if (b != isTimeRunning_)
+			{
+				isTimeRunning_ = b;
+				if (DEBUG_PROOFSTAGE)
+				{
+					Debug.Log( "Time now " + ((isTimeRunning_) ? ("RESUMED") : ("PAUSED")) + " in proof stage '" + name + "'" );
+				}
+			}
+			else
+			{
+				if (DEBUG_PROOFSTAGE)
+				{
+					Debug.LogWarning( "Time is already " + ((isTimeRunning_) ? ("RESUMED") : ("PAUSED")) + " in proof stage '" + name + "'" );
+				}
+			}
+		}
 
 		public void UpdateView()
 		{
@@ -339,30 +361,33 @@ namespace RJWard.Geometry
 		public void HandleSecondsElapsed(float s)
 		{
 			bool shouldFinish = false;
-			switch (direction_)
+			if (isTimeRunning_)
 			{
-				case ProofEngine.EDirection.Forward:
-					{
-						currentTimeSeconds_ += s;
-						if (currentTimeSeconds_ >= durationSeconds_)
+				switch (direction_)
+				{
+					case ProofEngine.EDirection.Forward:
 						{
-							currentTimeSeconds_ = durationSeconds_;
-							shouldFinish = true;
+							currentTimeSeconds_ += s;
+							if (currentTimeSeconds_ >= durationSeconds_)
+							{
+								currentTimeSeconds_ = durationSeconds_;
+								shouldFinish = true;
+							}
+							break;
 						}
-						break;
-					}
-				case ProofEngine.EDirection.Reverse:
-					{
-						currentTimeSeconds_ -= s;
-						if (currentTimeSeconds_ <= 0f)
+					case ProofEngine.EDirection.Reverse:
 						{
-							currentTimeSeconds_ = 0f;
-							shouldFinish = true;
+							currentTimeSeconds_ -= s;
+							if (currentTimeSeconds_ <= 0f)
+							{
+								currentTimeSeconds_ = 0f;
+								shouldFinish = true;
+							}
+							break;
 						}
-						break;
-					}
+				}
+				DoUpdateView( );
 			}
-			DoUpdateView( );
 			if (shouldFinish)
 			{
 				Finish( );
@@ -410,6 +435,8 @@ namespace RJWard.Geometry
 						break;
 					}
 			}
+
+			isTimeRunning_ = false;
 
 			if (onFinishedAction != null)
 			{
