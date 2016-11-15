@@ -15,8 +15,10 @@ namespace RJWard.Geometry
 		private int numVertices_ = 0;
 
 		private Element1DBase[] edgeElements_;
+		private bool[] showEdges_;
 
 		private Element_Sector[] angleElements_;
+		private bool[] showAngles_;
 
 		#endregion private data 
 
@@ -71,6 +73,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "Element " + name + " already has an edge #" + n +", destroying");
 			}
 			edgeElements_[n] = e;
+			ShowEdgeElement( n, showEdges_[n] );
 		}
 
 		public void ShowEdgeElement(int n, bool show)
@@ -130,6 +133,25 @@ namespace RJWard.Geometry
 			}
 		}
 
+		void SetShowEdgeElement(int n, bool b)
+		{
+			if (b != showEdges_[n])
+			{
+				showEdges_[n] = b;
+				ShowEdgeElement( n, b );
+			}
+		}
+
+		void SetShowEdgeElement( int n )
+		{
+			SetShowEdgeElement( n, true );
+		}
+
+		void SetHideEdgeElement( int n )
+		{
+			SetShowEdgeElement( n, false );
+		}
+
 		#endregion edges
 
 		#region angles
@@ -147,6 +169,7 @@ namespace RJWard.Geometry
 				throw new System.Exception( "Element " + name + " already has an angle #" + n + ", destroying" );
 			}
 			angleElements_[n] = a;
+			ShowAngleElement( n, showAngles_[n] );
 		}
 
 		public void ShowAngleElement( int n, bool show )
@@ -256,6 +279,25 @@ namespace RJWard.Geometry
 			}
 		}
 
+		void SetShowAngleElement( int n, bool b )
+		{
+			if (b != showAngles_[n])
+			{
+				showAngles_[n] = b;
+				ShowAngleElement( n, b );
+			}
+		}
+
+		void SetShowAngleElement( int n )
+		{
+			SetShowAngleElement( n, true );
+		}
+
+		void SetHideAngleElement( int n )
+		{
+			SetShowAngleElement( n, false );
+		}
+
 		#endregion angles
 
 		#region subelements
@@ -320,7 +362,9 @@ namespace RJWard.Geometry
 			base.Init( gf, f, d );
 			numVertices_ = n;
 			edgeElements_ = new Element1DBase[numVertices_];
+			showEdges_ = new bool[numVertices_];
 			angleElements_ = new Element_Sector[numVertices_];
+			showAngles_ = new bool[numVertices_];
 		}
 
 		protected override void Init( GeometryFactory gf, Field f, float d )
