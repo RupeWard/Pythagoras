@@ -94,6 +94,10 @@ namespace RJWard.Geometry
 
 				}
 			}
+			else
+			{
+				parallelogram_.gameObject.SetActive( true );
+			}
 		}
 
 

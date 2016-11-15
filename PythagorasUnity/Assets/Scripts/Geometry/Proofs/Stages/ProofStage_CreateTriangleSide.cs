@@ -97,6 +97,10 @@ namespace RJWard.Geometry
 						}
 				}
 			}
+			else
+			{
+				line_.gameObject.SetActive( true );
+			}
 		}
 
 		#endregion setup

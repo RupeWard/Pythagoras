@@ -42,6 +42,7 @@ namespace RJWard.Geometry
 		protected override void HandleInit( )
 		{
 			element_ = elements.GetElement(elementName_);
+			element_.gameObject.SetActive( true );
 		}
 
 		protected override void DoUpdateView( )
@@ -61,6 +62,7 @@ namespace RJWard.Geometry
 						if (element_ != null)
 						{
 							element_.SetAlpha( 0f );
+							element_.gameObject.SetActive( false );
 						}
 						break;
 					}

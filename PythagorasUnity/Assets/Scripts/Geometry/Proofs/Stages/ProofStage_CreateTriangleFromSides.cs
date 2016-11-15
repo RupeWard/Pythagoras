@@ -81,6 +81,10 @@ namespace RJWard.Geometry
 				}
 
 			}
+			else
+			{
+				triangle_.gameObject.SetActive( true );
+			}
 		}
 
 		#endregion setup

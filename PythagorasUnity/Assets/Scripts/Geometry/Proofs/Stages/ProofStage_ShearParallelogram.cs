@@ -111,6 +111,7 @@ namespace RJWard.Geometry
 						parallelogram_.ChangeBaseline( baselineNumber_ );
 					}
 				}
+				parallelogram_.gameObject.SetActive( true );
 			}
 		}
 
