@@ -12,8 +12,10 @@ namespace RJWard.Geometry
 {
 	public class Element_Sector : Element2DBase, RJWard.Core.IDebugDescribable
 	{
-		public static readonly bool DEBUG_SECTOR = true;
-		public static readonly bool DEBUG_SECTOR_VERBOSE = true;
+		public static readonly bool DEBUG_SECTOR = false;
+		public static readonly bool DEBUG_SECTOR_VERBOSE = false;
+		public static bool DEBUG_SETBYLINES = false;
+
 
 		private static readonly float rightAngleTolerance = 0.5f;
 
@@ -23,6 +25,7 @@ namespace RJWard.Geometry
 
 		private Vector2 centre_;
 		private float radius_ = 0f;
+		private float tempMaxR_ = 0f; // used to limit size of sector to that of a containing structure
 		private float angleExtentDegrees_ = 0f;
 		private float angleDirectionDegrees_ = 0f;
 
@@ -167,9 +170,10 @@ namespace RJWard.Geometry
 			float r,
 			float ae,
 			float ad,
-			Color c )
+			Color c,
+			float tmr)
 		{
-			InitHelper( ce, r, ae, ad );
+			InitHelper( ce, r, ae, ad, tmr );
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 			decorator.Apply( );
@@ -180,10 +184,20 @@ namespace RJWard.Geometry
 			}
 		}
 
+		private void InitHelper( Vector2 ce,
+			float r,
+			float ae,
+			float ad,
+			Color c)
+		{
+			InitHelper( ce, r, ae, ad, c, r );
+		}
+
 		private bool InitHelper( Vector2 ce,
 			float r,
 			float ae,
-			float ad
+			float ad,
+			float tmr
 			)
 		{
 			bool changed = false;
@@ -192,7 +206,7 @@ namespace RJWard.Geometry
 			changed |= SetRadius( r );
 			changed |= SetAngleExtentDegrees( ae );
 			changed |= SetAngleDirectionDegrees( ad );
-
+			changed |= SetTempMaxRadius(tmr);
 			return changed;
 		}
 
@@ -220,7 +234,23 @@ namespace RJWard.Geometry
 				angleDirectionLine0 += 360f;
 			}
 
-			InitHelper( centre, radius_, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1);
+			float minLength = Mathf.Min( lines[0].length, lines[1].length );
+			minLength *= 0.5f;
+
+			if (InitHelper( centre, radius_, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1, minLength ) == false)
+			{
+				if (DEBUG_SETBYLINES)
+				{
+					Debug.LogWarning( "NOT Adjusted sector setting enclosing lines \nLine 0 ( " + lines[0].DebugDescribe( ) + " )\nLine 1 (" + lines[1].DebugDescribe( ) + " )+\nSector (" + this.DebugDescribe( ) + " )" );
+				}
+			}
+			else
+			{
+				if (DEBUG_SETBYLINES)
+				{
+					Debug.LogWarning( "Adjusted sector setting enclosing lines \nLine 0 ( " + lines[0].DebugDescribe( ) + " )\nLine 1 (" + lines[1].DebugDescribe( ) + " )+\nSector (" + this.DebugDescribe( ) + " )" );
+				}
+			}
 		}
 
 		public void SetAngleMarker()
@@ -317,6 +347,28 @@ namespace RJWard.Geometry
 			return changed;
 		}
 
+		public bool SetTempMaxRadius( float f )
+		{
+			bool changed = false;
+			if (f < minRadius)
+			{
+				if (DEBUG_SECTOR)
+				{
+					Debug.LogWarning( "TempMaxRadius " + f + " out of range in setter, adjusting" );
+				}
+				f = minRadius;
+			}
+			
+			if (!Mathf.Approximately( f, tempMaxR_))
+			{
+				tempMaxR_ = f;
+				changed = true;
+				SetMeshDirty( );
+			}
+			return changed;
+		}
+
+
 		public bool SetCentre( Vector2 v )
 		{
 			bool changed = false;
@@ -383,9 +435,11 @@ namespace RJWard.Geometry
 
 				List<Vector2> perimeterPoints = new List<Vector2>( );
 
+				float radiusToUse = Mathf.Min( radius_, tempMaxR_ );
+
 				if (doRightAngle)
 				{
-					float d = radius_ / Mathf.Sqrt( 2 );
+					float d = radiusToUse / Mathf.Sqrt( 2 );
 
 					float angle0 = Mathf.Deg2Rad * angleDirectionDegrees_;
 					Vector2 perimeterPoint0 = new Vector2( centre_.x + d * Mathf.Cos( angle0 ), centre_.y + d * Mathf.Sin( angle0 ) );
@@ -417,7 +471,7 @@ namespace RJWard.Geometry
 					{
 						float angle = Mathf.Deg2Rad * angleDirectionDegrees_ + angleStep * i;
 
-						Vector2 perimeterPoint = new Vector2( centre_.x + radius_ * Mathf.Cos( angle ), centre_.y + radius_ * Mathf.Sin( angle ) );
+						Vector2 perimeterPoint = new Vector2( centre_.x + radiusToUse * Mathf.Cos( angle ), centre_.y + radiusToUse * Mathf.Sin( angle ) );
 						perimeterPoints.Add( perimeterPoint );
 
 						verts[1 + i] = new Vector3( perimeterPoint.x, perimeterPoint.y, depth );

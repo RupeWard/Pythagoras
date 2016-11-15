@@ -326,7 +326,14 @@ namespace RJWard.Geometry
 			mesh.Optimize( );
 
 			SetEdgeElements( vertices );
-			SetAllAngleElements( );
+			if (Mathf.Approximately(height_, 0f))
+			{
+				HideAngleElements( );
+			}
+			else
+			{
+				SetAllAngleElements( );
+			}
 
 			if (DEBUG_PARALLELOGRAM_VERBOSE)
 			{
