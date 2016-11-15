@@ -345,6 +345,16 @@ namespace RJWard.Geometry
 			SetMeshDirty( );
 		}
 
+		public Vector2 GetEndFurthestFrom(Vector2 v)
+		{
+			Vector2 result = ends_[0];
+			if (Vector2.Distance(ends_[1], v ) > Vector2.Distance(ends_[0], v))
+			{
+				result = ends_[1];
+			}
+			return result;
+		}
+
 		static public bool Intersection( Element_StraightLine line0, Element_StraightLine line1, ref Vector2 intersection)
 		{
 			return GeometryHelpers.LineIntersectionPoint( line0.GetEnds(), line1.GetEnds(), ref intersection );

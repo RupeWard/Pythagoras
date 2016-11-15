@@ -37,10 +37,11 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public float shearSquareDuration = 3f;
 	public float postShearFadeDuration = 1f;
+	public float createCongruentTriangleDuration = 3f;
 
 	public Color shadowColour = new Color( 100f / 255f, 100f / 255f, 100f / 255f );
 	public float shadowSquareDepth = 0.1f;
-	public float removeShadowDuration = 0.5f;
+	public float removeShadowDuration = 1f;
 
 	public float shearAlpha = 125f / 255f;
 
@@ -96,8 +97,9 @@ public partial class SceneControllerProof : SceneController_Base
 	private readonly string[] parallelogramNames_ = { "Parallelogram 0", "Parallelogram 1" };
 	private readonly string[] shadowSquareNames_ = { "Shadow Square 0", "Shadow Square 1" };
 	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
-	private readonly string[] triangleSideNames_ = { "Hypotenuse", "Side 1", "Side 2" }
-	;
+	private readonly string[] triangleSideNames_ = { "Hypotenuse", "Side 1", "Side 2" };
+	private readonly string[] congruentTriangleNames = new string[] { "congruentTriangle1", "congruentTriangle2" };
+
 	#endregion private elements
 
 	#region MBFlow

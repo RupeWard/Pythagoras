@@ -214,6 +214,8 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStageFollowing(createSquare2_Stage, createSquare1_Stage );
 
+		//////////////////
+
 		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
 			"Create Shadow Square 1",
 			"Creating shadow square 1",
@@ -231,6 +233,8 @@ public partial class SceneControllerProof : SceneController_Base
 		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		proofEngine_.RegisterStageFollowing( createShadowSquare1_Stage, createSquare2_Stage );
+
+		///////////////////////////////
 
 		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
 			"Shear Square 1",
@@ -254,6 +258,45 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStageFollowing( shearSquare1_Stage , createShadowSquare1_Stage);
 		
+		//////////////////////////////////////////////
+
+		ProofStage_RemoveElement removeShadowSquare1_Stage = new ProofStage_RemoveElement(
+			"RemoveShadow Square 1",
+			"Removing shadow square 1",
+			geometryFactory_,
+			mainField_,
+			removeShadowDuration,
+			HandleProofStageFinished,
+			shadowSquareNames_[0],
+			typeof( Element_Parallelogram ) );
+
+		removeShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		proofEngine_.RegisterStageFollowing( removeShadowSquare1_Stage, shearSquare1_Stage );
+
+		///////////////////////////////////
+
+		ProofStage_CreateTriangleFromSides createCongruentTriangle1_Stage = new ProofStage_CreateTriangleFromSides(
+			"Create Congruent Triangle 1",
+			"Creating Congruent Triangle 1",
+			geometryFactory_,
+			mainField_,
+			createCongruentTriangleDuration,
+			HandleProofStageFinished,
+			-2f * GeometryHelpers.externalLayerSeparation,
+			new IStraightLineProvider[]
+			{
+				new StraightLineProvider_Polygon( shadowSquareNames_[0], 1),
+				new StraightLineProvider_Polygon( parallelogramNames_[0], 1)
+			},
+			Color.gray,
+			congruentTriangleNames[0]
+			);
+
+		proofEngine_.RegisterStageFollowing( createCongruentTriangle1_Stage, removeShadowSquare1_Stage );
+
+		//////////////////////////////////////////
+
 		ProofStage_CloneElement createShadowSquare2_Stage = new ProofStage_CloneElement(
 			"Create Shadow Square 2",
 			"Creating shadow square 2",
@@ -270,7 +313,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, shearSquare1_Stage );
+		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, createCongruentTriangle1_Stage );
 
 		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
 			"Shear Square 2",
@@ -294,20 +337,6 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStageFollowing( shearSquare2_Stage , createShadowSquare2_Stage );
 
-		ProofStage_RemoveElement removeShadowSquare1_Stage = new ProofStage_RemoveElement(
-			"RemoveShadow Square 1",
-			"Removing shadow square 1",
-			geometryFactory_,
-			mainField_,
-			0.2f,
-			HandleProofStageFinished,
-			shadowSquareNames_[0],
-			typeof(Element_Parallelogram) );
-
-		removeShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
-
-		proofEngine_.RegisterStageFollowing(removeShadowSquare1_Stage , shearSquare2_Stage );
-
 		ProofStage_RemoveElement removeShadowSquare2_Stage = new ProofStage_RemoveElement(
 			"RemoveShadow Square 2",
 			"Removing shadow square 2",
@@ -321,7 +350,7 @@ public partial class SceneControllerProof : SceneController_Base
 		removeShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
 		removeShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( removeShadowSquare2_Stage, removeShadowSquare1_Stage );
+		proofEngine_.RegisterStageFollowing( removeShadowSquare2_Stage, shearSquare2_Stage );
 
 		ProofStage_ShearParallelogram shearParallelogram0_Stage = new ProofStage_ShearParallelogram(
 			"Shear Parallelogram 0",
