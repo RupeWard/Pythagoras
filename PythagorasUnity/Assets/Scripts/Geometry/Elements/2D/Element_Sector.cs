@@ -38,6 +38,20 @@ namespace RJWard.Geometry
 
 		#endregion private data
 
+		#region properties
+
+		public float angleExtentDegrees
+		{
+			get { return angleExtentDegrees_; }
+		}
+
+		public float angleDirectionDegrees
+		{
+			get { return angleDirectionDegrees_; }
+		}
+
+		#endregion properties
+
 		#region in-editor modding 
 
 #if UNITY_EDITOR

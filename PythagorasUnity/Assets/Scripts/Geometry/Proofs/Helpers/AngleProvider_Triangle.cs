@@ -3,6 +3,15 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	/*
+	Get angle from triangle
+
+	?? DEPRECATE ?? Currently using Polygon version instead
+					Unlike e.g. parallelogram, triangle element is defined in terms of points not angle, so needs to compute angle on request. 
+					So polygon one is PROBABLY more efficient (polygon angle element knows its angle)
+					
+		*** Check this efficiency theory before finalising *** 
+	*/
 	public class AngleProvider_Triangle : IAngleProvider
 	{
 		#region private data

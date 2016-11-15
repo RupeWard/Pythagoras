@@ -3,6 +3,11 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
+	/*
+		Get angle from parallelogram
+
+		Parallelogram is defined in terms of angle so more efficient to use this than ploygon version 
+	*/
 	public class AngleProvider_Parallelogram : IAngleProvider
 	{ 
 		#region private data

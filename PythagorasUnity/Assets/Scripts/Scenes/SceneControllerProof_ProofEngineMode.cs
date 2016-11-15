@@ -285,11 +285,11 @@ public partial class SceneControllerProof : SceneController_Base
 			new AngleProvider_Parallelogram(
 				parallelogramNames_[0],
 				0,
-				GeometryHelpers.EAngleModifier.Raw),
-            new AngleProvider_Triangle(
+				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Polygon(
 				mainTriangleName_,
 				0,
-				GeometryHelpers.EAngleModifier.Raw
+				GeometryHelpers.EAngleModifier.Complementary
 				)
 			);
 
@@ -325,10 +325,10 @@ public partial class SceneControllerProof : SceneController_Base
 			new AngleProvider_Parallelogram(
 				parallelogramNames_[1],
 				0,
-				GeometryHelpers.EAngleModifier.Raw),
-			new AngleProvider_Triangle(
+				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Polygon(
 				mainTriangleName_,
-				1,
+				0,
 				GeometryHelpers.EAngleModifier.Supplementary
 				)
 			);

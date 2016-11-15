@@ -300,6 +300,7 @@ namespace RJWard.Geometry
 			return Vector2.Distance( side[0], side[1] );
 		}
 
+		// TODO: ?? DEPRECATE ?? Angle elements contain angle so shouldn't need to recompute
 		public float GetInternalAngleDegrees( int n ) // n is the vertex index 
 		{
 			if (n < 0 || n > 2)

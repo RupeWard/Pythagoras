@@ -18,8 +18,8 @@ namespace RJWard.Geometry
 		private IAngleProvider startAngleProvider_ = null;
 		private IAngleProvider targetAngleProvider_ = null;
 
-		private float parallelogramTargetAngle_ = 90f;
-		private float parallelogramStartAngle_ = 90f;
+		private float parallelogramTargetAngle_ = float.NaN;
+		private float parallelogramStartAngle_ = float.NaN;
 
 		private float shearAlpha_ = 1f;
 
