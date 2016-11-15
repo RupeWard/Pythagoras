@@ -159,26 +159,6 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStage( createTriangle_Stage );
 
-		// TODO remove once triangles have their own sides
-		ProofStage_CreateTriangleSide createSide1_Stage = new ProofStage_CreateTriangleSide(
-			"Create Side 1",
-			"This is side 1",
-			geometryFactory_,
-			mainField_,
-			showSideDuration_,
-			HandleProofStageFinished,
-			mainTriangleName_,
-			1,
-			true,
-			-GeometryHelpers.internalLayerSeparation,
-			0.01f,
-			Color.black,
-			triangleSideNames_[1]
-			);
-
-		createSide1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
-
-		proofEngine_.RegisterStageFollowing( createSide1_Stage, createTriangle_Stage);
 
 		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
 			"Create Square 1",
@@ -187,7 +167,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainField_,
 			createSquareDuration,
 			HandleProofStageFinished,
-			triangleSideNames_[1],
+			new StraightLineProvider_Polygon( mainTriangleName_, 1 ),
 			-GeometryHelpers.externalLayerSeparation,
 			90f,
 			square0Colour,
@@ -203,30 +183,10 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 
-		createSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
-		proofEngine_.RegisterStageFollowing(createSquare1_Stage, createSide1_Stage);
+		proofEngine_.RegisterStageFollowing(createSquare1_Stage, createTriangle_Stage);
 
-		// TODO remove once triangles have their own sides
-		ProofStage_CreateTriangleSide createSide2_Stage = new ProofStage_CreateTriangleSide(
-			"Create Side 2",
-			"This is side 2",
-			geometryFactory_,
-			mainField_,
-			showSideDuration_,
-			HandleProofStageFinished,
-			mainTriangleName_,
-			2,
-			true,
-			-GeometryHelpers.internalLayerSeparation,
-			0.01f,
-			Color.black,
-			triangleSideNames_[2]
-			);
 
-		createSide2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
-
-		proofEngine_.RegisterStageFollowing(createSide2_Stage, createSquare1_Stage);
 
 		ProofStage_ExtrudeLineToSquare createSquare2_Stage = new ProofStage_ExtrudeLineToSquare(
 			"Create Square 2",
@@ -235,7 +195,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainField_,
 			createSquareDuration,
 			HandleProofStageFinished,
-			triangleSideNames_[2],
+			new StraightLineProvider_Polygon(mainTriangleName_, 2),
 			-GeometryHelpers.externalLayerSeparation,
 			90f,
 			square1Colour,
@@ -251,9 +211,8 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 
-		createSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse );
 
-		proofEngine_.RegisterStageFollowing(createSquare2_Stage, createSide2_Stage );
+		proofEngine_.RegisterStageFollowing(createSquare2_Stage, createSquare1_Stage );
 
 		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
 			"Create Shadow Square 1",

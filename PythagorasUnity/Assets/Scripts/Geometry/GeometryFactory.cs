@@ -168,29 +168,6 @@ namespace RJWard.Geometry
 			return curve;
 		}
 
-		// Create a straight line element from specifed side of a triangle
-		public Element_StraightLine CreateStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour, bool internalSide)
-		{
-			return AddStraightLineToField(
-				triangle.field,
-				n,
-				triangle.depth + relativeDepth,
-				(internalSide)?( triangle.GetSideInternal(sideNumber)):( triangle.GetSideExternal(sideNumber)),
-				width,
-				colour
-				);
-		}
-
-		public Element_StraightLine CreateInternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour)
-		{
-			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, true );
-        }
-
-		public Element_StraightLine CreateExternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour )
-		{
-			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
-		}
-		
 
 		public ElementBase CreateClone( string n, ElementBase srcElement, float relativeDepth, Color colour )
 		{
@@ -199,7 +176,37 @@ namespace RJWard.Geometry
 			result.SetColour( colour );
 			return result;
 		}
-		
+
 		#endregion creating elements
+
+		#region create straight lines from triangles sides
+
+		//		??? DEPRECATED ??? No longer being used since triangles have edges via polygon base class. If we do want to create a side from it we can just clone that.
+
+		// Create a straight line element from specifed side of a triangle
+		public Element_StraightLine CreateStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour, bool internalSide )
+		{
+			return AddStraightLineToField(
+				triangle.field,
+				n,
+				triangle.depth + relativeDepth,
+				(internalSide) ? (triangle.GetSideInternal( sideNumber )) : (triangle.GetSideExternal( sideNumber )),
+				width,
+				colour
+				);
+		}
+
+		public Element_StraightLine CreateInternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour )
+		{
+			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, true );
+		}
+
+		public Element_StraightLine CreateExternalStraightLineFromTriangleSide( string n, Element_Triangle triangle, int sideNumber, float relativeDepth, float width, Color colour )
+		{
+			return CreateStraightLineFromTriangleSide( n, triangle, sideNumber, relativeDepth, width, colour, false );
+		}
+
+		#endregion create straight lines from triangles sides
+
 	}
 }

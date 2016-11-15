@@ -20,7 +20,8 @@ namespace RJWard.Geometry
 		private float relativeDepth_ = 0f;
 
 		// source line
-		private string lineName_ = "[UNKNOWN LINE]";
+		IStraightLineProvider lineProvider_ = null;
+
 		
 		#endregion private data
 
@@ -28,7 +29,7 @@ namespace RJWard.Geometry
 
 		public ProofStage_ExtrudeLineToParallelogram(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
-			string lineName,
+			IStraightLineProvider lp,
 			float relDepth,
 			float a,
 			float h,
@@ -42,15 +43,8 @@ namespace RJWard.Geometry
 			parallelogramHeight_ = h;
 			relativeDepth_ = relDepth;
 
-			lineName_ = lineName;
+			lineProvider_ = lp;
 
-			startRequiredElementListDefinition = new ElementListDefinition(
-				"StartRequirements",
-				new Dictionary<string, System.Type>( )
-				{
-					{ lineName_, typeof(Element_StraightLine) }
-				}
-			);
 			endRequiredElementListDefinition = new ElementListDefinition(
 				"EndRequirements",
 				new Dictionary<string, System.Type>( )
@@ -65,32 +59,39 @@ namespace RJWard.Geometry
 			parallelogram_ = elements.GetElementOfType< Element_Parallelogram >( parallelogramName_ );
 			if (parallelogram_ == null)
 			{
-				Element_StraightLine line = elements.GetRequiredElementOfType< Element_StraightLine >( lineName_ );
-
-				parallelogram_ =
-					geometryFactory.AddParallelogramToField(
-						line.field,
-						parallelogramName_,
-						line.depth + relativeDepth_,
-						line.GetEnds( ),
-						parallelogramHeight_,
-						parallelogramAngle_,
-						parallelogramColour_
-						);
-				elements.AddElement( parallelogramName_, parallelogram_ );
-
-				switch (direction)
+				Element_StraightLine line = lineProvider_.GetLine( elements );
+				if (line == null)
 				{
-					case ProofEngine.EDirection.Forward:
-						{
-							parallelogram_.SetHeight( 0f );
-							break;
-						}
-					case ProofEngine.EDirection.Reverse:
-						{
-							parallelogram_.SetHeight( parallelogramHeight_ );
-							break;
-						}
+					throw new System.Exception("Line provider returned null!" );
+				}
+				else
+				{
+
+					parallelogram_ =
+						geometryFactory.AddParallelogramToField(
+							line.field,
+							parallelogramName_,
+							line.depth + relativeDepth_,
+							line.GetEnds( ),
+							parallelogramHeight_,
+							parallelogramAngle_,
+							parallelogramColour_
+							);
+					elements.AddElement( parallelogramName_, parallelogram_ );
+
+					switch (direction)
+					{
+						case ProofEngine.EDirection.Forward:
+							{
+								parallelogram_.SetHeight( 0f );
+								break;
+							}
+						case ProofEngine.EDirection.Reverse:
+							{
+								parallelogram_.SetHeight( parallelogramHeight_ );
+								break;
+							}
+					}
 				}
 			}
 		}

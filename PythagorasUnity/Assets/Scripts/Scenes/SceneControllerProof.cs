@@ -31,8 +31,6 @@ public partial class SceneControllerProof : SceneController_Base
 	public float initialAngle = 30f;
 	public float initialSpeed = 1f;
 
-	private float showSideDuration_ = 1f;
-
 	public float createSquareDuration = 3f;
 	public Color square0Colour = Color.green;
 	public Color square1Colour = Color.magenta;

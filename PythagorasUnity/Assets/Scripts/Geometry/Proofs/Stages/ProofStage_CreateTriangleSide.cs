@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
+	/*
+		Create a straight line element corresponding to the side of a triangle.
+
+		??? DEPRECATED ??? No longer being used since triangles have edges via polygon base class. If we do want to create a side from it we can just clone that.
+	*/
 	class ProofStage_CreateTriangleSide : ProofStageBase
 	{
 		#region private data
