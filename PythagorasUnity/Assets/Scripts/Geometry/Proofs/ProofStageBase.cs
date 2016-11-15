@@ -301,10 +301,6 @@ namespace RJWard.Geometry
 				case ProofEngine.EDirection.Reverse:
 					{
 						currentTimeSeconds_ = durationSeconds_;
-						if (startReversedDestroyElementListDefinition_ != null)
-						{
-							elements_.DestroyAll( startReversedDestroyElementListDefinition_ );
-						}
 						if (endRequiredElementListDefinition_ != null)
 						{
 							if (false == endRequiredElementListDefinition_.Validate( elements_, true ))
@@ -317,9 +313,14 @@ namespace RJWard.Geometry
 			}
 
 			isTimeRunning_ = true;
+
+			initNotUpdated_ = true;
+
 			// derived class
 			HandleInit( ); 
 		}
+
+		private bool initNotUpdated_ = false;
 
 		#endregion Setup
 
@@ -344,8 +345,22 @@ namespace RJWard.Geometry
 			}
 		}
 
-		public void UpdateView()
+		private void UpdateView()
 		{
+			if (initNotUpdated_)
+			{
+				Debug.LogWarning( name+ " initNotUpdated" );
+
+				initNotUpdated_ = false;
+				if (direction_ == ProofEngine.EDirection.Reverse)
+				{
+					if (startReversedDestroyElementListDefinition_ != null)
+					{
+						elements_.DestroyAll( startReversedDestroyElementListDefinition_ );
+					}
+				}
+				HandleFirstUpdateAfterInit( );
+			}
 			// Anything to do here? If not then we don't need this function
 			DoUpdateView( );
 		}
@@ -353,6 +368,7 @@ namespace RJWard.Geometry
 		abstract protected void DoUpdateView( ); // derived class defines to set up view according to current time
 		abstract protected void HandleInit( );  // derived class overrides to handle any initialisation work
 		abstract protected void HandleFinished( ); // derived class overrides to handle anything needs doing on finish (in either direction) 
+		abstract protected void HandleFirstUpdateAfterInit( ); 
 
 		/* This is the main direction-dependent updating function. 
 
@@ -386,7 +402,7 @@ namespace RJWard.Geometry
 							break;
 						}
 				}
-				DoUpdateView( );
+				UpdateView( );
 			}
 			if (shouldFinish)
 			{

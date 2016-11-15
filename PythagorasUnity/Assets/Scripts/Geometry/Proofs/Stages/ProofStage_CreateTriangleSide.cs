@@ -107,13 +107,17 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			CreateLineIfNeeded( );
+		}
+
 		protected override void HandleInit( )
 		{ 
 		}
 
 		protected override void DoUpdateView( )
 		{
-			CreateLineIfNeeded( );
 			line_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
 		}
 

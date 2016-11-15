@@ -87,6 +87,18 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			parallelogram_.SetAlpha( shearAlpha_ );
+			parallelogram_.SetShowEdgeElement( 0 );
+			Element_StraightLine edge0 = parallelogram_.GetEdgeElement( 0 ) as Element_StraightLine;
+			if (edge0 != null)
+			{
+				edge0.SetColour( Color.black );
+				edge0.SetWidth( 0.05f );
+			}
+		}
+
 		protected override void HandleInit( )
 		{
 			if (parallelogram_ == null)
@@ -117,17 +129,6 @@ namespace RJWard.Geometry
 
 		protected override void DoUpdateView( )
 		{
-			if (currentTimeFractional > 0f)
-			{
-				parallelogram_.SetAlpha( shearAlpha_ );
-			}
-			parallelogram_.SetShowEdgeElement( 0 );
-			Element_StraightLine edge0 = parallelogram_.GetEdgeElement( 0 ) as Element_StraightLine;
-			if (edge0 != null)
-			{
-				edge0.SetColour( Color.black );
-				edge0.SetWidth( 0.05f );
-			}
 			parallelogram_.SetAngleDegrees(Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
 		}
 

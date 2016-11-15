@@ -91,13 +91,17 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			CreateTriangleIfNeeded( );
+		}
+
 		protected override void HandleInit( )
 		{
 		}
 
 		protected override void DoUpdateView( )
 		{
-			CreateTriangleIfNeeded( );
 			triangle_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
 		}
 

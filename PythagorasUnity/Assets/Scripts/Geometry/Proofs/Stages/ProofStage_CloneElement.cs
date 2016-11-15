@@ -18,7 +18,7 @@ namespace RJWard.Geometry
 
 		// source name
 		private string srcName_ = "[UNKNOWN ELEMENT]";
-		private System.Type srcType_ =  null;
+		private System.Type srcType_ = null;
 
 		#endregion private data
 
@@ -30,8 +30,8 @@ namespace RJWard.Geometry
 			System.Type st,
 			float relDepth,
 			Color c,
-			string cn) 
-			: base (n, descn, gf, f, durn, ac )
+			string cn )
+			: base( n, descn, gf, f, durn, ac )
 		{
 			cloneColour_ = c;
 			cloneName_ = cn;
@@ -61,6 +61,11 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			CreateCloneIfNeeded( );
+		}
+
 		private void CreateCloneIfNeeded()
 		{
 			if (cloneElement_ == null )
@@ -87,7 +92,6 @@ namespace RJWard.Geometry
 
 		protected override void DoUpdateView( )
 		{
-			CreateCloneIfNeeded( );
 			cloneElement_.SetAlpha(Mathf.Lerp( 0f, 1f, currentTimeFractional ));
 		}
 

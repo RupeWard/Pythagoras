@@ -39,10 +39,17 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			if (element_ != null)
+			{
+				element_.gameObject.SetActive( true );
+			}
+		}
+
 		protected override void HandleInit( )
 		{
 			element_ = elements.GetElement(elementName_);
-			element_.gameObject.SetActive( true );
 		}
 
 		protected override void DoUpdateView( )

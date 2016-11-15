@@ -59,7 +59,6 @@ namespace RJWard.Geometry
 					);
 				elements.AddElement( triangleName_, triangle_ );
 				triangle_.SetAlpha( 0f );
-
 			}
 			else
 			{
@@ -71,13 +70,18 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			Debug.LogWarning( "CreateRightTriangle.HandleFirstUpdateAfterInit" );
+			CreateTriangleIfNeeded( );
+		}
+
 		protected override void HandleInit( )
 		{
 		}
 
 		protected override void DoUpdateView( )
 		{
-			CreateTriangleIfNeeded( );
 			triangle_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
 			Element_Sector ra = triangle_.GetAngleElement( 1 );
 			if (ra != null)

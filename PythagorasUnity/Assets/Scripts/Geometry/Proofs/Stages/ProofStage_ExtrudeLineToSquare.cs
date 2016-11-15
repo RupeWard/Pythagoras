@@ -105,13 +105,17 @@ namespace RJWard.Geometry
 
 		#region ProofStageBase 
 
+		override protected void HandleFirstUpdateAfterInit( )
+		{
+			CreateSquareIfNeeded( );
+		}
+
 		protected override void HandleInit( )
 		{
 		}
 
 		protected override void DoUpdateView( )
 		{
-			CreateSquareIfNeeded( );
 			parallelogram_.SetHeight(Mathf.Lerp( 0f, parallelogramHeight_, currentTimeFractional ) );
 		}
 
