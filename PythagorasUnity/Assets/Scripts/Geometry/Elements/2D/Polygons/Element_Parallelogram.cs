@@ -328,7 +328,7 @@ namespace RJWard.Geometry
 			SetEdgeElements( vertices );
 			if (Mathf.Approximately(height_, 0f))
 			{
-				HideAngleElements( );
+				HideAllAngleElements( );
 			}
 			else
 			{
@@ -397,8 +397,16 @@ namespace RJWard.Geometry
 			bool changed = false;
 			if (!Mathf.Approximately(h, height_))
 			{
+				float oldHeight = height_;
 				height_ = h;
-				ShowAllSubElements( height_ > Mathf.Epsilon ); // TODO also dependent on whether we want to!
+				if (height <= Mathf.Epsilon)
+				{
+					HideAllSubElements( );
+				}
+				else if (oldHeight <= Mathf.Epsilon)
+				{
+					ShowAllSubElements( );
+				}
 				SetMeshDirty( );
 			}
 			return changed;

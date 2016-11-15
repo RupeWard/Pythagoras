@@ -60,60 +60,91 @@ namespace RJWard.Geometry
 
 		#region edges
 
+		// Get an edge 
 		public Element1DBase GetEdgeElement(int n)
 		{
 			return edgeElements_[ modIndex(n) ];
 		}
 
+		public void SetShowEdgeElement( int n, bool b )
+		{
+			if (b != showEdges_[n])
+			{
+				showEdges_[n] = b;
+				ShowEdgeElementHelper( n, b );
+			}
+		}
+
+		public void SetShowEdgeElement( int n )
+		{
+			SetShowEdgeElement( n, true );
+		}
+
+		public void SetHideEdgeElement( int n )
+		{
+			SetShowEdgeElement( n, false );
+		}
+
+
+		// Set an edge (on creation)
 		protected void SetEdgeElement(int n, Element1DBase e )
 		{
 			n = modIndex( n );
 			if (edgeElements_[n] != null)
 			{
-				throw new System.Exception( "Element " + name + " already has an edge #" + n +", destroying");
+				Debug.LogError( "Element " + name + " already has an edge #" + n +", destroying");
+				GameObject.Destroy( edgeElements_[n].gameObject );
+				edgeElements_[n] = null;
 			}
 			edgeElements_[n] = e;
-			ShowEdgeElement( n, showEdges_[n] );
+			e.gameObject.SetActive(showEdges_[n] );
 		}
 
-		public void ShowEdgeElement(int n, bool show)
+		// show/hide (show if edgewise flag is set)
+		public void ShowAllEdgeElements( bool show )
+		{
+			if (show)
+			{
+				ShowAllEdgeElements( );
+			}
+			else
+			{
+				HideAllEdgeElements( );
+			}
+		}
+
+		// show if edgewise flag is set
+		public void ShowAllEdgeElements( )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				if (edgeElements_[i] != null)
+				{
+					edgeElements_[i].gameObject.SetActive( showEdges_[i] );
+				}
+			}
+		}
+
+		// hide all
+		public void HideAllEdgeElements( )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				if (edgeElements_[i] != null)
+				{
+					edgeElements_[i].gameObject.SetActive( false );
+				}
+			}
+		}
+
+
+		private void ShowEdgeElementHelper(int n, bool show)
 		{
 			Element1DBase edgeElement = GetEdgeElement( n );
 			if (edgeElement != null)
 			{
 				edgeElement.gameObject.SetActive( show );
 			}
-		}
-
-		public void ShowEdgeElement(int n)
-		{
-			ShowEdgeElement( n, true );
-		}
-
-		public void HideEdgeElement( int n )
-		{
-			ShowEdgeElement( n, false );
-		}
-
-		public void ShowAllEdgeElements(bool show)
-		{
-			for (int i = 0; i < numVertices_; i++)
-			{
-				if (edgeElements_[i] != null)
-				{
-					edgeElements_[i].gameObject.SetActive( show );
-				}
-			}
-		}
-
-		public void ShowAllEdgeElements()
-		{
-			ShowAllEdgeElements( true );
-		}
-
-		public void HideEdgeElements()
-		{
-			ShowAllEdgeElements( false );
 		}
 
 		public void DestroyEdgeElement(int n)
@@ -133,46 +164,88 @@ namespace RJWard.Geometry
 			}
 		}
 
-		void SetShowEdgeElement(int n, bool b)
-		{
-			if (b != showEdges_[n])
-			{
-				showEdges_[n] = b;
-				ShowEdgeElement( n, b );
-			}
-		}
-
-		void SetShowEdgeElement( int n )
-		{
-			SetShowEdgeElement( n, true );
-		}
-
-		void SetHideEdgeElement( int n )
-		{
-			SetShowEdgeElement( n, false );
-		}
-
 		#endregion edges
 
 		#region angles
 
+		// Get an angle 
 		public Element_Sector GetAngleElement( int n )
 		{
 			return angleElements_[modIndex( n )];
 		}
 
-		protected void SetAngleElement( int n, Element_Sector a )
+		public void SetShowAngleElement( int n, bool b )
+		{
+			if (b != showAngles_[n])
+			{
+				showAngles_[n] = b;
+				ShowAngleElementHelper( n, b );
+			}
+		}
+
+		public void SetShowAngleElement( int n )
+		{
+			SetShowAngleElement( n, true );
+		}
+
+		public void SetHideAngleElement( int n )
+		{
+			SetShowAngleElement( n, false );
+		}
+
+
+		// Set an angle (on creation)
+		protected void SetAngleElement( int n, Element_Sector e )
 		{
 			n = modIndex( n );
 			if (angleElements_[n] != null)
 			{
-				throw new System.Exception( "Element " + name + " already has an angle #" + n + ", destroying" );
+				Debug.LogError( "Element " + name + " already has a sector #" + n + ", destroying" );
+				GameObject.Destroy( angleElements_[n].gameObject );
+				angleElements_[n] = null;
 			}
-			angleElements_[n] = a;
-			ShowAngleElement( n, showAngles_[n] );
+			angleElements_[n] = e;
+			e.gameObject.SetActive( showAngles_[n] );
 		}
 
-		public void ShowAngleElement( int n, bool show )
+		// show/hide (show if anglewise flag is set)
+		public void ShowAllAngleElements( bool show )
+		{
+			if (show)
+			{
+				ShowAllAngleElements( );
+			}
+			else
+			{
+				HideAllAngleElements( );
+			}
+		}
+
+		// show if anglewise flag is set
+		public void ShowAllAngleElements( )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				if (angleElements_[i] != null)
+				{
+					angleElements_[i].gameObject.SetActive( showAngles_[i] );
+				}
+			}
+		}
+
+		// hide all
+		public void HideAllAngleElements( )
+		{
+			for (int i = 0; i < numVertices_; i++)
+			{
+				if (angleElements_[i] != null)
+				{
+					angleElements_[i].gameObject.SetActive( false );
+				}
+			}
+		}
+
+		private void ShowAngleElementHelper( int n, bool show )
 		{
 			Element_Sector angleElement = GetAngleElement( n );
 			if (angleElement != null)
@@ -181,38 +254,7 @@ namespace RJWard.Geometry
 			}
 		}
 
-		public void ShowAngleElement( int n )
-		{
-			ShowAngleElement( n, true );
-		}
-
-		public void HideAngleElement( int n )
-		{
-			ShowAngleElement( n, false );
-		}
-
-		public void ShowAllAngleElements( bool show )
-		{
-			for (int i = 0; i < numVertices_; i++)
-			{
-				if (angleElements_[i] != null)
-				{
-					angleElements_[i].gameObject.SetActive( show );
-				}
-			}
-		}
-
-		public void ShowAllAngleElements( )
-		{
-			ShowAllAngleElements( true );
-		}
-
-		public void HideAngleElements( )
-		{
-			ShowAllAngleElements( false );
-		}
-
-		public void DestroyAngleElement(int n)
+		public void DestroyAngleElement( int n )
 		{
 			if (angleElements_[n] != null)
 			{
@@ -230,7 +272,7 @@ namespace RJWard.Geometry
 		}
 
 		// TODO whether this is called should depend only on whether the edges are changed
-		protected void CreateAngleElement(int i)
+		protected void SetAngleElement(int i)
 		{
 			Element_StraightLine[] lines = new Element_StraightLine[2];
 
@@ -275,27 +317,8 @@ namespace RJWard.Geometry
 		{
 			for (int i = 0; i < numVertices_; i++)
 			{
-				CreateAngleElement( i );
+				SetAngleElement( i );
 			}
-		}
-
-		void SetShowAngleElement( int n, bool b )
-		{
-			if (b != showAngles_[n])
-			{
-				showAngles_[n] = b;
-				ShowAngleElement( n, b );
-			}
-		}
-
-		void SetShowAngleElement( int n )
-		{
-			SetShowAngleElement( n, true );
-		}
-
-		void SetHideAngleElement( int n )
-		{
-			SetShowAngleElement( n, false );
 		}
 
 		#endregion angles
@@ -315,18 +338,26 @@ namespace RJWard.Geometry
 
 		public void ShowAllSubElements(bool b)
 		{
-			ShowAllAngleElements( b );
-			ShowAllEdgeElements( b );
+			if (b)
+			{
+				ShowAllSubElements( );
+			}
+			else
+			{
+				HideAllSubElements( );
+			}
 		}
 
 		public void ShowAllSubElements( )
 		{
-			ShowAllSubElements( true );
+			ShowAllAngleElements();
+			ShowAllEdgeElements();
 		}
 
 		public void HideAllSubElements( )
 		{
-			ShowAllSubElements( false);
+			HideAllAngleElements( );
+			HideAllEdgeElements( );
 		}
 
 		#endregion subelements
