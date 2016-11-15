@@ -15,7 +15,7 @@ namespace RJWard.Geometry
 {
 	public class Element_Parallelogram : ElementPolygonBase, RJWard.Core.IDebugDescribable
 	{
-		public static bool DEBUG_PARALLELOGRAM = true;
+		public static bool DEBUG_PARALLELOGRAM = false;
 		public static bool DEBUG_PARALLELOGRAM_VERBOSE = false;
 
 		#region private data

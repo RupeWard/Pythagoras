@@ -14,8 +14,8 @@ namespace RJWard.Geometry
 {
 	public class Element_Curve: Element1DBase, RJWard.Core.IDebugDescribable
 	{
-		public static readonly bool DEBUG_CURVE = true;
-		public static readonly bool DEBUG_CURVE_VERBOSE = true;
+		public static readonly bool DEBUG_CURVE = false;
+		public static readonly bool DEBUG_CURVE_VERBOSE = false;
 
 		#region private data
 
