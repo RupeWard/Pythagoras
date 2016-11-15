@@ -59,6 +59,7 @@ namespace RJWard.Geometry
 					);
 				elements.AddElement( triangleName_, triangle_ );
 				triangle_.SetAlpha( 0f );
+
 			}
 		}
 
@@ -74,6 +75,13 @@ namespace RJWard.Geometry
 		{
 			CreateTriangleIfNeeded( );
 			triangle_.SetAlpha( Mathf.Lerp( 0f, 1f, currentTimeFractional ) );
+			Element_Sector ra = triangle_.GetAngleElement( 1 );
+			if (ra != null)
+			{
+				triangle_.SetShowAngleElement( 1 );
+				ra.SetColour( Color.cyan );
+				ra.SetRadius( 0.1f );
+			}
 		}
 
 		protected override void HandleFinished( )
