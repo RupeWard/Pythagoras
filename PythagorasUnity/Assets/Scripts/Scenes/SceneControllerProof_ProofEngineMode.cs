@@ -170,7 +170,7 @@ public partial class SceneControllerProof : SceneController_Base
 			new StraightLineProvider_Polygon( mainTriangleName_, 1 ),
 			-GeometryHelpers.externalLayerSeparation,
 			90f,
-			square0Colour,
+			squareColours[0],
 			parallelogramNames_[0]
 			);
 
@@ -198,7 +198,7 @@ public partial class SceneControllerProof : SceneController_Base
 			new StraightLineProvider_Polygon(mainTriangleName_, 2),
 			-GeometryHelpers.externalLayerSeparation,
 			90f,
-			square1Colour,
+			squareColours[1],
 			parallelogramNames_[1]
 			);
 
@@ -289,11 +289,27 @@ public partial class SceneControllerProof : SceneController_Base
 				new StraightLineProvider_Polygon( shadowSquareNames_[0], 1),
 				new StraightLineProvider_Polygon( parallelogramNames_[0], 1)
 			},
-			Color.gray,
-			congruentTriangleNames[0]
+			congruentTriangleColours[0],
+			congruentTriangleNames_[0]
 			);
 
 		proofEngine_.RegisterStageFollowing( createCongruentTriangle1_Stage, removeShadowSquare1_Stage );
+
+		//////////////////////////////////////////////
+
+		ProofStage_RemoveElement removeCongruentTriangle1_Stage = new ProofStage_RemoveElement(
+			"Remove Congruent Triangle 1",
+			"Removing Congruent Triangle 1",
+			geometryFactory_,
+			mainField_,
+			removeShadowDuration,
+			HandleProofStageFinished,
+			congruentTriangleNames_[0],
+			typeof( Element_Triangle) );
+
+		removeShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		proofEngine_.RegisterStageFollowing( removeCongruentTriangle1_Stage, createCongruentTriangle1_Stage);
 
 		//////////////////////////////////////////
 
@@ -313,7 +329,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, createCongruentTriangle1_Stage );
+		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, removeCongruentTriangle1_Stage );
 
 		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
 			"Shear Square 2",
@@ -400,7 +416,9 @@ public partial class SceneControllerProof : SceneController_Base
 				createShadowSquare1_Stage,
 				createShadowSquare2_Stage,
 				removeShadowSquare1_Stage,
-				removeShadowSquare2_Stage
+				removeShadowSquare2_Stage,
+				createCongruentTriangle1_Stage,
+				removeCongruentTriangle1_Stage,
 			}
 		);
 

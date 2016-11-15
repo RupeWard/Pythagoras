@@ -169,7 +169,7 @@ public partial class SceneControllerProof : SceneController_Base
 				baseline,
 				0f,
 				90f,
-				square0Colour
+				squareColours[0]
 				);
 		elements_.AddElement( parallelogramNames_[0], parallelogram0 );
 
@@ -222,7 +222,7 @@ public partial class SceneControllerProof : SceneController_Base
 				baseline,
 				0f,
 				90f,
-				square1Colour
+				squareColours[1]
 				);
 
 		elements_.AddElement( parallelogramNames_[1], parallelogram1 );
@@ -267,7 +267,7 @@ public partial class SceneControllerProof : SceneController_Base
 		Element_Parallelogram shadowSquare0 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[0] ).Clone<Element_Parallelogram>( shadowSquareNames_[0] );
 		elements_.AddElement( shadowSquareNames_[0], shadowSquare0 );
 		shadowSquare0.SetColour( shadowColour );
-		shadowSquare0.SetDepth( shadowSquareDepth );
+		shadowSquare0.SetDepth( GeometryHelpers.externalLayerSeparation);
 
 		float targetAngle = elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName_ ).GetInternalAngleDegrees( 0 );
 
@@ -325,7 +325,7 @@ public partial class SceneControllerProof : SceneController_Base
 		Element_Parallelogram shadowSquare1 = elements_.GetElementOfType<Element_Parallelogram>( parallelogramNames_[1] ).Clone<Element_Parallelogram>( shadowSquareNames_[1] );
 		elements_.AddElement( shadowSquareNames_[1], shadowSquare1 );
 		shadowSquare1.SetColour( shadowColour );
-		shadowSquare1.SetDepth( shadowSquareDepth );
+		shadowSquare1.SetDepth( GeometryHelpers.externalLayerSeparation );
 
 		float targetAngle = 180f - elements_.GetRequiredElementOfType<Element_Triangle>( mainTriangleName_ ).GetInternalAngleDegrees( 1 );
 
@@ -417,7 +417,7 @@ public partial class SceneControllerProof : SceneController_Base
 		elements_.AddElement( shadowParallelogramNames_[0], shadowParallelogram0 );
 
 		shadowParallelogram0.SetColour( shadowColour );
-		shadowParallelogram0.SetDepth( shadowSquareDepth );
+		shadowParallelogram0.SetDepth( GeometryHelpers.externalLayerSeparation );
 
 		Element_Parallelogram parallelogram0 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[0] );
 		parallelogram0.ChangeBaseline( 1 );
@@ -466,7 +466,7 @@ public partial class SceneControllerProof : SceneController_Base
 		elements_.AddElement( shadowParallelogramNames_[1], shadowParallelogram1 );
 
 		shadowParallelogram1.SetColour( shadowColour );
-		shadowParallelogram1.SetDepth( shadowSquareDepth );
+		shadowParallelogram1.SetDepth( GeometryHelpers.externalLayerSeparation );
 
 		Element_Parallelogram parallelogram1 = elements_.GetRequiredElementOfType<Element_Parallelogram>( parallelogramNames_[1] );
 

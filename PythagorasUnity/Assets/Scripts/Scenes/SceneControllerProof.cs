@@ -25,23 +25,21 @@ public partial class SceneControllerProof : SceneController_Base
 
 	#region Public Settings
 
-	public float createTriangleDuration = 3f;
-	public Color mainTriangleColour = Color.blue;
 
 	public float initialAngle = 30f;
 	public float initialSpeed = 1f;
 
+	public float createTriangleDuration = 3f;
 	public float createSquareDuration = 3f;
-	public Color square0Colour = Color.green;
-	public Color square1Colour = Color.magenta;
-
 	public float shearSquareDuration = 3f;
 	public float postShearFadeDuration = 1f;
 	public float createCongruentTriangleDuration = 3f;
-
-	public Color shadowColour = new Color( 100f / 255f, 100f / 255f, 100f / 255f );
-	public float shadowSquareDepth = 0.1f;
 	public float removeShadowDuration = 1f;
+
+	public Color mainTriangleColour = Color.blue;
+	public Color[] squareColours = new Color[] { Color.green, Color.magenta };
+	public Color shadowColour = new Color( 100f / 255f, 100f / 255f, 100f / 255f );
+	public Color[] congruentTriangleColours = new Color[] { Color.cyan, Color.cyan};
 
 	public float shearAlpha = 125f / 255f;
 
@@ -98,7 +96,7 @@ public partial class SceneControllerProof : SceneController_Base
 	private readonly string[] shadowSquareNames_ = { "Shadow Square 0", "Shadow Square 1" };
 	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
 	private readonly string[] triangleSideNames_ = { "Hypotenuse", "Side 1", "Side 2" };
-	private readonly string[] congruentTriangleNames = new string[] { "congruentTriangle1", "congruentTriangle2" };
+	private readonly string[] congruentTriangleNames_ = new string[] { "congruentTriangle1", "congruentTriangle2" };
 
 	#endregion private elements
 
