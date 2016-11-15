@@ -236,7 +236,7 @@ namespace RJWard.Geometry
 			}
 			if (!Mathf.Approximately(f, decorator1D.width))
 			{
-				decorator1D.width = modWidth;
+				decorator1D.width = f;
 				changed = true;
 				// No need to set mesh dirty, this is handled by decorator 
 			}
