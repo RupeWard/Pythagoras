@@ -38,6 +38,8 @@ public class ProofTextPanel : MonoBehaviour
 
 	private void Awake()
 	{
+		proofText.text = string.Empty;
+
 		sizeDeltaRange_.x = timerImageRT.sizeDelta.y;
 		sizeDeltaRange_.y = sizeDeltaRange_.x - timerImageRT.GetHeight( );
 		if (DEBUG_PROOFTEXTPANEL)
@@ -45,7 +47,18 @@ public class ProofTextPanel : MonoBehaviour
 			Debug.Log( "sdr = " + sizeDeltaRange_ );
 		}
 	}
-	
+
+	private void Start( )
+	{
+		Close( );
+#if UNITY_EDITOR
+		if (DEBUG_PROOFTEXTPANEL)
+		{
+			SetText( "TEST TEXT", 10f, null );
+		}
+#endif
+	}
+
 	#endregion Flow
 
 	#region interface
@@ -58,6 +71,18 @@ public class ProofTextPanel : MonoBehaviour
 			onCloseAction = null;
 		}
 		gameObject.SetActive( false );
+	}
+
+	public void SetText(string text, float duration, System.Action closeAction)
+	{
+		proofText.text = text;
+		ResetTimer( duration );
+		StartTimer( );
+		if (closeAction != null)
+		{
+			onCloseAction += closeAction;
+		}
+		gameObject.SetActive( true );
 	}
 
 	#endregion interface
@@ -80,16 +105,14 @@ public class ProofTextPanel : MonoBehaviour
 
 	private void StartTimer( )
 	{
-		timerImage.color = runningColour;
-		timerRunning_ = true;
-		SetTimerImage( );
+		if (timerTotal > 0f)
+		{
+			timerImage.color = runningColour;
+			timerRunning_ = true;
+			SetTimerImage( );
+		}
 	}
 
-	private void Start()
-	{
-		ResetTimer( 10f );
-		StartTimer( );
-	}
 
 	private void Update()
 	{
