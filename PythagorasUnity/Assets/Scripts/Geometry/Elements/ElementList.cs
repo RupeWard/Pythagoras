@@ -242,7 +242,7 @@ namespace RJWard.Geometry
 				{
 					if (DEBUG_ELEMENTLIST)
 					{
-						Debug.LogWarning( "Removing element '" + n + "' from " + this.DebugDescribe( ) );
+						Debug.Log( "Removing element '" + n + "' from " + this.DebugDescribe( ) );
 					}
 					if (destroy)
 					{
@@ -383,7 +383,7 @@ namespace RJWard.Geometry
 						nDone++;
 						if (DEBUG_ELEMENTLIST)
 						{
-							Debug.LogError( "ElementList " + name_ + " destroying element " + kvp.Key + " because in definition list " + eld.name );
+							Debug.Log( "ElementList " + name_ + " destroying element " + kvp.Key + " because in definition list " + eld.name );
 						}
 					}
 				}
