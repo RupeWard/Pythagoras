@@ -347,20 +347,6 @@ namespace RJWard.Geometry
 
 		private void UpdateView()
 		{
-			if (initNotUpdated_)
-			{
-				Debug.LogWarning( name+ " initNotUpdated" );
-
-				initNotUpdated_ = false;
-				if (direction_ == ProofEngine.EDirection.Reverse)
-				{
-					if (startReversedDestroyElementListDefinition_ != null)
-					{
-						elements_.DestroyAll( startReversedDestroyElementListDefinition_ );
-					}
-				}
-				HandleFirstUpdateAfterInit( );
-			}
 			// Anything to do here? If not then we don't need this function
 			DoUpdateView( );
 		}
@@ -377,6 +363,21 @@ namespace RJWard.Geometry
 		public void HandleSecondsElapsed(float s)
 		{
 			bool shouldFinish = false;
+			if (initNotUpdated_)
+			{
+				Debug.LogWarning( name + " initNotUpdated" );
+
+				initNotUpdated_ = false;
+				if (direction_ == ProofEngine.EDirection.Reverse)
+				{
+					if (startReversedDestroyElementListDefinition_ != null)
+					{
+						elements_.DestroyAll( startReversedDestroyElementListDefinition_ );
+					}
+				}
+				HandleFirstUpdateAfterInit( );
+				s = 0f;
+			}
 			if (isTimeRunning_)
 			{
 				switch (direction_)
