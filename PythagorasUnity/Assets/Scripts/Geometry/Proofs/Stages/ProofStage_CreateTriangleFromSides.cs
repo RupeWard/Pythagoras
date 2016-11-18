@@ -118,7 +118,8 @@ namespace RJWard.Geometry
 					{
 						if (triangle_ != null)
 						{
-							triangle_.SetAlpha( 0f );
+							elements.DestroyElement( ref triangle_ );
+							triangle_ = null;
 						}
 						break;
 					}

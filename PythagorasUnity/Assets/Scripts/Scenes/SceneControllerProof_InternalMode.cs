@@ -393,7 +393,7 @@ public partial class SceneControllerProof : SceneController_Base
 			eb.SetAlpha( Mathf.Lerp( 1f, 0f, elapsed / removeShadowDuration ) );
 			yield return null;
 		}
-		elements_.DestroyElement( eb );
+		elements_.DestroyElement( ref eb );
 	}
 
 	private void ShearParallelogram0( )

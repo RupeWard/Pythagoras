@@ -108,7 +108,7 @@ namespace RJWard.Geometry
 					{
 						if (cloneElement_ != null)
 						{
-							cloneElement_.SetAlpha( 0f );
+							elements.DestroyElement( ref cloneElement_ );
 						}
 						break;
 					}

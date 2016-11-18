@@ -121,7 +121,23 @@ namespace RJWard.Geometry
 
 		protected override void HandleFinished( )
 		{
-			// TODO anything?
+			switch (direction)
+			{
+				case ProofEngine.EDirection.Forward:
+					{
+						parallelogram_.SetHeight( parallelogramHeight_ );
+						break;
+					}
+				case ProofEngine.EDirection.Reverse:
+					{
+						if (parallelogram_ != null)
+						{
+							elements.DestroyElement( ref parallelogram_ );
+							parallelogram_ = null;
+						}
+						break;
+					}
+			}
 		}
 
 		#endregion ProofStageBase 

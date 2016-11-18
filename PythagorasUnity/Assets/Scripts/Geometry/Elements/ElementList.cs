@@ -156,7 +156,7 @@ namespace RJWard.Geometry
 		}
 
 		// Helper - remove and destroy
-		public bool DestroyElement( string n )
+		public bool DestroyElement( ref string n )
 		{
 			return RemoveElement( n, true);
 		}
@@ -359,16 +359,21 @@ namespace RJWard.Geometry
 			return found;
 		}
 
-		// Helper - rmeove without destroying
+		// Helper - remove without destroying
 		public bool RemoveElement( ElementBase eb)
 		{
 			return RemoveElement( eb, false );
 		}
 
-		// Helper - rmeove and destroy
-		public bool DestroyElement( ElementBase eb )
+		// Helper - remove and destroy
+		public bool DestroyElement< T >( ref T eb ) where T : ElementBase
 		{
-			return RemoveElement( eb, true );
+			bool result = RemoveElement( eb, true );
+			if (result)	
+			{
+				eb = null;
+			}
+			return result;
 		}
 
 		public int DestroyAll(ElementListDefinition eld)

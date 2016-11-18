@@ -365,7 +365,10 @@ namespace RJWard.Geometry
 			bool shouldFinish = false;
 			if (initNotUpdated_)
 			{
-				Debug.LogWarning( name + " initNotUpdated" );
+				if (DEBUG_PROOFSTAGE)
+				{
+					Debug.Log( name + " initNotUpdated" );
+				}
 
 				initNotUpdated_ = false;
 				if (direction_ == ProofEngine.EDirection.Reverse)
