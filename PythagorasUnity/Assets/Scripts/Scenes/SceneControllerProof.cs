@@ -378,6 +378,8 @@ public partial class SceneControllerProof : SceneController_Base
 
 			triangleAngleUpButton.gameObject.SetActive( initialAngle < minMaxTriangleAngle.y );
 			triangleAngleDownButton.gameObject.SetActive( initialAngle > minMaxTriangleAngle.x );
+
+			HandleAngleChanged( );
 		}
 		/*
 		else
