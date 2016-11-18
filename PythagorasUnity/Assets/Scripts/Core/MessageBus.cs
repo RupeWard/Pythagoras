@@ -2,26 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public partial class MessageBus : MonoBehaviour
+public partial class MessageBus : RJWard.Core.Singleton.SingletonApplicationLifetimeLazy< MessageBus >
 {
-	private static MessageBus _instance;
-
-	public static MessageBus instance
-	{
-		get
-		{
-			if (_instance == null)
-			{
-				_instance = new GameObject("MessageBus").AddComponent<MessageBus>();
-			}			
-			return _instance;
-		}
-	}
-
-	public static bool exists
-	{
-		get { return _instance != null;  }
-	}
 
 }
 

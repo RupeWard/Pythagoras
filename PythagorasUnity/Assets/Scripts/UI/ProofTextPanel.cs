@@ -4,6 +4,44 @@ using RJWard.Core.UI.Extensions;
 
 public class ProofTextPanel : MonoBehaviour
 {
+	public class MessageDefinition
+	{
+		private string text_;
+		public string text
+		{
+			get { return text_;  }
+		}
+
+		private float duration_;
+		public float duration
+		{
+			get { return duration_; }
+		}
+
+		public MessageDefinition(string t, float d, System.Action<MessageDefinition> a)
+		{
+			text_ = t;
+			duration_ = d;
+			onCloseAction_ = a;
+		}
+
+		public MessageDefinition( string t, System.Action<MessageDefinition> a )
+		{
+			text_ = t;
+			duration_ = -1f;
+			onCloseAction_ = a;
+		}
+
+		private System.Action< MessageDefinition > onCloseAction_ = null;
+		public void SendOnCloseAction()
+		{
+			if (onCloseAction_ != null)
+			{
+				onCloseAction_( this );
+			}
+		}
+	}
+
 	static public bool DEBUG_PROOFTEXTPANEL = true;
 
 	#region inspector hooks
@@ -23,10 +61,11 @@ public class ProofTextPanel : MonoBehaviour
 
 	#region private data 
 
-	private float timeTillClose_ = -1f;
-	private float timerTotal = 0f;
+	private const float defaultDuration = 10f;
 
-	private System.Action onCloseAction;
+	private float timeTillClose_ = -1f;
+
+	private MessageDefinition messageDefinition_ = null;
 
 	private Vector2 sizeDeltaRange_ = Vector2.zero;
 
@@ -42,6 +81,9 @@ public class ProofTextPanel : MonoBehaviour
 
 		sizeDeltaRange_.x = timerImageRT.sizeDelta.y;
 		sizeDeltaRange_.y = sizeDeltaRange_.x - timerImageRT.GetHeight( );
+
+		MessageBus.Instance.showMessageAction += SetMessageDefinition;
+
 		if (DEBUG_PROOFTEXTPANEL)
 		{
 			Debug.Log( "sdr = " + sizeDeltaRange_ );
@@ -54,9 +96,24 @@ public class ProofTextPanel : MonoBehaviour
 #if UNITY_EDITOR
 		if (DEBUG_PROOFTEXTPANEL)
 		{
-			SetText( "TEST TEXT", 10f, null );
+			SetMessageDefinition( new MessageDefinition("TEST TEXT", 10f, null ));
 		}
 #endif
+	}
+
+	private bool isQuitting_ = false;
+
+	private void OnApplicationQuit()
+	{
+		isQuitting_ = true;
+	}
+
+	private void OnDestroy()
+	{
+		if (isQuitting_ == false && MessageBus.IsInitialised())
+		{
+			MessageBus.Instance.showMessageAction += SetMessageDefinition;
+		}
 	}
 
 	#endregion Flow
@@ -65,23 +122,20 @@ public class ProofTextPanel : MonoBehaviour
 
 	public void Close()
 	{
-		if (onCloseAction != null)
+		if (messageDefinition_ != null)
 		{
-			onCloseAction( );
-			onCloseAction = null;
+			messageDefinition_.SendOnCloseAction( );
 		}
+		messageDefinition_ = null;
 		gameObject.SetActive( false );
 	}
 
-	public void SetText(string text, float duration, System.Action closeAction)
+	public void SetMessageDefinition(MessageDefinition d)
 	{
-		proofText.text = text;
-		ResetTimer( duration );
+		messageDefinition_ = d;
+		proofText.text = messageDefinition_.text;
+		ResetTimer( messageDefinition_.duration );
 		StartTimer( );
-		if (closeAction != null)
-		{
-			onCloseAction += closeAction;
-		}
 		gameObject.SetActive( true );
 	}
 
@@ -91,7 +145,6 @@ public class ProofTextPanel : MonoBehaviour
 
 	private void ResetTimer(float t)
 	{
-		timerTotal = t;
 		timeTillClose_ = t;
 		SetTimerImage( );
 	}
@@ -105,46 +158,64 @@ public class ProofTextPanel : MonoBehaviour
 
 	private void StartTimer( )
 	{
-		if (timerTotal > 0f)
+		if (messageDefinition_ == null)
 		{
-			timerImage.color = runningColour;
-			timerRunning_ = true;
-			SetTimerImage( );
+			Debug.LogError( "Message definition is null" );
+		}
+		else
+		{
+			if (messageDefinition_.duration > 0f)
+			{
+				timerImage.color = runningColour;
+				timerRunning_ = true;
+				SetTimerImage( );
+			}
 		}
 	}
 
 
 	private void Update()
 	{
-		if (timerTotal > 0f )
+		if (messageDefinition_ != null)
 		{
-            if (timeTillClose_ >= 0f)
+			if (messageDefinition_.duration > 0f)
 			{
-				if (timerRunning_)
+				if (timeTillClose_ >= 0f)
 				{
-					timeTillClose_ -= Time.deltaTime;
-					if (timeTillClose_ < 0f)
+					if (timerRunning_)
 					{
-						Close( );
-					}
-					else
-					{
-						SetTimerImage( );
+						timeTillClose_ -= Time.deltaTime;
+						if (timeTillClose_ < 0f)
+						{
+							Close( );
+						}
+						else
+						{
+							SetTimerImage( );
+						}
 					}
 				}
 			}
-        }
+		}
 	}
 
 	private void SetTimerImage()
 	{
-		if (timerTotal > 0 && timeTillClose_ > 0f)
+		if (messageDefinition_ == null)
 		{
-			timerImageRT.sizeDelta = new Vector2( timerImageRT.sizeDelta.x, Mathf.Lerp( sizeDeltaRange_.y, sizeDeltaRange_.x, timeTillClose_ / timerTotal ) );
+			Debug.LogError( "MessageDefinition is null" );
+			timerImageRT.sizeDelta = new Vector2( timerImageRT.sizeDelta.x, sizeDeltaRange_.x );
 		}
 		else
 		{
-			timerImageRT.sizeDelta = new Vector2(timerImageRT.sizeDelta.x, sizeDeltaRange_.x);
+			if (messageDefinition_.duration > 0 && timeTillClose_ > 0f)
+			{
+				timerImageRT.sizeDelta = new Vector2( timerImageRT.sizeDelta.x, Mathf.Lerp( sizeDeltaRange_.y, sizeDeltaRange_.x, timeTillClose_ / messageDefinition_.duration ) );
+			}
+			else
+			{
+				timerImageRT.sizeDelta = new Vector2( timerImageRT.sizeDelta.x, sizeDeltaRange_.x );
+			}
 		}
 	}
 
@@ -160,16 +231,23 @@ public class ProofTextPanel : MonoBehaviour
 
 	public void OnTimerButtonClicked()
 	{
-		if (timerRunning_)
+		if (messageDefinition_ == null)
 		{
-			ResetTimer( timerTotal);
-			StopTimer( );
+			Debug.LogError( "MessageDefinition is null" );
 		}
-		else 
+		else
 		{
-			if (timerTotal > 0f)
+			if (timerRunning_)
 			{
-				StartTimer( );
+				ResetTimer( messageDefinition_.duration );
+				StopTimer( );
+			}
+			else
+			{
+				if (messageDefinition_.duration > 0f)
+				{
+					StartTimer( );
+				}
 			}
 		}
 	}
