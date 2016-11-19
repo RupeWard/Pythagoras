@@ -25,15 +25,55 @@ namespace RJWard.Geometry
 		private Transform cachedTransform_ = null;
 		public Transform cachedTransform
 		{
-			get { return cachedTransform_; }
+			get
+			{
+				if (cachedTransform_ == null)
+				{
+					cachedTransform_ = transform;
+				}
+				return cachedTransform_;
+			}
 		}
+
 		private Material cachedMaterial_ = null;
 		public Material cachedMaterial
 		{
-			get { return cachedMaterial_; }
+			get
+			{
+				if (cachedMaterial_ == null)
+				{
+					cachedMaterial_ = (useSharedMaterial) ? (cachedMeshRenderer.sharedMaterial) : (cachedMeshRenderer.material);
+					cachedMeshRenderer_.material = cachedMaterial_;
+				}
+				return cachedMaterial_;
+			}
 		}
+
 		private MeshRenderer cachedMeshRenderer_ = null;
+		public MeshRenderer cachedMeshRenderer
+		{
+			get
+			{
+				if (cachedMeshRenderer_ == null)
+				{
+					cachedMeshRenderer_ = GetComponent<MeshRenderer>( );
+				}
+				return cachedMeshRenderer_;
+			}
+		}
+
 		private MeshFilter cachedMeshFilter_ = null;
+		public MeshFilter cachedMeshFilter
+		{
+			get
+			{
+				if (cachedMeshFilter_ == null)
+				{
+					cachedMeshFilter_ = GetComponent<MeshFilter>( );
+				}
+				return cachedMeshFilter_;
+			}
+		}
 
 		#endregion private hooks
 
@@ -215,7 +255,7 @@ namespace RJWard.Geometry
 		private void SetField( Field f )
 		{
 			field_ = f;
-			cachedTransform_.SetParent( field_.cachedTransform );
+			cachedTransform.SetParent( field_.cachedTransform );
 			cachedTransform_.localScale = Vector3.one;
 			cachedTransform_.localRotation = Quaternion.identity;
 			cachedTransform_.localPosition = Vector3.zero;
@@ -276,7 +316,11 @@ namespace RJWard.Geometry
 			{
 				Debug.Log( "Cloned  " + this.GetType( ).ToString( ) + " '" + gameObject.name + "' as a " + typeof( T ).ToString( ) + " called '" + name + "'" );
 			}
-			component.cachedMeshFilter_.mesh = Mesh.Instantiate( cachedMeshFilter_.sharedMesh );
+			// Mesh may not have been created yet, in which case we can leave it to the clone to handle
+			if (cachedMeshFilter.sharedMesh != null)
+			{
+				component.cachedMeshFilter.mesh = Mesh.Instantiate( cachedMeshFilter.sharedMesh );
+			}
 			component.SetField( field_ );
 			component.SetDepth( d );
 			component.OnClone( this );
