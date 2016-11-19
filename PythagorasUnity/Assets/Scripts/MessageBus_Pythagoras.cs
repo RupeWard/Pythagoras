@@ -3,8 +3,8 @@ using System.Collections;
 
 public partial class MessageBus : RJWard.Core.Singleton.SingletonApplicationLifetimeLazy<MessageBus>
 {
-	public System.Action<ProofTextPanel.MessageDefinition> showMessageAction;
-	public void sendShowMessageAction( ProofTextPanel.MessageDefinition d )
+	public System.Action<ProofTextPanel.ProofMessageDefinition> showMessageAction;
+	public void sendShowMessageAction( ProofTextPanel.ProofMessageDefinition d )
 	{
 		if (showMessageAction != null)
 		{

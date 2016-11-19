@@ -4,7 +4,7 @@ using RJWard.Core.UI.Extensions;
 
 public class ProofTextPanel : MonoBehaviour
 {
-	public class MessageDefinition
+	public class ProofMessageDefinition
 	{
 		private string text_;
 		public string text
@@ -18,21 +18,21 @@ public class ProofTextPanel : MonoBehaviour
 			get { return duration_; }
 		}
 
-		public MessageDefinition(string t, float d, System.Action<MessageDefinition> a)
+		public ProofMessageDefinition(string t, float d, System.Action<ProofMessageDefinition> a)
 		{
 			text_ = t;
 			duration_ = d;
 			onCloseAction_ = a;
 		}
 
-		public MessageDefinition( string t, System.Action<MessageDefinition> a )
+		public ProofMessageDefinition( string t, System.Action<ProofMessageDefinition> a )
 		{
 			text_ = t;
 			duration_ = -1f;
 			onCloseAction_ = a;
 		}
 
-		private System.Action< MessageDefinition > onCloseAction_ = null;
+		private System.Action< ProofMessageDefinition > onCloseAction_ = null;
 		public void SendOnCloseAction()
 		{
 			if (onCloseAction_ != null)
@@ -65,7 +65,7 @@ public class ProofTextPanel : MonoBehaviour
 
 	private float timeTillClose_ = -1f;
 
-	private MessageDefinition messageDefinition_ = null;
+	private ProofMessageDefinition messageDefinition_ = null;
 
 	private Vector2 sizeDeltaRange_ = Vector2.zero;
 
@@ -96,7 +96,7 @@ public class ProofTextPanel : MonoBehaviour
 #if UNITY_EDITOR
 		if (DEBUG_PROOFTEXTPANEL)
 		{
-			SetMessageDefinition( new MessageDefinition("TEST TEXT", 10f, null ));
+			SetMessageDefinition( new ProofMessageDefinition("TEST TEXT", 10f, null ));
 		}
 #endif
 	}
@@ -130,7 +130,7 @@ public class ProofTextPanel : MonoBehaviour
 		gameObject.SetActive( false );
 	}
 
-	public void SetMessageDefinition(MessageDefinition d)
+	public void SetMessageDefinition(ProofMessageDefinition d)
 	{
 		messageDefinition_ = d;
 		proofText.text = messageDefinition_.text;
