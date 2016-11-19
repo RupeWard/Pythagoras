@@ -82,8 +82,6 @@ public class ProofTextPanel : MonoBehaviour
 		sizeDeltaRange_.x = timerImageRT.sizeDelta.y;
 		sizeDeltaRange_.y = sizeDeltaRange_.x - timerImageRT.GetHeight( );
 
-		MessageBus.Instance.showMessageAction += SetMessageDefinition;
-
 		if (DEBUG_PROOFTEXTPANEL)
 		{
 			Debug.Log( "sdr = " + sizeDeltaRange_ );
@@ -108,11 +106,16 @@ public class ProofTextPanel : MonoBehaviour
 		isQuitting_ = true;
 	}
 
-	private void OnDestroy()
+	private void OnEnable()
+	{
+		MessageBus.Instance.showMessageAction += SetMessageDefinition;
+	}
+
+	private void OnDisable()
 	{
 		if (isQuitting_ == false && MessageBus.IsInitialised())
 		{
-			MessageBus.Instance.showMessageAction += SetMessageDefinition;
+			MessageBus.Instance.showMessageAction -= SetMessageDefinition;
 		}
 	}
 
