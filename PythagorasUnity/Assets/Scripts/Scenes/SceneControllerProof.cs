@@ -95,7 +95,6 @@ public partial class SceneControllerProof : SceneController_Base
 	private readonly string[] parallelogramNames_ = { "Parallelogram 0", "Parallelogram 1" };
 	private readonly string[] shadowSquareNames_ = { "Shadow Square 0", "Shadow Square 1" };
 	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
-	private readonly string[] triangleSideNames_ = { "Hypotenuse", "Side 1", "Side 2" };
 	private readonly string[] congruentTriangleNames_ = new string[] { "congruentTriangle1", "congruentTriangle2" };
 
 	#endregion private elements

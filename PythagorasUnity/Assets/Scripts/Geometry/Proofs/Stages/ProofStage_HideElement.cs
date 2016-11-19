@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	class ProofStage_RemoveElement : ProofStageBase
+	class ProofStage_HideElement : ProofStageBase
 	{
 		#region private data
 
@@ -17,7 +17,7 @@ namespace RJWard.Geometry
 
 		#region setup
 
-		public ProofStage_RemoveElement(
+		public ProofStage_HideElement(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string en,
 			System.Type elementType
