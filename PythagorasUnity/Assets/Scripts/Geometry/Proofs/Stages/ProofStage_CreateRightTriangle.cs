@@ -6,6 +6,8 @@ namespace RJWard.Geometry
 {
 	class ProofStage_CreateRightTriangle : ProofStageBase
 	{
+		static public bool DEBUG_RIGHTTRIANGLE = false;
+		
 		#region private data
 
 		private Vector2[] hypotenuse_ = null;
@@ -72,7 +74,10 @@ namespace RJWard.Geometry
 
 		override protected void HandleFirstUpdateAfterInit( )
 		{
-			Debug.LogWarning( "CreateRightTriangle.HandleFirstUpdateAfterInit" );
+			if (DEBUG_RIGHTTRIANGLE)
+			{
+				Debug.Log( "CreateRightTriangle.HandleFirstUpdateAfterInit" );
+			}
 			CreateTriangleIfNeeded( );
 		}
 
