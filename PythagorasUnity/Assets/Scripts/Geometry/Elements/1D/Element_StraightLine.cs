@@ -162,13 +162,11 @@ namespace RJWard.Geometry
 			return ends_[1] - ends_[0];
 		}
 
-		/*
 		public float GetAngleDegrees()
 		{
 			Vector2 direction = GetDirection( );
 			return Mathf.Rad2Deg * Mathf.Atan2( direction.y, direction.x );
 		}
-		*/
 
 		// Computes the 4 vertices from the ends and width
 		private Vector2[] GetVertices( )
@@ -328,6 +326,11 @@ namespace RJWard.Geometry
 		#endregion Mesh
 
 		#region geometry helpers
+
+		public StraightLineFormula GetFormula()
+		{
+			return new StraightLineFormula( ends_[1], ends_[0] );
+		}
 
 		protected void HandleWidthChanged( float w)
 		{

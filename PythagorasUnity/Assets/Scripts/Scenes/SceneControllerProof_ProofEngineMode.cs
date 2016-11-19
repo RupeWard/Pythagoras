@@ -214,6 +214,25 @@ public partial class SceneControllerProof : SceneController_Base
 
 
 		proofEngine_.RegisterStageFollowing(createSquare2_Stage, createSquare1_Stage );
+		
+		ProofStage_CreateLineThroughPointAtAngleToLine createMainTriangleNormal_Stage = new ProofStage_CreateLineThroughPointAtAngleToLine(
+			"Create Main Triangle Normal",
+			"Create Main Triangle Normal",
+			geometryFactory_,
+			mainField_,
+			createNormalDuration,
+			HandleProofStageFinished,
+			new PointProvider_Polygon( mainTriangleName_, 2 ),
+			new StraightLineProvider_Polygon( mainTriangleName_, 0 ),
+			90f,
+			-3f * GeometryHelpers.externalLayerSeparation,
+			0.02f,
+			new Vector2(4f, 0f),
+			Color.gray,
+			mainTriangleNormalName_
+			);
+
+		proofEngine_.RegisterStageFollowing( createMainTriangleNormal_Stage, createSquare2_Stage );
 
 		//////////////////
 
@@ -233,7 +252,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( createShadowSquare1_Stage, createSquare2_Stage );
+		proofEngine_.RegisterStageFollowing( createShadowSquare1_Stage, createMainTriangleNormal_Stage );
 
 		///////////////////////////////
 
@@ -426,6 +445,23 @@ public partial class SceneControllerProof : SceneController_Base
 		hideShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		proofEngine_.RegisterStageFollowing( hideCongruentTriangle2_Stage, createCongruentTriangle2_Stage );
+		
+		//////////////////////////////////////////////
+
+		ProofStage_HideElement hideMainTriangleNormal_Stage = new ProofStage_HideElement(
+			"Remove Main Triangle Normal",
+			"Removing Main Triangle Normal",
+			geometryFactory_,
+			mainField_,
+			removeShadowDuration,
+			HandleProofStageFinished,
+			mainTriangleNormalName_,
+			typeof( Element_StraightLine ) );
+
+		hideMainTriangleNormal_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+
+		proofEngine_.RegisterStageFollowing( hideMainTriangleNormal_Stage , hideCongruentTriangle2_Stage);
+
 
 		//////////////////////////////////
 
@@ -448,7 +484,7 @@ public partial class SceneControllerProof : SceneController_Base
 			)
 		);
 
-		proofEngine_.RegisterStageFollowing( shearParallelogram0_Stage, hideCongruentTriangle2_Stage );
+		proofEngine_.RegisterStageFollowing( shearParallelogram0_Stage, hideMainTriangleNormal_Stage );
 		
 		//////////////////////////////
 
@@ -486,6 +522,8 @@ public partial class SceneControllerProof : SceneController_Base
 				hideCongruentTriangle1_Stage,
 				createCongruentTriangle2_Stage,
 				hideCongruentTriangle2_Stage,
+				createMainTriangleNormal_Stage,
+				hideMainTriangleNormal_Stage
 			}
 		);
 

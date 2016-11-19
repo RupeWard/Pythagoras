@@ -98,6 +98,7 @@ namespace RJWard.Geometry
 			return true;
 		}
 
+
 		#endregion computations
 	}
 }
