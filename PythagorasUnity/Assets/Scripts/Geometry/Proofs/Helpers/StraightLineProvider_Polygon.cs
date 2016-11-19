@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
@@ -9,17 +10,41 @@ namespace RJWard.Geometry
 
 		private string polygonName_ = "[UNKNOWN POLYGON]";
 		private int edgeNumber_ = 0;
+		private List<ILineExtender> lineExtenders_ = new List<ILineExtender>( );
 
 		#endregion
 
 		#region setup
 
 		public StraightLineProvider_Polygon( 
-			string tn,
-			int ln)
+			string pn,
+			int en)
 		{
-			polygonName_ = tn;
-			edgeNumber_ = ln;
+			Init( pn, en );
+		}
+
+		public StraightLineProvider_Polygon(
+			string pn,
+			int en,
+			List< ILineExtender > le)
+		{
+			Init( pn, en );
+			lineExtenders_.AddRange( le );
+		}
+
+		public StraightLineProvider_Polygon(
+			string pn,
+			int en,
+			ILineExtender le )
+		{
+			Init( pn, en );
+			lineExtenders_.Add( le );
+		}
+
+		private void Init( string pn,int en)
+		{
+			polygonName_ = pn;
+			edgeNumber_ = en;
 		}
 
 		#endregion setup
@@ -28,15 +53,22 @@ namespace RJWard.Geometry
 
 		public Element_StraightLine GetLine( ElementList elements )
 		{
-			Element_StraightLine result = null;
+			Element_StraightLine line = null;
 
 			ElementPolygonBase polygon = elements.GetRequiredElementOfType< ElementPolygonBase >( polygonName_);
-			result = polygon.GetEdgeElement( edgeNumber_ ) as Element_StraightLine;
-			if (result == null)
+			line = polygon.GetEdgeElement( edgeNumber_ ) as Element_StraightLine;
+			if (line == null)
 			{
 				Debug.LogError( "Polygon " + polygonName_ + " has no edgeElement " + edgeNumber_ );
 			}
-			return result;
+			else
+			{
+				for (int i = 0; i < lineExtenders_.Count; i++)
+				{
+					lineExtenders_[i].ExtendLine( elements, line );
+				}
+			}
+			return line;
 		}
 
 		#endregion
