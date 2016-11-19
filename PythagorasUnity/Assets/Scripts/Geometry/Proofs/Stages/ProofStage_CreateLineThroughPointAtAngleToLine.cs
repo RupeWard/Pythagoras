@@ -28,7 +28,8 @@ namespace RJWard.Geometry
 		private IPointProvider pointProvider_ = null;
 		private IStraightLineProvider lineProvider_ = null;
 		private float angle_ = 90f;
-		private Vector2 lineExtension_ = Vector2.zero; // x = extend beyond point, y = extend beyond line (in multuiples of line length)
+
+		private List<ILineExtender> lineExtenders = new List< ILineExtender >( );
 
 		#endregion private data
 
@@ -41,24 +42,67 @@ namespace RJWard.Geometry
 			float a,
 			float d,
 			float lw,
-			Vector2 le,
 			Color c,
 			string ln
-			) 
-			: base (n, descn, gf, f, durn, ac )
+		): base( n, descn, gf, f, durn, ac )
 		{
+			Init( pp, slp, a, d, lw, c, ln );
+		}
 
+		public ProofStage_CreateLineThroughPointAtAngleToLine(
+			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			IPointProvider pp,
+			IStraightLineProvider slp,
+			float a,
+			float d,
+			float lw,
+			Color c,
+			string ln,
+            ILineExtender le
+            ) : base (n, descn, gf, f, durn, ac )
+		{
+			Init( pp, slp, a, d, lw, c, ln );
+
+			lineExtenders.Add( le );
+		}
+
+		public ProofStage_CreateLineThroughPointAtAngleToLine(
+			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			IPointProvider pp,
+			IStraightLineProvider slp,
+			float a,
+			float d,
+			float lw,
+			Color c,
+			string ln,
+			List < ILineExtender > le
+		) : base( n, descn, gf, f, durn, ac )
+		{
+			Init( pp, slp, a, d, lw, c, ln );
+
+			lineExtenders.AddRange( le );
+		}
+
+		private void Init(
+			IPointProvider pp,
+			IStraightLineProvider slp,
+			float a,
+			float d,
+			float lw,
+			Color c,
+			string ln
+		) 
+		{
 			lineColour_ = c;
 			lineName_ = ln;
 			lineWidth_ = lw;
-			lineExtension_ = le;
 			depth_ = d;
-
 			pointProvider_ = pp;
 			lineProvider_ = slp;
-
 			angle_ = a;
 		}
+
+
 
 		private void CreateLineIfNeeded( )
 		{
@@ -85,6 +129,7 @@ namespace RJWard.Geometry
 					{
 						Debug.LogWarning( "Found point on line = " + point1 );
 					}
+					/*
 					Vector2 newPoint0 = point;
 					Vector2 newPoint1 = point1;
 
@@ -96,7 +141,8 @@ namespace RJWard.Geometry
 					{
 						newPoint1 = newPoint1 - (point - point1) * lineExtension_.y;
 					}
-					Vector2[] ends = new Vector2[] { newPoint0, newPoint1 };
+					*/
+					Vector2[] ends = new Vector2[] { point, point1};
 
 					line_ = geometryFactory.AddStraightLineToField(
 						line.field,
@@ -106,6 +152,10 @@ namespace RJWard.Geometry
 						lineWidth_,
 						lineColour_
 						);
+					for (int i = 0; i < lineExtenders.Count; i++)
+					{
+						lineExtenders[i].ExtendLine( line_ );
+					}
 
 					elements.AddElement( lineName_, line_ );
 

@@ -227,10 +227,10 @@ public partial class SceneControllerProof : SceneController_Base
 			90f,
 			-3f * GeometryHelpers.externalLayerSeparation,
 			0.02f,
-			new Vector2(4f, 0f),
 			Color.gray,
-			mainTriangleNormalName_
-			);
+			mainTriangleNormalName_,
+            new LineExtender_Constant( new Vector2( 0f, 4f ) )
+            );
 
 		proofEngine_.RegisterStageFollowing( createMainTriangleNormal_Stage, createSquare2_Stage );
 
