@@ -36,6 +36,8 @@ public partial class SceneControllerProof : SceneController_Base
 	public float createCongruentTriangleDuration = 3f;
 	public float removeShadowDuration = 1f;
 	public float createNormalDuration = 3f;
+	public float shearSquareGuidelineCreationDuration_ = 1f;
+
 
 	public Color mainTriangleColour = Color.blue;
 	public Color[] squareColours = new Color[] { Color.green, Color.magenta };
@@ -98,7 +100,7 @@ public partial class SceneControllerProof : SceneController_Base
 	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
 	private readonly string[] congruentTriangleNames_ = new string[] { "congruentTriangle1", "congruentTriangle2" };
 	private readonly string mainTriangleNormalName_ = "MainTriangleNormal";
-
+	private readonly string[] shearSquareGuidelineNames_ = new string[] { "ShearSquareGuideline 0", "ShearSquareGuideline 1" };
 
 	#endregion private elements
 

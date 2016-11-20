@@ -254,6 +254,31 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.RegisterStageFollowing( createShadowSquare1_Stage, createMainTriangleNormal_Stage );
 
+		////////////
+
+		ProofStage_CreatePolygonSide createShearSquareGuideline0_Stage = new ProofStage_CreatePolygonSide(
+			"Create Shear Square Guideline 0",
+			"Creating Shear Square Guideline 0",
+			geometryFactory_,
+			mainField_,
+			shearSquareGuidelineCreationDuration_,
+			HandleProofStageFinished,
+			new StraightLineProvider_Polygon
+			(
+				parallelogramNames_[0],
+				2
+				),
+			-3f * GeometryHelpers.externalLayerSeparation,
+			0.02f,
+			Color.gray,
+			shearSquareGuidelineNames_[0],
+			new LineExtender_LineIntersection(
+				new StraightLineProvider_Name( mainTriangleNormalName_ )
+				)
+			);
+
+		proofEngine_.RegisterStageFollowing( createShearSquareGuideline0_Stage, createShadowSquare1_Stage );
+
 		///////////////////////////////
 
 		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
@@ -285,23 +310,27 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 		
-		proofEngine_.RegisterStageFollowing( shearSquare1_Stage , createShadowSquare1_Stage);
-		
+		proofEngine_.RegisterStageFollowing( shearSquare1_Stage , createShearSquareGuideline0_Stage );
+
 		//////////////////////////////////////////////
 
-		ProofStage_HideElement hideShadowSquare1_Stage = new ProofStage_HideElement(
-			"RemoveShadow Square 1",
-			"Removing shadow square 1",
+		ProofStage_HideElements hideShearSquare1Ancillaries_Stage = new ProofStage_HideElements(
+			"Hide Shear Square 1 ancillaries",
+			"Hiding Shear Square 1 ancillaries",
 			geometryFactory_,
 			mainField_,
 			removeShadowDuration,
 			HandleProofStageFinished,
-			shadowSquareNames_[0],
-			typeof( Element_Parallelogram ) );
+			new Dictionary<string, System.Type>()
+			{
+				{shadowSquareNames_[0], typeof( Element_Parallelogram )},
+				{ shearSquareGuidelineNames_[0], typeof( Element_StraightLine) }
+			}
+		 );
 
-		hideShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideShadowSquare1_Stage, shearSquare1_Stage );
+		proofEngine_.RegisterStageFollowing( hideShearSquare1Ancillaries_Stage, shearSquare1_Stage );
 
 		///////////////////////////////////
 
@@ -322,7 +351,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[0]
 			);
 
-		proofEngine_.RegisterStageFollowing( createCongruentTriangle1_Stage, hideShadowSquare1_Stage );
+		proofEngine_.RegisterStageFollowing( createCongruentTriangle1_Stage, hideShearSquare1Ancillaries_Stage );
 
 		//////////////////////////////////////////////
 
@@ -336,7 +365,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[0],
 			typeof( Element_Triangle) );
 
-		hideShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		proofEngine_.RegisterStageFollowing( hideCongruentTriangle1_Stage, createCongruentTriangle1_Stage);
 
@@ -359,6 +388,32 @@ public partial class SceneControllerProof : SceneController_Base
 		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, hideCongruentTriangle1_Stage );
+
+		////////////
+
+		ProofStage_CreatePolygonSide createShearSquareGuideline1_Stage = new ProofStage_CreatePolygonSide(
+			"Create Shear Square Guideline 1",
+			"Creating Shear Square Guideline 1",
+			geometryFactory_,
+			mainField_,
+			shearSquareGuidelineCreationDuration_,
+			HandleProofStageFinished,
+			new StraightLineProvider_Polygon
+			(
+				parallelogramNames_[1],
+				2
+				),
+			-3f * GeometryHelpers.externalLayerSeparation,
+			0.02f,
+			Color.gray,
+			shearSquareGuidelineNames_[1],
+			new LineExtender_LineIntersection(
+				new StraightLineProvider_Name( mainTriangleNormalName_ )
+				)
+			);
+
+		proofEngine_.RegisterStageFollowing( createShearSquareGuideline1_Stage, createShadowSquare2_Stage );
+
 		/////////////////////////
 
 		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
@@ -390,24 +445,28 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 
-		proofEngine_.RegisterStageFollowing( shearSquare2_Stage , createShadowSquare2_Stage );
+		proofEngine_.RegisterStageFollowing( shearSquare2_Stage , createShearSquareGuideline1_Stage );
 
 		//////////////////////////////
 
-		ProofStage_HideElement hideShadowSquare2_Stage = new ProofStage_HideElement(
+		ProofStage_HideElements hideShearSquareAncillaries2_Stage = new ProofStage_HideElements(
 			"RemoveShadow Square 2",
 			"Removing shadow square 2",
 			geometryFactory_,
 			mainField_,
 			0.2f,
 			HandleProofStageFinished,
-			shadowSquareNames_[1],
-			typeof( Element_Parallelogram ) );
+			new Dictionary<string, System.Type>()
+			{
+				{ shadowSquareNames_[1], typeof( Element_Parallelogram ) },
+                { shearSquareGuidelineNames_[1], typeof( Element_StraightLine ) }
+			}
+		);
 
-		hideShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
-		hideShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
+		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideShadowSquare2_Stage, shearSquare2_Stage );
+		proofEngine_.RegisterStageFollowing( hideShearSquareAncillaries2_Stage, shearSquare2_Stage );
 
 		///////////////////////////////////
 
@@ -428,7 +487,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[1]
 			);
 
-		proofEngine_.RegisterStageFollowing( createCongruentTriangle2_Stage, hideShadowSquare2_Stage );
+		proofEngine_.RegisterStageFollowing( createCongruentTriangle2_Stage, hideShearSquareAncillaries2_Stage );
 
 		//////////////////////////////////////////////
 
@@ -442,7 +501,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[1],
 			typeof( Element_Triangle ) );
 
-		hideShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
 		proofEngine_.RegisterStageFollowing( hideCongruentTriangle2_Stage, createCongruentTriangle2_Stage );
 		
@@ -515,15 +574,17 @@ public partial class SceneControllerProof : SceneController_Base
 			new HashSet<ProofStageBase>( )
 			{
 				createShadowSquare1_Stage,
-				hideShadowSquare1_Stage,
+				hideShearSquare1Ancillaries_Stage,
 				createShadowSquare2_Stage,
-				hideShadowSquare2_Stage,
+				hideShearSquareAncillaries2_Stage,
 				createCongruentTriangle1_Stage,
 				hideCongruentTriangle1_Stage,
 				createCongruentTriangle2_Stage,
 				hideCongruentTriangle2_Stage,
 				createMainTriangleNormal_Stage,
-				hideMainTriangleNormal_Stage
+				hideMainTriangleNormal_Stage,
+				createShearSquareGuideline0_Stage,
+				createShearSquareGuideline1_Stage,
 			}
 		);
 

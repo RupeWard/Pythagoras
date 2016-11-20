@@ -40,10 +40,11 @@ namespace RJWard.Geometry
 				throw new System.Exception( "LineExtender_Constant with name lenght zero can only be used on a specified line, not on an ElementList" );
 			}
 			Element_StraightLine line = elementList.GetRequiredElementOfType< Element_StraightLine >( lineName_ );			
-			return ExtendLine( line );
+			return ExtendLine( null, line );
 		}
 
-		public bool ExtendLine( Element_StraightLine line )
+		// elementList not used
+		public bool ExtendLine( ElementList elementList, Element_StraightLine line )
 		{
 			bool result = false;
 			Vector2[] ends = line.GetEnds( );

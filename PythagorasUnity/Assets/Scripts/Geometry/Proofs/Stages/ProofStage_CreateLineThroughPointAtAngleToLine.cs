@@ -154,7 +154,7 @@ namespace RJWard.Geometry
 						);
 					for (int i = 0; i < lineExtenders.Count; i++)
 					{
-						lineExtenders[i].ExtendLine( line_ );
+						lineExtenders[i].ExtendLine( elements, line_ );
 					}
 
 					elements.AddElement( lineName_, line_ );
