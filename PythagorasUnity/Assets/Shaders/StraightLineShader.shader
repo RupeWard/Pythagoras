@@ -2,13 +2,20 @@
 {
 	Properties
 	{
-		_Color("Main Color", Color) = (1, 0, 1, 1)
-      	_Alpha ("Alpha", Float) = 1
-   	}
+		_Color1("Main Color", Color) = (1, 0, 1, 1)
+		_Color2("Secondary Color", Color) = (1, 0, 1, 1)
+		_Alpha ("Alpha", Float) = 1
+		_LineLength( "Line Length", Float ) = 1
+		_DashLength1("Dash Length 1", Float) = 1
+		_DashLength2("Dash Length 2", Float) = 1
+	}
    	
 	SubShader
 	{
-		Tags { "RenderType" = "Opaque" }
+		Tags 
+		{
+			"RenderType" = "Transparent"
+		}
 	
 		Pass
 		{
@@ -21,9 +28,13 @@
 			#pragma vertex vert
 			#pragma fragment frag
 	
-			uniform float4 _Color; 
+			uniform float4 _Color1; 
+			uniform float4 _Color2;
 			float _Alpha;
-			
+			float _LineLength;
+			float _DashLength1;
+			float _DashLength2;
+
 			struct v2f
 			{
 				float4  pos : SV_POSITION;
@@ -42,8 +53,11 @@
 			
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 texColor = _Color;				
-	            texColor.a = _Alpha;
+				float d = _LineLength * i.uv.x;
+				float dashD = d % (_DashLength1 + _DashLength2);
+				fixed4 texColor = (dashD < _DashLength1) ?( _Color1) :( _Color2);
+
+	            texColor.a = _Alpha * texColor.a;
 	            
 				return texColor;
 			}

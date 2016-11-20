@@ -8,7 +8,10 @@
    	
 	SubShader
 	{
-		Tags { "RenderType" = "Opaque" }
+		Tags 
+		{ 
+			"RenderType" = "Transparent" 
+		}
 	
 		Pass
 		{

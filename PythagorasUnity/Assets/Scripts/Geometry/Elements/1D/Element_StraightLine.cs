@@ -274,7 +274,7 @@ namespace RJWard.Geometry
 
 		#region Mesh
 
-		private static readonly Vector2[] s_uvs = new Vector2[] // UVs for the 4 vertices (for if/when texture is added to the material/shader)
+		private static readonly Vector2[] s_uvs = new Vector2[] // UVs for the 4 vertices 
 		{
 			new Vector2(0f, 0f),
 			new Vector2(1f, 0f),
@@ -369,7 +369,7 @@ namespace RJWard.Geometry
 
 		override protected void HandleColourChanged( Color c)
 		{
-			cachedMaterial.SetColor( "_Color", c );
+			cachedMaterial.SetColor( "_Color1", c );
 		}
 
 		override protected void HandleAlphaChanged( float a )
