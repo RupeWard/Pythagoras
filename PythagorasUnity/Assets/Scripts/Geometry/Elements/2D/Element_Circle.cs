@@ -194,7 +194,7 @@ namespace RJWard.Geometry
 				perimeterPoints.Add( perimeterPoint );
 
 				verts[1+i] = new Vector3( perimeterPoint.x, perimeterPoint.y, depth );
-				uvs[1+i] = Vector2.zero;
+				uvs[1+i] = new Vector2(1f, angle / 2f * Mathf.PI);
 				normals[1+i] = s_normal;
 			}
 
