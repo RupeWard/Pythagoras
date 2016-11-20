@@ -232,9 +232,10 @@ namespace RJWard.Geometry
 						break;
 					}
 			}
-// TODO should we maybe just reinit
 			if (changed)
 			{
+				// TODO not necessary when changing direction in middlle. It's here to make sure we do initialisation stuff when changing direction at end. 
+				// Perhaps makes more sense to re-init in that case?
 				initNotUpdated_ = true;
 			}
 			return changed;
