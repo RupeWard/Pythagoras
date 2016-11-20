@@ -90,7 +90,7 @@ namespace RJWard.Geometry
 			set { endRequiredElementListDefinition_ = value; }
 		}
 
-		public ElementListDefinition startReversedDestroyElementListDefinition
+		public ElementListDefinition startReversedDestroyElementListDefinition // TODO ?deprecate? is this still needed?
 		{
 			set { startReversedDestroyElementListDefinition_ = value; }
 		}
@@ -231,6 +231,11 @@ namespace RJWard.Geometry
 						}
 						break;
 					}
+			}
+// TODO should we maybe just reinit
+			if (changed)
+			{
+				initNotUpdated_ = true;
 			}
 			return changed;
 		}
