@@ -55,8 +55,8 @@
 			{
 				float d = _LineLength * i.uv.x;
 				float dashD = d % (_DashLength1 + _DashLength2);
-				fixed4 texColor = (dashD < _DashLength1) ?( _Color1) :( _Color2);
-
+				float whichColor = min(1, floor(dashD / _DashLength1));
+				fixed4 texColor = (1-whichColor) * _Color1 + whichColor * _Color2;
 	            texColor.a = _Alpha * texColor.a;
 	            
 				return texColor;
