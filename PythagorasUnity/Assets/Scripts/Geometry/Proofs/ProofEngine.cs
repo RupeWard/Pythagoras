@@ -23,7 +23,7 @@ namespace RJWard.Geometry
 
 		private ProofStageBase currentStage_ = null;
 
-		private HashSet<ProofStageBase> stages_ = new HashSet<ProofStageBase>( );
+		private List<ProofStageBase> stages_ = new List<ProofStageBase>( );
 
 		const float MAXSPEED = 100f;
 		 
@@ -102,7 +102,7 @@ namespace RJWard.Geometry
 			}
 		}
 
-		public void SkipStagesInReverse( HashSet< ProofStageBase > stages)
+		public void SkipStagesInReverse( List< ProofStageBase > stages)
 		{
 			foreach (ProofStageBase s in stages)
 			{

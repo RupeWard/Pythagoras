@@ -571,7 +571,7 @@ public partial class SceneControllerProof : SceneController_Base
 		/////////////////////
 
 		proofEngine_.SkipStagesInReverse(
-			new HashSet<ProofStageBase>( )
+			new List<ProofStageBase>( )
 			{
 				createShadowSquare1_Stage,
 				hideShearSquare1Ancillaries_Stage,
