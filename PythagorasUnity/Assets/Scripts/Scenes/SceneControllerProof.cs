@@ -145,13 +145,12 @@ public partial class SceneControllerProof : SceneController_Base
 #if UNITY_EDITOR
 		if (testMode)
 		{
-			/*
 			testElements.AddElement(
 				"TestTri",
 				geometryFactory_.AddTriangleToField(
 					mainField_,
 					"TestTri",
-					0f,
+					1f,
 					new Vector2[]
 					{
 						new Vector2(-1f, -1.5f),
@@ -161,13 +160,12 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.blue
 					)
 				);
-				*/
 			testElements.AddElement(
 				"TestPar",
 				geometryFactory_.AddParallelogramToField(
 					mainField_,
 					"TestPar",
-					0f,
+					0.9f,
 					new Vector2[]
 					{
 						new Vector2(-1f, 0.5f),
@@ -178,28 +176,50 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.green
 					)
 				);
-			/*
 			testElements.AddElement(
 				"TestRightTri",
 				geometryFactory_.AddRightTriangleToField(
 					mainField_,
 					"TestRightTri",
-					-0.1f,
+					0.8f,
 					new Vector2[]
 					{
 						new Vector2(-1f, 0f),
 						new Vector2(1f, 0f)
 					},
 					30f,
-					Color.red
+					new Color(1f, .5f, .5f, 1f)
 				)
 			);
+			testElements.AddElement(
+				"TestCircle",
+				geometryFactory_.AddCircleToField(
+					mainField_,
+					"TestCircle",
+					0.7f,
+					new Vector2( 0.5f, 0.5f ),
+					1f,
+					Color.yellow )
+                );
+			testElements.AddElement(
+				"TestSector",
+				geometryFactory_.AddSectorToField(
+					mainField_,
+					"TestSector",
+					0.6f,
+					new Vector2( 0f,2f),
+					0.5f,
+					45f,
+					10f,
+					Color.gray
+					)
+				);
 			testElements.AddElement(
 				"TestLine",
 				geometryFactory_.AddStraightLineToField(
 					mainField_,
 					"TestLine",
-					-0.2f,
+					-0.3f,
 					new Vector2[]
 					{
 						new Vector2(-2f, -1f),
@@ -209,30 +229,6 @@ public partial class SceneControllerProof : SceneController_Base
 					Color.red
 				)
 			);
-			testElements.AddElement(
-				"TestCircle",
-				geometryFactory_.AddCircleToField(
-					mainField_,
-					"TestCircle",
-					-0.3f,
-					new Vector2( 0.5f, 0.5f ),
-					1f,
-					Color.yellow )
-                );
-				*/
-			testElements.AddElement(
-				"TestSector",
-				geometryFactory_.AddSectorToField(
-					mainField_,
-					"TestSector",
-					-0.4f,
-					new Vector2( 0f,2f),
-					0.5f,
-					45f,
-					10f,
-					Color.gray
-					)
-				);
 		}
 #endif
 
