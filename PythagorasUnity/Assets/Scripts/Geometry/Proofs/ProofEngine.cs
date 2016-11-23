@@ -62,6 +62,38 @@ namespace RJWard.Geometry
 			}
 		}
 
+		public void AddStageToEnd( ProofStageBase stage)
+		{
+			if (stages_.Count == 0)
+			{
+				RegisterStage( stage );
+				if (DEBUG_PROOFENGINE)
+				{
+					Debug.Log( "Added first stage: " + stage.name );
+				}
+			}
+			else
+			{
+				if (stages_.Contains( stage ))
+				{
+					Debug.LogWarning( "ProofEngine already contains stage " + stage.name );
+				}
+				else
+				{
+					ProofStageBase lastStage = stages_[stages_.Count - 1];
+					if (lastStage.NextStage != null)
+					{
+						Debug.LogError( "ProofEngine's last stage '" + lastStage.name + "' alreadt has next stage '" + lastStage.NextStage.name + "'" );
+					}
+					else
+					{
+						RegisterStage( stage );
+						ConnectStages( lastStage, stage );
+					}
+				}
+			}
+		}
+
 		public void RegisterStageFollowing( ProofStageBase stage, ProofStageBase previous )
 		{
 			RegisterStage( stage );

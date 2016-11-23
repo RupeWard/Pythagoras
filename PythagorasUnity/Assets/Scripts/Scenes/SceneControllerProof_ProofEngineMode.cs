@@ -157,7 +157,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainTriangleName_
 			);
 
-		proofEngine_.RegisterStage( createTriangle_Stage );
+		proofEngine_.AddStageToEnd( createTriangle_Stage );
 
 		//////////////////
 
@@ -185,7 +185,7 @@ public partial class SceneControllerProof : SceneController_Base
 			);
 
 
-		proofEngine_.RegisterStageFollowing(createSquare1_Stage, createTriangle_Stage);
+		proofEngine_.AddStageToEnd(createSquare1_Stage);
 
 		//////////////////////
 
@@ -213,7 +213,7 @@ public partial class SceneControllerProof : SceneController_Base
 			);
 
 
-		proofEngine_.RegisterStageFollowing(createSquare2_Stage, createSquare1_Stage );
+		proofEngine_.AddStageToEnd( createSquare2_Stage);
 		
 		ProofStage_CreateLineThroughPointAtAngleToLine createMainTriangleNormal_Stage = new ProofStage_CreateLineThroughPointAtAngleToLine(
 			"Create Main Triangle Normal",
@@ -232,7 +232,7 @@ public partial class SceneControllerProof : SceneController_Base
             new LineExtender_Constant( new Vector2( 0f, 4f ) )
             );
 
-		proofEngine_.RegisterStageFollowing( createMainTriangleNormal_Stage, createSquare2_Stage );
+		proofEngine_.AddStageToEnd( createMainTriangleNormal_Stage);
 
 		//////////////////
 
@@ -252,7 +252,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( createShadowSquare1_Stage, createMainTriangleNormal_Stage );
+		proofEngine_.AddStageToEnd( createShadowSquare1_Stage);
 
 		////////////
 
@@ -277,7 +277,7 @@ public partial class SceneControllerProof : SceneController_Base
 				)
 			);
 
-		proofEngine_.RegisterStageFollowing( createShearSquareGuideline0_Stage, createShadowSquare1_Stage );
+		proofEngine_.AddStageToEnd( createShearSquareGuideline0_Stage);
 
 		///////////////////////////////
 
@@ -310,7 +310,7 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 		
-		proofEngine_.RegisterStageFollowing( shearSquare1_Stage , createShearSquareGuideline0_Stage );
+		proofEngine_.AddStageToEnd( shearSquare1_Stage );
 
 		//////////////////////////////////////////////
 
@@ -330,7 +330,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideShearSquare1Ancillaries_Stage, shearSquare1_Stage );
+		proofEngine_.AddStageToEnd( hideShearSquare1Ancillaries_Stage);
 
 		///////////////////////////////////
 
@@ -351,7 +351,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[0]
 			);
 
-		proofEngine_.RegisterStageFollowing( createCongruentTriangle1_Stage, hideShearSquare1Ancillaries_Stage );
+		proofEngine_.AddStageToEnd( createCongruentTriangle1_Stage);
 
 		//////////////////////////////////////////////
 
@@ -367,7 +367,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideCongruentTriangle1_Stage, createCongruentTriangle1_Stage);
+		proofEngine_.AddStageToEnd( hideCongruentTriangle1_Stage);
 
 		//////////////////////////////////////////
 
@@ -387,7 +387,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( createShadowSquare2_Stage, hideCongruentTriangle1_Stage );
+		proofEngine_.AddStageToEnd( createShadowSquare2_Stage);
 
 		////////////
 
@@ -412,7 +412,7 @@ public partial class SceneControllerProof : SceneController_Base
 				)
 			);
 
-		proofEngine_.RegisterStageFollowing( createShearSquareGuideline1_Stage, createShadowSquare2_Stage );
+		proofEngine_.AddStageToEnd( createShearSquareGuideline1_Stage);
 
 		/////////////////////////
 
@@ -445,7 +445,7 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 
-		proofEngine_.RegisterStageFollowing( shearSquare2_Stage , createShearSquareGuideline1_Stage );
+		proofEngine_.AddStageToEnd( shearSquare2_Stage);
 
 		//////////////////////////////
 
@@ -466,7 +466,7 @@ public partial class SceneControllerProof : SceneController_Base
 		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
 		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideShearSquareAncillaries2_Stage, shearSquare2_Stage );
+		proofEngine_.AddStageToEnd( hideShearSquareAncillaries2_Stage);
 
 		///////////////////////////////////
 
@@ -487,7 +487,7 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[1]
 			);
 
-		proofEngine_.RegisterStageFollowing( createCongruentTriangle2_Stage, hideShearSquareAncillaries2_Stage );
+		proofEngine_.AddStageToEnd( createCongruentTriangle2_Stage);
 
 		//////////////////////////////////////////////
 
@@ -503,7 +503,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideCongruentTriangle2_Stage, createCongruentTriangle2_Stage );
+		proofEngine_.AddStageToEnd( hideCongruentTriangle2_Stage);
 		
 		//////////////////////////////////////////////
 
@@ -519,7 +519,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		hideMainTriangleNormal_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.RegisterStageFollowing( hideMainTriangleNormal_Stage , hideCongruentTriangle2_Stage);
+		proofEngine_.AddStageToEnd( hideMainTriangleNormal_Stage);
 
 
 		//////////////////////////////////
@@ -543,7 +543,7 @@ public partial class SceneControllerProof : SceneController_Base
 			)
 		);
 
-		proofEngine_.RegisterStageFollowing( shearParallelogram0_Stage, hideMainTriangleNormal_Stage );
+		proofEngine_.AddStageToEnd( shearParallelogram0_Stage);
 		
 		//////////////////////////////
 
@@ -566,7 +566,7 @@ public partial class SceneControllerProof : SceneController_Base
 			)
 		);
 
-		proofEngine_.RegisterStageFollowing( shearParallelogram1_Stage, shearParallelogram0_Stage );
+		proofEngine_.AddStageToEnd( shearParallelogram1_Stage);
 
 		/////////////////////
 
