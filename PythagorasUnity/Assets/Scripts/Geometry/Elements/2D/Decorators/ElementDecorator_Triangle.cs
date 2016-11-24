@@ -4,7 +4,7 @@ using System.Collections;
 namespace RJWard.Geometry
 {
 	// NOTE: Currently adds nothing to base but probably will later 
-	public class ElementDecorator_Triangle : ElementDecorator2DBase
+	public class ElementDecorator_Triangle : ElementDecorator_Polygon
 	{
 		#region Setup
 

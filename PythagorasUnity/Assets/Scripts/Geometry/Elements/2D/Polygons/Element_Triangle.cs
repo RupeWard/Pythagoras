@@ -152,8 +152,8 @@ namespace RJWard.Geometry
 						vertices_[ modIndex(n)],
 						vertices_[modIndex(n+1)]
 				},
-				Element2DBase.defaultEdgeWidth,
-				Color.cyan /* TODO: decorator.colour*/ );
+				decorator2D.defaultEdgeDecorator.width,
+				decorator2D.defaultEdgeDecorator.colour);
 			edge.cachedTransform.SetParent( cachedTransform );
 			edge.gameObject.tag = GeometryHelpers.Tag_SubElement;
 			SetEdgeElement( n, edge );

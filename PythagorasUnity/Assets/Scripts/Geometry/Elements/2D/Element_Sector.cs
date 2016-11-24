@@ -139,11 +139,12 @@ namespace RJWard.Geometry
 			float r, 
 			float ae,
 			float ad,
-			Color c )
+			Color c,
+			ElementDecorator1DBase ed)
 		{
 			base.Init( gf, f, d);
 
-			InitHelper( ce, r, ae, ad, c );
+			InitHelper( ce, r, ae, ad, c, ed );
 
 			SetMeshDirty( );
 		}
@@ -152,7 +153,8 @@ namespace RJWard.Geometry
 			GeometryFactory gf, Field f, float d, // for base
 			Element_StraightLine[] lines,
 			float r,
-			Color c )
+			Color c,
+			ElementDecorator1DBase ed)
 		{
 			base.Init( gf, f, d );
 
@@ -175,7 +177,7 @@ namespace RJWard.Geometry
 				angleDirectionLine0 += 360f;
 			}
 
-			InitHelper( centre, r, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1, c );
+			InitHelper( centre, r, angleDirectionLine0 - angleDirectionDegrees_, angleDirectionLine1, c, ed );
 
 			SetMeshDirty( );
 		}
@@ -185,12 +187,15 @@ namespace RJWard.Geometry
 			float ae,
 			float ad,
 			Color c,
-			float tmr)
+			float tmr,
+			ElementDecorator1DBase ed )
 		{
 			InitHelper( ce, r, ae, ad, tmr );
 
 			decorator = new ElementDecorator_Circle( c, 1f, HandleColourChanged, HandleAlphaChanged );
 			decorator.Apply( );
+
+			decorator2D.defaultEdgeDecorator = new ElementDecorator_StraightLine( ed.colour, ed.alpha, null, null, ed.width, null ); // TODO clone function
 
 			if (DEBUG_SECTOR)
 			{
@@ -202,9 +207,10 @@ namespace RJWard.Geometry
 			float r,
 			float ae,
 			float ad,
-			Color c)
+			Color c,
+			ElementDecorator1DBase ed )
 		{
-			InitHelper( ce, r, ae, ad, c, r );
+			InitHelper( ce, r, ae, ad, c, r, ed );
 		}
 
 		private bool InitHelper( Vector2 ce,
@@ -406,7 +412,7 @@ namespace RJWard.Geometry
 			{
 				throw new System.Exception( gameObject.name + ": Sectors can currently only be cloned as Sectors" );
 			}
-			Init( s.geometryFactory, s.field, s.depth, s.centre_, s.radius_, s.angleExtentDegrees_, s.angleDirectionDegrees_, s.decorator.colour );
+			Init( s.geometryFactory, s.field, s.depth, s.centre_, s.radius_, s.angleExtentDegrees_, s.angleDirectionDegrees_, s.decorator.colour, s.decorator2D.defaultEdgeDecorator );
 		}
 
 		public override ElementBase Clone( string name )
@@ -532,9 +538,8 @@ namespace RJWard.Geometry
 							depth - GeometryHelpers.internalLayerSeparation,
 							perimeterPoints,
 							false,
-							Element2DBase.defaultEdgeWidth,
-							Color.cyan // TODO use decorator
-							);
+							decorator2D.defaultEdgeDecorator.width,
+							decorator2D.defaultEdgeDecorator.colour);
 						arcElement_.cachedTransform.SetParent( cachedTransform );
 					}
 				}
@@ -575,8 +580,8 @@ namespace RJWard.Geometry
 							name + " Edge_"+i,
 							depth - GeometryHelpers.internalLayerSeparation,
 							edgeEnds,
-							Element2DBase.defaultEdgeWidth,
-							Color.cyan );// TODO use decorator
+							decorator2D.defaultEdgeDecorator.width,
+							decorator2D.defaultEdgeDecorator.colour );
 						edgeElements_[i].cachedTransform.SetParent( cachedTransform );
 					}
 				}

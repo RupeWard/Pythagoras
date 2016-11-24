@@ -15,6 +15,12 @@ namespace RJWard.Geometry
 		{
 		}
 
+		public ElementDecorator_StraightLine(
+			Color c, float a, float w )
+			: base( c, a, w )
+		{
+		}
+
 		#endregion Setup
 
 	}

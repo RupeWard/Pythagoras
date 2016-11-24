@@ -102,16 +102,16 @@ namespace RJWard.Geometry
 		}
 
 		// Instantiate a Sector in a Field and set it up
-		public Element_Sector AddSectorToField( Field f, string n, float d, Vector2 ce, float r, float ae, float ad, Color c )
+		public Element_Sector AddSectorToField( Field f, string n, float d, Vector2 ce, float r, float ae, float ad, Color c, ElementDecorator1DBase edgeDec )
 		{
 			GameObject sectorGO = GameObject.Instantiate< GameObject >( sectorPrefab ) as GameObject;
 			sectorGO.name = n;
 			Element_Sector sector = sectorGO.GetComponent< Element_Sector >( );
-			sector.Init( this, f, d, ce, r, ae, ad, c );
+			sector.Init( this, f, d, ce, r, ae, ad, c, edgeDec );
 			return sector;
 		}
 
-		public Element_Sector AddSectorBetweenLines( string n, float relD, Element_StraightLine[] lines, float r, Color c )
+		public Element_Sector AddSectorBetweenLines( string n, float relD, Element_StraightLine[] lines, float r, Color c, ElementDecorator1DBase edgeDec )
 		{
 			if (lines.Length != 2)
 			{
@@ -143,7 +143,7 @@ namespace RJWard.Geometry
 			{
 				Debug.LogWarning( "Making a sector between 2 lines in different fields" );
 			}
-			sector.Init( this, field, depth, lines, r, c );
+			sector.Init( this, field, depth, lines, r, c, edgeDec );
 			return sector;
 		}
 

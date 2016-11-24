@@ -21,6 +21,14 @@ namespace RJWard.Geometry
 			alpha_ = a;
 		}
 
+		protected ElementDecoratorBase(
+			Color c,
+			float a)
+		{
+			colour_ = c;
+			alpha_ = a;
+		}
+
 		// Use this in element's Init when using a shared decorator
 		public void AddActions( System.Action<Color> cca, System.Action<float> aca )
 		{

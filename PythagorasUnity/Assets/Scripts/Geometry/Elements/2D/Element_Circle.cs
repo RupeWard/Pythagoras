@@ -130,7 +130,7 @@ namespace RJWard.Geometry
 
 			if (DEBUG_CIRCLE)
 			{
-				Debug.Log( "Init() " + this.DebugDescribe( ) );
+				Debug.Log( "Init() " + this.DebugDescribe( ) + " c = "+c );
 			}
 
 			SetMeshDirty( );
@@ -233,8 +233,8 @@ namespace RJWard.Geometry
 					depth - GeometryHelpers.internalLayerSeparation,
 					perimeterPoints,
 					true,
-					Element2DBase.defaultEdgeWidth,
-					Color.cyan
+					decorator2D.defaultEdgeDecorator.width,
+					decorator2D.defaultEdgeDecorator.colour
 					);
 				perimeterElement_.cachedTransform.SetParent( cachedTransform );
 			}

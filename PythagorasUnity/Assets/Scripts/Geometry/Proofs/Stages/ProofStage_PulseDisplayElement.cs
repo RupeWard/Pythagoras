@@ -23,7 +23,7 @@ namespace RJWard.Geometry
 		#endregion private data
 
 		#region setup
-
+		
 		public ProofStage_PulseDisplayElement(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string en,
@@ -33,7 +33,6 @@ namespace RJWard.Geometry
 		{
 			elementProvider_ = new ElementProvider_Name( en );
 			maxRelativeScale_ = relScale;
-
 		}
 
 		public ProofStage_PulseDisplayElement(
@@ -45,7 +44,6 @@ namespace RJWard.Geometry
 		{
 			elementProvider_ = iep;
 			maxRelativeScale_ = relScale;
-
 		}
 
 

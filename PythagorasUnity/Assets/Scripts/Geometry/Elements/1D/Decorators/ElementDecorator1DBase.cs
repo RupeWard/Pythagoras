@@ -17,6 +17,15 @@ namespace RJWard.Geometry
 			width_ = w;
 		}
 
+		protected ElementDecorator1DBase(
+			Color c, float a, 
+			float w)
+			: base( c, a)
+		{
+			width_ = w;
+		}
+
+
 		public void AddActions( System.Action<Color> cca, System.Action<float> aca, System.Action<float> wca )
 		{
 			base.AddActions(cca, aca);

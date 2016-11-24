@@ -159,13 +159,23 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.AddStageToEnd( createTriangle_Stage );
 
+#if UNITY_EDITOR // temp pulse examples
+
 		ProofStage_PulseDisplayElement pulse0 = new ProofStage_PulseDisplayElement(
 			"Pulse MT", "Pulse MT",
 			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
-			mainTriangleName_,
-			1.5f,
-			typeof(Element_Triangle));
+			new ElementProvider_Name(mainTriangleName_),
+			1.5f
+			);
 		proofEngine_.AddStageToEnd( pulse0 );
+
+		ProofStage_PulseDisplayElement pulse1 = new ProofStage_PulseDisplayElement(
+			"Pulse RA", "Pulse RA",
+			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
+			new AngleProvider_Polygon( mainTriangleName_, 1, GeometryHelpers.EAngleModifier.Raw),
+			1.5f);
+		proofEngine_.AddStageToEnd( pulse1 );
+#endif
 
 		//////////////////
 
@@ -194,6 +204,16 @@ public partial class SceneControllerProof : SceneController_Base
 
 
 		proofEngine_.AddStageToEnd(createSquare1_Stage);
+
+#if UNITY_EDITOR // temp pulse examples
+
+		ProofStage_PulseDisplayElement pulse2 = new ProofStage_PulseDisplayElement(
+			"Pulse SQ", "Pulse SQ",
+			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
+			new ElementProvider_Name( parallelogramNames_[0]),
+			1.5f );
+		proofEngine_.AddStageToEnd( pulse2 );
+#endif
 
 		//////////////////////
 

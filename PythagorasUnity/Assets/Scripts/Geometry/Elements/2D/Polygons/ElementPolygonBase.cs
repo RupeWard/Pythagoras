@@ -8,6 +8,12 @@ namespace RJWard.Geometry
 	*/
 	abstract public class ElementPolygonBase : Element2DBase
 	{
+#if UNITY_EDITOR
+		static public bool DEBUG_SHOWANGLES = false;
+#else
+		static public bool DEBUG_SHOWANGLES = false;
+#endif
+
 		static public bool DEBUG_POLYGONBASE = true;
 
 		#region private data 
@@ -44,6 +50,12 @@ namespace RJWard.Geometry
 			}
 			return n;
 		}
+
+		public ElementDecorator_Polygon decoratorPolygon
+		{
+			get { return Decorator< ElementDecorator_Polygon >( ); }
+		}
+
 		#endregion properties
 
 		#region vertices
@@ -292,8 +304,9 @@ namespace RJWard.Geometry
 						name + " Angle_" + i.ToString( ),
 						GeometryHelpers.internalLayerSeparation,
 						lines,
-						0.2f,
-						Color.red );
+						0.1f,
+						decoratorPolygon.defaultAngleDecorator.colour, 
+						decoratorPolygon.defaultAngleDecorator.defaultEdgeDecorator );
 					angleElement.cachedTransform.SetParent( cachedTransform );
 					angleElement.gameObject.tag = GeometryHelpers.Tag_SubElement;
 					angleElement.SetAngleMarker( );
@@ -396,6 +409,21 @@ namespace RJWard.Geometry
 			showEdges_ = new bool[numVertices_];
 			angleElements_ = new Element_Sector[numVertices_];
 			showAngles_ = new bool[numVertices_];
+
+			if (DEBUG_SHOWANGLES)
+			{
+				for (int i = 0; i < numVertices_; i++)
+				{
+					showAngles_[i] = true;
+				}
+			}
+			if (DEBUG_SHOWEDGES)
+			{
+				for (int i = 0; i < numVertices_; i++)
+				{
+					showEdges_[i] = true;
+				}
+			}
 		}
 
 		protected override void Init( GeometryFactory gf, Field f, float d )

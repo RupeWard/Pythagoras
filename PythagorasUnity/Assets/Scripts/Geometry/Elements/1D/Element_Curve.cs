@@ -82,10 +82,11 @@ namespace RJWard.Geometry
 			closed_ = cl;
 
 			decorator = new ElementDecorator_StraightLine( c, 1f, HandleColourChanged, HandleAlphaChanged, w, null ); // No width changed action as handled in full by segments
+			decorator.Apply( );
 
 			if (DEBUG_CURVE)
 			{
-				Debug.Log( "Init() " + this.DebugDescribe( ) );
+				Debug.Log( "Init() " + this.DebugDescribe( )+" color = "+c );
 			}
 
 			SetMeshDirty( );
@@ -234,7 +235,7 @@ namespace RJWard.Geometry
 
 		override protected void HandleColourChanged( Color c)
 		{
-			cachedMaterial.SetColor( "_Color", c );
+			cachedMaterial.SetColor( "_Color1", c );
 		}
 
 		override protected void HandleAlphaChanged( float a )

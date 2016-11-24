@@ -15,6 +15,12 @@ namespace RJWard.Geometry
 		{
 		}
 
+		public ElementDecorator_Circle(
+			Color c, float a  )
+			: base( c, a )
+		{
+		}
+
 		#endregion Setup
 
 		#region setters

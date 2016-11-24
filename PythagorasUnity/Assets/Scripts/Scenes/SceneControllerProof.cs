@@ -145,6 +145,7 @@ public partial class SceneControllerProof : SceneController_Base
 #if UNITY_EDITOR
 		if (testMode)
 		{
+			Element_Triangle testTri = 
 			testElements.AddElement(
 				"TestTri",
 				geometryFactory_.AddTriangleToField(
@@ -159,7 +160,11 @@ public partial class SceneControllerProof : SceneController_Base
 					},
 					Color.blue
 					)
-				);
+				) as Element_Triangle;
+			testTri.decorator2D.defaultEdgeDecorator.colour = Color.cyan;
+			testTri.decoratorPolygon.defaultAngleDecorator.colour = Color.cyan;
+			testTri.decoratorPolygon.defaultAngleDecorator.defaultEdgeDecorator = new ElementDecorator_StraightLine( Color.cyan, 0f, null, null, 0f, null );
+
 			testElements.AddElement(
 				"TestPar",
 				geometryFactory_.AddParallelogramToField(
@@ -211,7 +216,8 @@ public partial class SceneControllerProof : SceneController_Base
 					0.5f,
 					45f,
 					10f,
-					Color.gray
+					Color.gray,
+					new ElementDecorator_StraightLine( Color.white, 1f, null, null, 0.01f, null )
 					)
 				);
 			testElements.AddElement(
