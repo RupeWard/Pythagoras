@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
-	public class AngleProvider_Polygon : IAngleProvider
+	public class AngleProvider_Polygon : IAngleProvider, IElementProvider
 	{
 		#region private data
 
@@ -33,8 +33,7 @@ namespace RJWard.Geometry
 		{
 			float result = 0f;
 
-			ElementPolygonBase polygon = polygonProvider_.GetElement< ElementPolygonBase >( elements );
-			Element_Sector sector = polygon.GetAngleElement( angleNumber_ );
+			Element_Sector sector = GetSector( elements );
 			if (sector != null)
 			{
 				float rawAngle = sector.angleExtentDegrees;
@@ -42,12 +41,28 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				throw new System.Exception( "Polygon " + polygon.name+ " has no angleElement " + angleNumber_ );
+				throw new System.Exception( "Polygon has no angleElement " + angleNumber_ );
 			}
 			return result;
 		}
 
+		private Element_Sector GetSector( ElementList elements )
+		{
+			ElementPolygonBase polygon = polygonProvider_.GetElement<ElementPolygonBase>( elements );
+			return polygon.GetAngleElement( angleNumber_ );
+		}
+
 		#endregion
+
+		#region IElementProvider
+
+		public T GetElement<T>( ElementList elements ) where T : ElementBase
+		{
+			return GetSector(elements) as T;
+		}
+
+		#endregion IElementProvider
+
 	}
 }
 
