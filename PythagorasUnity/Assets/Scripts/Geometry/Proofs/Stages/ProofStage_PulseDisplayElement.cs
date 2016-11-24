@@ -16,8 +16,8 @@ namespace RJWard.Geometry
 		float maxRelativeScale_;
 		Vector3 pulseCentre_;
 
-		private string elementName_ = "[UNKNOWN ELEMENT]";
-		private System.Type elementType_;
+		private IElementProvider elementProvider_ = null;
+
 		#endregion private data
 
 		#region setup
@@ -25,23 +25,27 @@ namespace RJWard.Geometry
 		public ProofStage_PulseDisplayElement(
 			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string en,
-			float relScale,
-			System.Type et
+			float relScale
 			) 
 			: base (n, descn, gf, f, durn, ac )
 		{
-			elementName_ = en;
-			elementType_ = et;
+			elementProvider_ = new ElementProvider_Name( en );
 			maxRelativeScale_ = relScale;
 
-			startRequiredElementListDefinition = new ElementListDefinition(
-				"StartRequirements",
-				new Dictionary<string, System.Type>( )
-				{
-					{ elementName_, elementType_}
-				}
-			);
 		}
+
+		public ProofStage_PulseDisplayElement(
+			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			IElementProvider iep,
+			float relScale
+			)
+		: base( n, descn, gf, f, durn, ac )
+		{
+			elementProvider_ = iep;
+			maxRelativeScale_ = relScale;
+
+		}
+
 
 		#endregion setup
 
@@ -61,7 +65,7 @@ namespace RJWard.Geometry
 
 		protected override void HandleInit( )
 		{
-			element_ = elements.GetElementOfType(elementName_, elementType_);
+			element_ = elementProvider_.GetElement< ElementBase >(elements);
 		}
 
 		protected override void DoUpdateView( )
