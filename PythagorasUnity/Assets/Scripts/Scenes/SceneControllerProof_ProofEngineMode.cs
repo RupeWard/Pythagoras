@@ -159,6 +159,14 @@ public partial class SceneControllerProof : SceneController_Base
 
 		proofEngine_.AddStageToEnd( createTriangle_Stage );
 
+		ProofStage_PulseDisplayElement pulse0 = new ProofStage_PulseDisplayElement(
+			"Pulse MT", "Pulse MT",
+			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
+			mainTriangleName_,
+			1.5f,
+			typeof(Element_Triangle));
+		proofEngine_.AddStageToEnd( pulse0 );
+
 		//////////////////
 
 		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
@@ -222,7 +230,7 @@ public partial class SceneControllerProof : SceneController_Base
 			mainField_,
 			createNormalDuration,
 			HandleProofStageFinished,
-			new PointProvider_Polygon( mainTriangleName_, 2 ),
+			new PointProvider_PolygonVertex( mainTriangleName_, 2 ),
 			new StraightLineProvider_Polygon( mainTriangleName_, 0 ),
 			90f,
 			-3f * GeometryHelpers.externalLayerSeparation,

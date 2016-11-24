@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace RJWard.Geometry
 {
-	public class PointProvider_Polygon : IPointProvider
+	public class PointProvider_PolygonVertex : IPointProvider
 	{
 		#region private data
 
@@ -14,7 +14,7 @@ namespace RJWard.Geometry
 
 		#region setup
 
-		public PointProvider_Polygon( 
+		public PointProvider_PolygonVertex( 
 			string tn,
 			int pn)
 		{

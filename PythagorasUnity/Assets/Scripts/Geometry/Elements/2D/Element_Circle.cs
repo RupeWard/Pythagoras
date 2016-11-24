@@ -245,9 +245,14 @@ namespace RJWard.Geometry
 			}
 		}
 
+		override public Vector3 DefaultPulseCentre( )
+		{
+			return new Vector3( centre_.x, centre_.y, depth );
+		}
+
 		#endregion Mesh
 
-		#region Non-geometrical Appaarance
+			#region Non-geometrical Appaarance
 
 		override protected void HandleColourChanged( Color c)
 		{

@@ -694,6 +694,11 @@ namespace RJWard.Geometry
 			ShowAllSubElements( false);
 		}
 
+		override public Vector3 DefaultPulseCentre( )
+		{
+			return new Vector3( centre_.x, centre_.y, depth );
+		}
+
 		#endregion Mesh
 
 		#region Non-geometrical Appaarance

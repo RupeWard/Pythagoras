@@ -16,7 +16,7 @@ namespace RJWard.Geometry
 	{
 		#region private data
 
-		private string triangleName_ = "[UNKNOWN TRIANGLE]";
+		private IElementProvider triangleProvider_ = null;
 		private int angleNumber_ = 0;
 		private GeometryHelpers.EAngleModifier eModifier_ = GeometryHelpers.EAngleModifier.Raw;
 
@@ -29,7 +29,17 @@ namespace RJWard.Geometry
 			int an,
 			GeometryHelpers.EAngleModifier eam)
 		{
-			triangleName_ = tn;
+			triangleProvider_ = new ElementProvider_Name( tn );
+			angleNumber_ = an;
+			eModifier_ = eam;
+		}
+
+		public AngleProvider_Triangle(
+			IElementProvider iep,
+			int an,
+			GeometryHelpers.EAngleModifier eam )
+		{
+			triangleProvider_ = iep;
 			angleNumber_ = an;
 			eModifier_ = eam;
 		}
@@ -42,7 +52,7 @@ namespace RJWard.Geometry
 		{
 			float result = 0f;
 
-			Element_Triangle triangle = elements.GetRequiredElementOfType< Element_Triangle >( triangleName_ );
+			Element_Triangle triangle = triangleProvider_.GetElement< Element_Triangle >( elements );
 			float rawAngle = triangle.GetInternalAngleDegrees( angleNumber_ );
 			result = GeometryHelpers.ModifyAngleDegrees( rawAngle, eModifier_ );
 			return result;

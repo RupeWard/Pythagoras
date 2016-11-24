@@ -341,6 +341,13 @@ namespace RJWard.Geometry
 			}
 		}
 
+		override public Vector3 DefaultPulseCentre( )
+		{
+			Vector2[] vertices = GetVertices( );
+			Vector2 mp = 0.5f * (vertices[0] + vertices[2]);
+			return new Vector3( mp.x, mp.y, depth );
+		}
+
 		#endregion Mesh
 
 		#region Non-geometrical Appaarance

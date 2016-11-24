@@ -211,6 +211,23 @@ namespace RJWard.Geometry
 			}
 		}
 
+		override public Vector3 DefaultPulseCentre( )
+		{
+			Vector3 midPoint = new Vector3( 0f, 0f, depth );
+			if (segments_.Count > 0)
+			{
+				Vector2 mp2 = Vector2.zero;
+				for (int i = 0; i < segments_.Count; i++)
+				{
+					mp2 += segments_[i].MidPoint( );
+				}
+				mp2 = mp2 / segments_.Count;
+				midPoint.x = mp2.x;
+				midPoint.y = mp2.y; 
+			}
+			return midPoint;
+		}
+
 		#endregion Mesh
 
 		#region Non-geometrical Appaarance

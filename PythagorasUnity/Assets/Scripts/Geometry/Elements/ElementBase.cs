@@ -299,6 +299,8 @@ namespace RJWard.Geometry
 
 		abstract protected void DoAdjustMesh( );
 
+		abstract public Vector3 DefaultPulseCentre( );
+
 		#endregion
 
 		#region Creation

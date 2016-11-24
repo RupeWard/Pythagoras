@@ -363,6 +363,17 @@ namespace RJWard.Geometry
 			return GeometryHelpers.LineIntersectionPoint( line0.GetEnds(), line1.GetEnds(), ref intersection );
 		}
 
+		public Vector2 MidPoint()
+		{
+			return 0.5f * (ends_[0] + ends_[1]);
+		}
+
+		override public Vector3 DefaultPulseCentre( )
+		{
+			Vector2 midPoint = MidPoint( );
+			return new Vector3( midPoint.x, midPoint.y, depth );
+		}
+
 		#endregion geometry helpers
 
 		#region Non-geometrical Appaarance

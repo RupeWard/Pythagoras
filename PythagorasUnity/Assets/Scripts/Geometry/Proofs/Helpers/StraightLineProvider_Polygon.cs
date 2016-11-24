@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	public class StraightLineProvider_Polygon : IStraightLineProvider
+	public class StraightLineProvider_Polygon :  IStraightLineProvider
 	{
 		#region private data
 

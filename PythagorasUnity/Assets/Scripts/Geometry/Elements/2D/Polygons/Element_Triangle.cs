@@ -249,6 +249,12 @@ namespace RJWard.Geometry
 
 		#region geometry helpers
 
+		override public Vector3 DefaultPulseCentre( )
+		{
+			Vector2 mp = (vertices_[0] + vertices_[1] + vertices_[2])/3f;
+			return new Vector3( mp.x, mp.y, depth );
+		}
+
 		public Vector2[] GetSideInternal( int n )
 		{
 			return GetSide( n, false );

@@ -7,7 +7,7 @@ namespace RJWard.Geometry
 	{
 		#region private data
 
-		private string polygonName_ = "[UNKNOWN POLYGON]";
+		private IElementProvider polygonProvider_ = null;
 		private int angleNumber_ = 0;
 		private GeometryHelpers.EAngleModifier eModifier_ = GeometryHelpers.EAngleModifier.Raw;
 
@@ -16,11 +16,11 @@ namespace RJWard.Geometry
 		#region setup
 
 		public AngleProvider_Polygon( 
-			string tn,
+			string pn,
 			int an,
 			GeometryHelpers.EAngleModifier eam)
 		{
-			polygonName_ = tn;
+			polygonProvider_ = new ElementProvider_Name( pn );
 			angleNumber_ = an;
 			eModifier_ = eam;
 		}
@@ -33,7 +33,7 @@ namespace RJWard.Geometry
 		{
 			float result = 0f;
 
-			ElementPolygonBase polygon = elements.GetRequiredElementOfType< ElementPolygonBase >( polygonName_);
+			ElementPolygonBase polygon = polygonProvider_.GetElement< ElementPolygonBase >( elements );
 			Element_Sector sector = polygon.GetAngleElement( angleNumber_ );
 			if (sector != null)
 			{
@@ -42,7 +42,7 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				Debug.LogError( "Polygon " + polygonName_ + " has no angleElement " + angleNumber_ );
+				throw new System.Exception( "Polygon " + polygon.name+ " has no angleElement " + angleNumber_ );
 			}
 			return result;
 		}
