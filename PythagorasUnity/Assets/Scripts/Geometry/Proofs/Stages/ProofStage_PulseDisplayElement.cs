@@ -11,8 +11,10 @@ namespace RJWard.Geometry
 		// the element
 		ElementBase element_ = null;
 		Vector3 startingPosition_;
-		Vector3 startingScale_;
-		Vector3 endScale_;
+
+		Vector2 scaleRange_ = Vector2.zero;
+		float scalez = 0f;
+
 		float maxRelativeScale_;
 		Vector3 pulseCentre_;
 
@@ -57,8 +59,13 @@ namespace RJWard.Geometry
 			{
 				element_.gameObject.SetActive( true );
 				startingPosition_ = element_.cachedTransform.position;
-				startingScale_ = element_.cachedTransform.localScale;
-				endScale_ = startingScale_ * maxRelativeScale_;
+				scalez = element_.cachedTransform.localScale.z;
+				scaleRange_.x = element_.cachedTransform.localScale.x;
+				if (scaleRange_.x != element_.cachedTransform.localScale.y)
+				{
+					Debug.LogError( "Scale not symmetrical for " + element_.name + ": " + element_.cachedTransform.localScale );
+				}
+				scaleRange_.y = scaleRange_.x * maxRelativeScale_;
 				pulseCentre_ = element_.DefaultPulseCentre( );
 			}
 		}
@@ -76,14 +83,20 @@ namespace RJWard.Geometry
 			}
 		}
 
+		// F goes from 0 to 1
 		private void SetScale(float f)
 		{
 			if (element_ != null)
 			{
-				element_.cachedTransform.localScale = Vector3.Lerp( startingScale_, endScale_, f);
-				element_.cachedTransform.position = startingPosition_ - f * pulseCentre_;
+				float scale = Mathf.Lerp( scaleRange_.x, scaleRange_.y, f );
+				SetScaleVector( scale);
+				element_.cachedTransform.position = startingPosition_ - pulseCentre_ * ( scale - scaleRange_.x);
 			}
+		}
 
+		private void SetScaleVector(float f)
+		{
+			element_.cachedTransform.localScale = new Vector3( f, f, scalez );
 		}
 
 		protected override void HandleFinished( )
@@ -94,7 +107,7 @@ namespace RJWard.Geometry
 					{
 						if (element_ != null)
 						{
-							element_.cachedTransform.localScale = startingScale_;
+							SetScale( 0f );
 						}
 						break;
 					}
@@ -102,7 +115,7 @@ namespace RJWard.Geometry
 					{
 						if (element_ != null)
 						{
-							element_.cachedTransform.localScale = startingScale_;
+							SetScale( 0f );
 						}
 						break;
 					}
