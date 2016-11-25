@@ -622,16 +622,23 @@ public partial class SceneControllerProof : SceneController_Base
 		{
 			proofEngine_.Pause( );
 		}
-
-		changeDirectionButton.gameObject.SetActive( true );
+		ShowOrHideTriangleSettings( );
+        changeDirectionButton.gameObject.SetActive( true );
 		loopButton.gameObject.SetActive( true );
 	}
 
+	/*
 	private void HandleProofStageStarted( ProofStageBase psb )
+	{
+		ShowOrHideTriangleSettings( );
+    }
+	*/
+
+	private void ShowOrHideTriangleSettings()
 	{
 		if (elements_.GetElementOfType< Element_Parallelogram >( parallelogramNames_[0] ) == null)
 		{
-			// Not yet made first square, so can change triangle
+			// Not yet made normal, so can change triangle
 			EnableTriangleSettings( );
 		}
 		else
@@ -653,7 +660,8 @@ public partial class SceneControllerProof : SceneController_Base
 			proofEngine_.Pause( );
 		}
 		proofEngine_.ChangeToFollowingStage( psb );
-	}
+		ShowOrHideTriangleSettings( );
+    }
 
 	private void StepForward( )
 	{

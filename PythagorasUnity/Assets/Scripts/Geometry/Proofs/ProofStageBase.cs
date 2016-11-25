@@ -385,6 +385,7 @@ namespace RJWard.Geometry
 					}
 				}
 				HandleFirstUpdateAfterInit( );
+				
 				s = 0f;
 			}
 			if (isTimeRunning_)
