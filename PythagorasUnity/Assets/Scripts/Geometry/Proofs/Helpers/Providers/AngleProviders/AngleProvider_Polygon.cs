@@ -25,6 +25,17 @@ namespace RJWard.Geometry
 			eModifier_ = eam;
 		}
 
+		public AngleProvider_Polygon(
+			IElementProvider iep,
+			int an,
+			GeometryHelpers.EAngleModifier eam )
+		{
+			polygonProvider_ = iep;
+			angleNumber_ = an;
+			eModifier_ = eam;
+		}
+
+
 		#endregion setup
 
 		#region IAngleProvider

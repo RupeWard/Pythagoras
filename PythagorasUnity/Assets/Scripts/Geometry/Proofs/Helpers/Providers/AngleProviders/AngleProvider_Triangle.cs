@@ -12,7 +12,7 @@ namespace RJWard.Geometry
 					
 		*** Check this efficiency theory before finalising *** 
 	*/
-	public class AngleProvider_Triangle : IAngleProvider
+	public class AngleProvider_Triangle : IAngleProvider, IElementProvider
 	{
 		#region private data
 
@@ -59,6 +59,16 @@ namespace RJWard.Geometry
 		}
 
 		#endregion
+
+		#region IElementProvider
+
+		public T GetElement<T>( ElementList elements ) where T : ElementBase
+		{
+			return triangleProvider_.GetElement<Element_Triangle>( elements ).GetAngleElement( angleNumber_ ) as T;
+		}
+
+		#endregion IElementProvider
+
 	}
 }
 

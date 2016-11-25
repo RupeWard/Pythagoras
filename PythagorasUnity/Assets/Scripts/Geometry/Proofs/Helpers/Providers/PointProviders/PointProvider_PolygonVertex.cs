@@ -7,7 +7,7 @@ namespace RJWard.Geometry
 	{
 		#region private data
 
-		private string polygonName_ = "[UNKNOWN POLYGON]";
+		private IElementProvider polygonProvider_ = null;
 		private int pointNumber_ = 0;
 
 		#endregion
@@ -18,7 +18,15 @@ namespace RJWard.Geometry
 			string tn,
 			int pn)
 		{
-			polygonName_ = tn;
+			polygonProvider_ = new ElementProvider_Name( tn );
+			pointNumber_ = pn;
+		}
+
+		public PointProvider_PolygonVertex(
+			IElementProvider iep,
+			int pn )
+		{
+			polygonProvider_ = iep;
 			pointNumber_ = pn;
 		}
 
@@ -28,7 +36,7 @@ namespace RJWard.Geometry
 
 		public Vector2 GetPoint( ElementList elements )
 		{
-			ElementPolygonBase polygon = elements.GetRequiredElementOfType< ElementPolygonBase >( polygonName_);
+			ElementPolygonBase polygon = polygonProvider_.GetElement< ElementPolygonBase >( elements);
 			if (pointNumber_ >= polygon.NumVertices )
 			{
 				Debug.LogWarning( "In PointeProvider_Polygon, pointNumber ( " + pointNumber_ + ") >= numPoints ( " + polygon.NumVertices + " ), adjusting..." );
