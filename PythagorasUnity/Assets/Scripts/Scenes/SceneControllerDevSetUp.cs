@@ -19,9 +19,15 @@ public class SceneControllerDevSetUp : SceneController_Base
 
 #region event handlers
 
-	public void HandleProofEngineModeButton()
+	public void HandleProofEngine1ModeButton()
 	{
-		SceneControllerProof.mode_ = SceneControllerProof.EMode.ProofEngine;
+		SceneControllerProof.mode_ = SceneControllerProof.EMode.ProofEngine1;
+		SceneManager.Instance.SwitchScene( SceneManager.EScene.Proof );
+	}
+
+	public void HandleProofEngine2ModeButton( )
+	{
+		SceneControllerProof.mode_ = SceneControllerProof.EMode.ProofEngine2;
 		SceneManager.Instance.SwitchScene( SceneManager.EScene.Proof );
 	}
 

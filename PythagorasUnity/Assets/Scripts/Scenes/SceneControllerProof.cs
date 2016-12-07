@@ -10,11 +10,12 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public enum EMode
 	{
-		ProofEngine,
+		ProofEngine1,
+		ProofEngine2,
 		Internal
 	}
 
-	public static EMode mode_ = EMode.ProofEngine;
+	public static EMode mode_ = EMode.ProofEngine1;
 
 	#region TEST
 
@@ -249,7 +250,8 @@ public partial class SceneControllerProof : SceneController_Base
 
 		switch (mode_)
 		{
-			case EMode.ProofEngine:
+			case EMode.ProofEngine1:
+			case EMode.ProofEngine2:
 				{
 					forwardButton.gameObject.SetActive( true );
 					fastForwardButton.gameObject.SetActive( true );
@@ -284,7 +286,8 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 		switch (mode_)
 		{
-			case EMode.ProofEngine:
+			case EMode.ProofEngine1:
+			case EMode.ProofEngine2:
 				{
 					HandleForwardButtonProofEngineMode( );
 					break;
@@ -457,7 +460,8 @@ public partial class SceneControllerProof : SceneController_Base
 	{
 		switch (mode_)
 		{
-			case EMode.ProofEngine:
+			case EMode.ProofEngine1:
+			case EMode.ProofEngine2:
 				{
 					HandleAngleChangedProofEngineMode( );
 					break;
@@ -588,7 +592,8 @@ public partial class SceneControllerProof : SceneController_Base
 	{
 		switch (mode_)
 		{
-			case EMode.ProofEngine:
+			case EMode.ProofEngine1:
+			case EMode.ProofEngine2:
 				{
 					HandleSpeedChangedProofEngineMode( );
 					break;

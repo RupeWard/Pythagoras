@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using RJWard.Geometry;
 
 /* 
-	Functions and fields only used in Internal proof mode
+	Functions and fields only used when mode = Internal
 */
 public partial class SceneControllerProof : SceneController_Base
 {
 	#region ForwardButton
 
-	private System.Action forwardButtonAction_; // only used in internal mode
+	private System.Action forwardButtonAction_; 
 
 	public void HandleForwardButtonInternalMode( )
 	{
