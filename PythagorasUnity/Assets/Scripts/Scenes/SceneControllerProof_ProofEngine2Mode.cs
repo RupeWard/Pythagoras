@@ -212,7 +212,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		///////////////////////////////
 
-		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
+		ProofStage_ShearSquare shearSquare1_Stage = new ProofStage_ShearSquare(
 			"Shear Square 1",
 			"Shearing square 1",
 			geometryFactory_,
@@ -347,7 +347,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		/////////////////////////
 
-		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
+		ProofStage_ShearSquare shearSquare2_Stage = new ProofStage_ShearSquare(
 			"Shear Square 2",
 			"Shearing square 2",
 			geometryFactory_,
