@@ -18,13 +18,15 @@ public class SceneManager : RJWard.Core.Singleton.SingletonApplicationLifetimeLa
 	{
 		NONE,
 		Bootstrap,
-		Proof
+		Proof,
+		DevSetUp
 	};
 
 	private Dictionary< EScene, string > sceneNames_ = new Dictionary<EScene, string> ()
 	{
 		{ EScene.Bootstrap, "BootstrapScene" },
 		{ EScene.Proof, "ProofScene" },
+		{ EScene.DevSetUp, "DevSetUpScene" },
 	};
 
 #endregion scene types

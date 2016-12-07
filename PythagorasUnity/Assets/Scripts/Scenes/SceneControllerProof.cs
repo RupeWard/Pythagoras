@@ -8,7 +8,13 @@ public partial class SceneControllerProof : SceneController_Base
 {
 	static readonly private bool DEBUG_PROOF = true;
 
-	public bool proofEngineMode = true;
+	public enum EMode
+	{
+		ProofEngine,
+		Internal
+	}
+
+	public static EMode mode_ = EMode.ProofEngine;
 
 	#region TEST
 
@@ -241,14 +247,19 @@ public partial class SceneControllerProof : SceneController_Base
 		EnableTriangleSettings( );
 		EnableSpeedPanel( );
 
-		if (false == proofEngineMode)
+		switch (mode_)
 		{
-			EnableForwardButton( CreateTriangle );
-		}
-		else
-		{
-			forwardButton.gameObject.SetActive( true );
-			fastForwardButton.gameObject.SetActive( true );
+			case EMode.ProofEngine:
+				{
+					forwardButton.gameObject.SetActive( true );
+					fastForwardButton.gameObject.SetActive( true );
+					break;
+				}
+			case EMode.Internal:
+				{
+					EnableForwardButton( CreateTriangle );
+					break;
+				}
 		}
 	}
 
@@ -258,7 +269,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 	public void HandleReloadButton()
 	{
-		SceneManager.Instance.ReloadScene( SceneManager.EScene.Proof );
+		SceneManager.Instance.SwitchScene( SceneManager.EScene.DevSetUp);
 	}
 
 	#endregion Flow
@@ -269,15 +280,20 @@ public partial class SceneControllerProof : SceneController_Base
 	{
 		if (DEBUG_PROOF)
 		{
-			Debug.Log( "HandleForwardButton(), proofEngineMode = " + proofEngineMode );
+			Debug.Log( "HandleForwardButton(), proofEngineMode = " + mode_ );
 		}
-		if (proofEngineMode)
+		switch (mode_)
 		{
-			HandleForwardButtonProofEngineMode( );
-		}
-		else
-		{
-			HandleForwardButtonInternalMode( );
+			case EMode.ProofEngine:
+				{
+					HandleForwardButtonProofEngineMode( );
+					break;
+				}
+			case EMode.Internal:
+				{
+					HandleForwardButtonInternalMode( );
+					break;
+				}
 		}
 	}
 
@@ -295,7 +311,7 @@ public partial class SceneControllerProof : SceneController_Base
 	{
 		if (DEBUG_PROOF)
 		{
-			Debug.Log( "HandleFastForwardButton(), proofEngineMode = " + proofEngineMode +" FFwd = "+fastForward_);
+			Debug.Log( "HandleFastForwardButton(), proofEngineMode = " + mode_ +" FFwd = "+fastForward_);
 		}
 		fastForward_ = !fastForward_;
 		SetFastForwardButtonSprite( );
@@ -439,13 +455,18 @@ public partial class SceneControllerProof : SceneController_Base
 
 	private void HandleAngleChanged()
 	{
-		if (proofEngineMode)
+		switch (mode_)
 		{
-			HandleAngleChangedProofEngineMode( );
-		}
-		else
-		{
-			HandleAngleChangedInternalMode( );
+			case EMode.ProofEngine:
+				{
+					HandleAngleChangedProofEngineMode( );
+					break;
+				}
+			case EMode.Internal:
+				{
+					HandleAngleChangedInternalMode( );
+					break;
+				}
 		}
 	}
 
@@ -565,13 +586,18 @@ public partial class SceneControllerProof : SceneController_Base
 
 	private void HandleSpeedChanged( )
 	{
-		if (proofEngineMode)
+		switch (mode_)
 		{
-			HandleSpeedChangedProofEngineMode( );
-		}
-		else
-		{
-			//HandleSpeedChangedInternalMode( ); // this mode uses initial speed directly so nothing to do
+			case EMode.ProofEngine:
+				{
+					HandleSpeedChangedProofEngineMode( );
+					break;
+				}
+			case EMode.Internal:
+				{
+					//HandleSpeedChangedInternalMode( ); // this mode uses initial speed directly so nothing to do
+					break;
+				}
 		}
 	}
 

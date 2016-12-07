@@ -12,7 +12,7 @@ public class SceneControllerBootstrap : SceneController_Base
 
 	private void MoveOn()
 	{
-		SceneManager.Instance.SwitchScene( SceneManager.EScene.Proof);
+		SceneManager.Instance.SwitchScene( SceneManager.EScene.DevSetUp);
 	}
 
 #region event handlers
