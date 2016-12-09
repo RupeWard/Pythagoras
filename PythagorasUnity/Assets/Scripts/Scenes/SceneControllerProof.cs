@@ -15,7 +15,7 @@ public partial class SceneControllerProof : SceneController_Base
 		Internal
 	}
 
-	public static EMode mode_ = EMode.ProofEngine1;
+	public static EMode mode_ = EMode.ProofEngine2;
 
 	#region TEST
 
