@@ -28,7 +28,7 @@ namespace RJWard.Geometry
 
 		private ElementList elements_ = null;
 
-		private float currentTimeSeconds_ = 0f;
+		protected float currentTimeSeconds_ = 0f;
 		private ProofEngine.EDirection direction_ = ProofEngine.EDirection.Forward;
 		private string name_ = "[UNNAMED PROOF STAGE]";
 		private string description_ = string.Empty;
@@ -41,6 +41,8 @@ namespace RJWard.Geometry
 
 		private bool isTimeRunning_ = false;
 
+		protected ProofEngine proofEngine_ = null;
+		
 		#endregion private data 
 
 		#region properties
@@ -139,6 +141,11 @@ namespace RJWard.Geometry
 		#endregion properties
 
 		#region setters
+
+		public void SetProofEngine( ProofEngine pe )
+		{
+			proofEngine_ = pe;
+		}
 
 		public void SetPreviousStage( ProofStageBase b )
 		{
@@ -426,7 +433,7 @@ namespace RJWard.Geometry
 			validates element list against own requirements
 			initialises next stage with this ones direction and element list
 		*/
-		private void Finish()
+		protected void Finish()
 		{
 			HandleFinished( );
 			switch (direction_)

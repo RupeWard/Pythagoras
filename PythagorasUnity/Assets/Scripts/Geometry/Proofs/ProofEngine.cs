@@ -59,6 +59,7 @@ namespace RJWard.Geometry
 			else
 			{
 				stages_.Add( stage );
+				stage.SetProofEngine( this );
 			}
 		}
 
@@ -334,6 +335,38 @@ namespace RJWard.Geometry
 			}
 		}
 		#endregion MD Flow
+
+		#region Coroutine runner
+
+		public void RunStageAsCR( ProofStageBase stage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction )
+		{
+			StartCoroutine(RunStageCR( stage, direction, elements, finishedAction ));
+		}
+
+		private IEnumerator RunStageCR(ProofStageBase stage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction)
+		{
+			stage.Init( direction, elements );
+
+			stage.HandleSecondsElapsed( 0f );
+			yield return null;
+
+			float elapsed = 0f;
+
+			while (elapsed < stage.durationSeconds)
+			{
+				float scaledDeltaTime = Time.deltaTime * speed_;
+                elapsed += scaledDeltaTime;
+				stage.HandleSecondsElapsed( scaledDeltaTime );
+				yield return null;
+			}
+
+			if (finishedAction != null)
+			{
+				finishedAction( stage );
+			}
+		}
+
+		#endregion Coroutine runner
 
 		#region Process
 
