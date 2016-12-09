@@ -3,6 +3,11 @@ using System.Collections;
 
 public partial class MessageBus : RJWard.Core.Singleton.SingletonApplicationLifetimeLazy<MessageBus>
 {
+	public void clear( )
+	{
+		showMessageAction = null;
+	}
+
 	public System.Action<ProofTextPanel.ProofMessageDefinition> showMessageAction;
 	public void sendShowMessageAction( ProofTextPanel.ProofMessageDefinition d )
 	{
@@ -14,9 +19,5 @@ public partial class MessageBus : RJWard.Core.Singleton.SingletonApplicationLife
 		{
 			Debug.LogWarning( "No showMessageAction" );
 		}
-	}
-	public void clear( )
-	{
-		showMessageAction = null;
 	}
 }
