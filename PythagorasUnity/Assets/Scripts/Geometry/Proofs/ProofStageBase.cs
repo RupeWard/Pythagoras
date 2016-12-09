@@ -47,6 +47,11 @@ namespace RJWard.Geometry
 
 		#region properties
 
+		public bool IsTimeRunning
+		{
+			get { return isTimeRunning_; }
+		}
+
 		protected GeometryFactory geometryFactory
 		{
 			get { return geometryFactory_;  }
@@ -175,6 +180,11 @@ namespace RJWard.Geometry
 
 		public bool ChangeDirection()
 		{
+			if (DEBUG_PROOFSTAGE)
+			{
+				Debug.Log( "'" + name + "': ChangeDirection" );
+			}
+
 			bool changed = false;
 			switch (direction_)
 			{
@@ -288,6 +298,11 @@ namespace RJWard.Geometry
 		*/
 		public void Init( ProofEngine.EDirection d, ElementList e)
 		{
+			if (DEBUG_PROOFSTAGE)
+			{
+				Debug.Log( "'" + name + "': Init (BASE), direction = "+d+", duration = "+durationSeconds_ );
+			}
+
 			if (e == null)
 			{
 				elements_ = null;
@@ -325,7 +340,7 @@ namespace RJWard.Geometry
 					}
 			}
 
-			isTimeRunning_ = true;
+			SetTimeRunning(true);
 
 			initNotUpdated_ = true;
 
@@ -346,7 +361,14 @@ namespace RJWard.Geometry
 				isTimeRunning_ = b;
 				if (DEBUG_PROOFSTAGE)
 				{
-					Debug.Log( "Time now " + ((isTimeRunning_) ? ("RESUMED") : ("PAUSED")) + " in proof stage '" + name + "'" );
+					if (initNotUpdated_)
+					{
+						Debug.Log( "Time now " + ((isTimeRunning_) ? ("STARTED") : ("PAUSED WHEN NOT STARTED")) + " in proof stage '" + name + "'" );
+					}
+					else
+					{
+						Debug.Log( "Time now " + ((isTimeRunning_) ? ("RESUMED") : ("PAUSED")) + " in proof stage '" + name + "'" );
+					}
 				}
 			}
 			else
@@ -380,7 +402,7 @@ namespace RJWard.Geometry
 			{
 				if (DEBUG_PROOFSTAGE)
 				{
-					Debug.Log( name + " initNotUpdated" );
+					Debug.Log( name + " initNotUpdated @ "+Time.time );
 				}
 
 				initNotUpdated_ = false;
@@ -402,6 +424,19 @@ namespace RJWard.Geometry
 					case ProofEngine.EDirection.Forward:
 						{
 							currentTimeSeconds_ += s;
+							break;
+						}
+					case ProofEngine.EDirection.Reverse:
+						{
+							currentTimeSeconds_ -= s;
+							break;
+						}
+				}
+				UpdateView( );
+				switch (direction_)
+				{
+					case ProofEngine.EDirection.Forward:
+						{
 							if (currentTimeSeconds_ >= durationSeconds_)
 							{
 								currentTimeSeconds_ = durationSeconds_;
@@ -411,7 +446,6 @@ namespace RJWard.Geometry
 						}
 					case ProofEngine.EDirection.Reverse:
 						{
-							currentTimeSeconds_ -= s;
 							if (currentTimeSeconds_ <= 0f)
 							{
 								currentTimeSeconds_ = 0f;
@@ -420,7 +454,10 @@ namespace RJWard.Geometry
 							break;
 						}
 				}
-				UpdateView( );
+			}
+			else
+			{
+				Debug.LogWarning( "Time not running in '" + name + "'" );
 			}
 			if (shouldFinish)
 			{
@@ -435,6 +472,10 @@ namespace RJWard.Geometry
 		*/
 		protected void Finish()
 		{
+			if (DEBUG_PROOFSTAGE)
+			{
+				Debug.Log( "'" + name + "': FInish" );
+			}
 			HandleFinished( );
 			switch (direction_)
 			{
@@ -470,7 +511,7 @@ namespace RJWard.Geometry
 					}
 			}
 
-			isTimeRunning_ = false;
+			SetTimeRunning(false);
 
 			if (onFinishedAction != null)
 			{

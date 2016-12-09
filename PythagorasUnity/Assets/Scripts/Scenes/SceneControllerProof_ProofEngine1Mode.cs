@@ -520,7 +520,7 @@ public partial class SceneControllerProof : SceneController_Base
 		);
 
 		createTriangle_Stage.Init( ProofEngine.EDirection.Forward, elements_ );
-		proofEngine_.Start( createTriangle_Stage );
+		proofEngine_.StartStage( createTriangle_Stage );
 		if (!proofEngine_.isPaused)
 		{
 			proofEngine_.Pause( );

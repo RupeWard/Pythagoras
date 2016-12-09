@@ -6,6 +6,8 @@ namespace RJWard.Geometry
 {
 	class ProofStage_ShearParallelogram : ProofStageBase
 	{
+		static private readonly bool DEBUG_LOCAL = false;
+
 		#region private data
 
 		// The parallelogram to shear
@@ -113,6 +115,7 @@ namespace RJWard.Geometry
 				}
 				parallelogramStartAngle_ = startAngleProvider_.GetAngle( elements );
 				parallelogramTargetAngle_ = targetAngleProvider_.GetAngle( elements );
+				
 			}
 			else
 			{
@@ -125,6 +128,10 @@ namespace RJWard.Geometry
 				}
 				parallelogram_.gameObject.SetActive( true );
 			}
+			if (DEBUG_LOCAL)
+			{
+				Debug.Log( "In '"+name+"' HandleInit, start="+parallelogramStartAngle_+", target="+parallelogramTargetAngle_ );
+			}
 		}
 
 		protected override void DoUpdateView( )
@@ -134,6 +141,10 @@ namespace RJWard.Geometry
 
 		protected override void HandleFinished( )
 		{
+			if (DEBUG_LOCAL)
+			{
+				Debug.Log( "'" + name + "' HandleFinished");
+			}
 			parallelogram_.SetAlpha( 1f );
 			parallelogram_.SetHideEdgeElement( 0);
             switch (direction)

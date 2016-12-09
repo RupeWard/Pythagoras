@@ -118,32 +118,32 @@ namespace RJWard.Geometry
 					Debug.Log( "'" + name + "': Creating internal shearparallelogram stage" );
 				}
 				shearStage_ = new ProofStage_ShearParallelogram(
-					name, description, geometryFactory, field, durationSeconds, HandleShearStageFinishedFromStage,
+					"ShearParallelogram_"+name, description, geometryFactory, field, durationSeconds, HandleShearStageFinishedFromStage,
 					parallelogramName_,
 					baselineNumber_,
 					shearAlpha_,
 					startAngleProvider_,
 					targetAngleProvider_ );
 			}
-			proofEngine_.RunStageAsCR( shearStage_, direction, elements, HandleShearStageFinishedFromEngine );
+			proofEngine_.RunSubStageAsCR( shearStage_, this, direction, elements, HandleShearStageFinishedFromEngine );
 		}
 
 		protected override void DoUpdateView( )
 		{
 			if (direction == ProofEngine.EDirection.Reverse && currentTimeSeconds_ <= 0f)
 			{
-				currentTimeSeconds_ = Mathf.Epsilon;
+				currentTimeSeconds_ = Time.deltaTime;
 				if (DEBUG_LOCAL)
 				{
-					Debug.LogWarning( "'"+name+"' Fixed time in reverse direction as it has hit zero "+Time.time );
+					Debug.LogWarning( "'"+name+ "' Fixed time in reverse direction to " + currentTimeSeconds_ + " as it has hit zero at time " + Time.time );
 				}
 			}
 			if (direction == ProofEngine.EDirection.Forward && currentTimeSeconds_ >= durationSeconds)
 			{
-				currentTimeSeconds_ = durationSeconds - Mathf.Epsilon;
+				currentTimeSeconds_ = durationSeconds - Time.deltaTime;
 				if (DEBUG_LOCAL)
 				{
-					Debug.LogWarning( "'"+name+" Fixed time in forward direction as it has hit duration "+Time.time );
+					Debug.LogWarning( "'"+name+" Fixed time in forward direction to "+currentTimeSeconds_+" as it has hit duration at time "+Time.time );
 				}
 			}
 		}
@@ -155,10 +155,6 @@ namespace RJWard.Geometry
 				Debug.Log( "'" + name + "': HandleFinished "+Time.time );
 			}
 
-			if (shearStage_ != null)
-			{
-				shearStage_ = null;
-			}
 		}
 
 		#endregion ProofStageBase 

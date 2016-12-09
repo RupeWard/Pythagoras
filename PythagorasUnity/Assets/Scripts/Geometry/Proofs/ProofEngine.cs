@@ -338,25 +338,56 @@ namespace RJWard.Geometry
 
 		#region Coroutine runner
 
-		public void RunStageAsCR( ProofStageBase stage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction )
+		static readonly bool DEBUG_CR = true;
+		static readonly bool DEBUG_CR_VERBOSE = false;
+
+		public void RunSubStageAsCR( ProofStageBase stage, ProofStageBase parentStage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction )
 		{
-			StartCoroutine(RunStageCR( stage, direction, elements, finishedAction ));
+			StartCoroutine(RunSubStageCR( stage, parentStage, direction, elements, finishedAction ));
 		}
 
-		private IEnumerator RunStageCR(ProofStageBase stage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction)
+		private IEnumerator RunSubStageCR(ProofStageBase stage, ProofStageBase parentStage, EDirection direction, ElementList elements, System.Action<ProofStageBase> finishedAction)
 		{
+			if (DEBUG_CR)
+			{
+				Debug.Log( "START Running '" + stage + "' as CR from '" + parentStage.name + "'" );
+			}
+			if (isPaused_)
+			{
+				Debug.LogError( "RunStageCR when paused" );
+			}
 			stage.Init( direction, elements );
-
-			stage.HandleSecondsElapsed( 0f );
-			yield return null;
 
 			float elapsed = 0f;
 
+			int numIterations = 0;
+
 			while (elapsed < stage.durationSeconds)
 			{
-				float scaledDeltaTime = Time.deltaTime * speed_;
-                elapsed += scaledDeltaTime;
-				stage.HandleSecondsElapsed( scaledDeltaTime );
+				numIterations++;
+				if (DEBUG_CR_VERBOSE)
+				{
+					Debug.Log( "iteration " + numIterations );
+				}
+
+				//				if (isPaused_ == false)
+				{
+					if (numIterations > 0)
+					{
+						float scaledDeltaTime = Time.deltaTime * speed_;
+						elapsed += scaledDeltaTime;
+						stage.HandleSecondsElapsed( scaledDeltaTime );
+					}
+					else
+					{
+						stage.HandleSecondsElapsed( 0f );
+					}
+				}
+				if (parentStage.IsTimeRunning == false || isPaused_ )
+				{
+					Debug.LogWarning( "SubStage CR for '"+stage.name+"' running while Parent stage timeRunning="+parentStage.IsTimeRunning+" and Engine.paused="+isPaused_ );
+				}
+				
 				yield return null;
 			}
 
@@ -364,13 +395,17 @@ namespace RJWard.Geometry
 			{
 				finishedAction( stage );
 			}
+			if (DEBUG_CR)
+			{
+				Debug.Log( "END Running '" + stage + "' as CR from '" + parentStage.name + "'" );
+			}
 		}
 
 		#endregion Coroutine runner
 
 		#region Process
 
-		public void Start( ProofStageBase b)
+		public void StartStage( ProofStageBase b)
 		{
 			currentStage_ = b;
 			if (onDirectionChangedAction != null)
