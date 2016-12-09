@@ -146,8 +146,6 @@ namespace RJWard.Geometry
 					Debug.LogWarning( "'"+name+" Fixed time in forward direction as it has hit duration "+Time.time );
 				}
 			}
-
-			//			parallelogram_.SetAngleDegrees( Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
 		}
 
 		protected override void HandleFinished( )
@@ -161,27 +159,6 @@ namespace RJWard.Geometry
 			{
 				shearStage_ = null;
 			}
-
-			/*
-			parallelogram_.SetAlpha( 1f );
-			parallelogram_.SetHideEdgeElement( 0 );
-			switch (direction)
-			{
-				case ProofEngine.EDirection.Forward:
-					{
-						parallelogram_.SetAngleDegrees( parallelogramTargetAngle_ );
-						break;
-					}
-				case ProofEngine.EDirection.Reverse:
-					{
-						parallelogram_.SetAngleDegrees( parallelogramStartAngle_ );
-						if (baselineNumber_ != 0)
-						{
-							parallelogram_.ChangeBaseline( 4 - baselineNumber_ );
-						}
-						break;
-					}
-			}*/
 		}
 
 		#endregion ProofStageBase 
@@ -207,77 +184,6 @@ namespace RJWard.Geometry
 
 
 		#endregion Process
-
-		/*
-		override protected void HandleFirstUpdateAfterInit( )
-		{
-			parallelogram_.SetAlpha( shearAlpha_ );
-			parallelogram_.SetShowEdgeElement( 0 );
-			Element_StraightLine edge0 = parallelogram_.GetEdgeElement( 0 ) as Element_StraightLine;
-			if (edge0 != null)
-			{
-				edge0.SetColour( Color.black );
-				edge0.SetWidth( 0.05f );
-			}
-		}
-
-		protected override void HandleInit( )
-		{
-			if (parallelogram_ == null)
-			{
-				parallelogram_ = elements.GetRequiredElementOfType<Element_Parallelogram>( parallelogramName_ );
-				if (direction == ProofEngine.EDirection.Forward)
-				{
-					if (baselineNumber_ != 0)
-					{
-						parallelogram_.ChangeBaseline( baselineNumber_ );
-					}
-				}
-				parallelogramStartAngle_ = startAngleProvider_.GetAngle( elements );
-				parallelogramTargetAngle_ = targetAngleProvider_.GetAngle( elements );
-			}
-			else
-			{
-				if (direction == ProofEngine.EDirection.Forward)
-				{
-					if (baselineNumber_ != 0)
-					{
-						parallelogram_.ChangeBaseline( baselineNumber_ );
-					}
-				}
-				parallelogram_.gameObject.SetActive( true );
-			}
-		}
-
-		protected override void DoUpdateView( )
-		{
-			parallelogram_.SetAngleDegrees( Mathf.Lerp( parallelogramStartAngle_, parallelogramTargetAngle_, currentTimeFractional ) );
-		}
-
-		protected override void HandleFinished( )
-		{
-			parallelogram_.SetAlpha( 1f );
-			parallelogram_.SetHideEdgeElement( 0 );
-			switch (direction)
-			{
-				case ProofEngine.EDirection.Forward:
-					{
-						parallelogram_.SetAngleDegrees( parallelogramTargetAngle_ );
-						break;
-					}
-				case ProofEngine.EDirection.Reverse:
-					{
-						parallelogram_.SetAngleDegrees( parallelogramStartAngle_ );
-						if (baselineNumber_ != 0)
-						{
-							parallelogram_.ChangeBaseline( 4 - baselineNumber_ );
-						}
-						break;
-					}
-			}
-		}
-		*/
-
 
 	}
 }
