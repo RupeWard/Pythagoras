@@ -32,7 +32,7 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_CreateTriangleSide(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string triangleName,
 			int sideNumber,
 			bool externalSide,
@@ -40,7 +40,7 @@ namespace RJWard.Geometry
 			float lw,
 			Color c,
 			string ln) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			lineColour_ = c;
 			lineName_ = ln;

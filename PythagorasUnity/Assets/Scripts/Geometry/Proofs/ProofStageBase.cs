@@ -31,7 +31,6 @@ namespace RJWard.Geometry
 		protected float currentTimeSeconds_ = 0f;
 		private ProofEngine.EDirection direction_ = ProofEngine.EDirection.Forward;
 		private string name_ = "[UNNAMED PROOF STAGE]";
-		private string description_ = string.Empty;
 
 		private Dictionary< ProofEngine.EDirection, bool > dontPauseOnFinish_ = new Dictionary< ProofEngine.EDirection, bool >( )
 		{
@@ -75,11 +74,6 @@ namespace RJWard.Geometry
 		public string name
 		{
 			get { return name_; }
-		}
-
-		public string description
-		{
-			get { return description_; }
 		}
 
 		public float durationSeconds
@@ -270,14 +264,12 @@ namespace RJWard.Geometry
 
 		protected ProofStageBase( 
 			string n, 
-			string descn, 
 			GeometryFactory gf, 
 			Field f,
 			float durn,
 			System.Action<ProofStageBase> a)
 		{
 			name_ = n;
-			description_ = descn;
 			geometryFactory_ = gf;
 			field_ = f;
 			durationSeconds_ = durn;

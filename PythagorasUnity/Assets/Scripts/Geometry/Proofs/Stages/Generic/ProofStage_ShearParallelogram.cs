@@ -30,26 +30,26 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_ShearParallelogram(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
 			int bn,
 			float sa,
 			IAngleProvider sap,
             IAngleProvider tap
 			) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			CtorSetup( pn, bn, sa, sap, tap );
 		}
 
 		public ProofStage_ShearParallelogram(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
 			float sa,
 			IAngleProvider sap,
 			IAngleProvider tap
 			)
-			: base( n, descn, gf, f, durn, ac )
+			: base( n, gf, f, durn, ac )
 		{
 			CtorSetup( pn, 0, sa, sap, tap );
 		}

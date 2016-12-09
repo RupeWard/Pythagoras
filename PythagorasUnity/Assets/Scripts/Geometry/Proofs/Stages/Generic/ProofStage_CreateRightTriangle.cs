@@ -24,13 +24,13 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_CreateRightTriangle(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac, 
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac, 
 			float depth,
 			Vector2[] h, 
 			float a, 
 			Color c,
 			string tn) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			hypotenuse_ = h;
 			angle_ = a;

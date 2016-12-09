@@ -18,11 +18,11 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_HideElement(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string en,
 			System.Type elementType
 			) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			elementName_ = en;
 			

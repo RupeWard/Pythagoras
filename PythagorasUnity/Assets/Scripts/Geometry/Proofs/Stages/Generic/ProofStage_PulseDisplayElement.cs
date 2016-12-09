@@ -25,22 +25,22 @@ namespace RJWard.Geometry
 		#region setup
 		
 		public ProofStage_PulseDisplayElement(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string en,
 			float relScale
 			) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			elementProvider_ = new ElementProvider_Name( en );
 			maxRelativeScale_ = relScale;
 		}
 
 		public ProofStage_PulseDisplayElement(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IElementProvider iep,
 			float relScale
 			)
-		: base( n, descn, gf, f, durn, ac )
+		: base( n, gf, f, durn, ac )
 		{
 			elementProvider_ = iep;
 			maxRelativeScale_ = relScale;

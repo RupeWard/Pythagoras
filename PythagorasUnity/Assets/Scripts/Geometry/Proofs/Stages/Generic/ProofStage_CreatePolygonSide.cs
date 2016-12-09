@@ -30,40 +30,40 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_CreatePolygonSide(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IStraightLineProvider lp,
 			float depth,
 			float lw,
 			Color c,
 			string ln) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			Init( lp, depth, lw, c, ln);
 		}
 
 		public ProofStage_CreatePolygonSide(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IStraightLineProvider lp,
 			float depth,
 			float lw,
 			Color c,
 			string ln,
 			List< ILineExtender> le)
-			: base( n, descn, gf, f, durn, ac )
+			: base( n, gf, f, durn, ac )
 		{
 			Init( lp, depth, lw, c, ln );
 			lineExtenders_.AddRange( le );
 		}
 
 		public ProofStage_CreatePolygonSide(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IStraightLineProvider lp,
 			float depth,
 			float lw,
 			Color c,
 			string ln,
 			ILineExtender le )
-		: base( n, descn, gf, f, durn, ac )
+		: base( n, gf, f, durn, ac )
 		{
 			Init( lp, depth, lw, c, ln );
 			lineExtenders_.Add( le );

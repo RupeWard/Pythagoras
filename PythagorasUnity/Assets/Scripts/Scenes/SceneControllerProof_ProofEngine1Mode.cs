@@ -43,8 +43,7 @@ public partial class SceneControllerProof : SceneController_Base
 		}
 
 		ProofStage_CreateRightTriangle createTriangle_Stage = new ProofStage_CreateRightTriangle(
-			"Create Triangle",
-			"Creating main triangle",
+			"CreateMainTriangle",
 			geometryFactory_,
 			mainField_,
 			createTriangleDuration,
@@ -63,9 +62,9 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.AddStageToEnd( createTriangle_Stage );
 
 #if UNITY_EDITOR // temp pulse examples
-
+		/*
 		ProofStage_PulseDisplayElement pulse0 = new ProofStage_PulseDisplayElement(
-			"Pulse MT", "Pulse MT",
+			"Pulse MT",
 			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
 			new ElementProvider_Name(mainTriangleName_),
 			1.5f
@@ -73,18 +72,18 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.AddStageToEnd( pulse0 );
 
 		ProofStage_PulseDisplayElement pulse1 = new ProofStage_PulseDisplayElement(
-			"Pulse RA", "Pulse RA",
+			"Pulse RA", 
 			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
 			new AngleProvider_Polygon( mainTriangleName_, 1, GeometryHelpers.EAngleModifier.Raw),
 			1.5f);
 		proofEngine_.AddStageToEnd( pulse1 );
+		*/
 #endif
 
 		//////////////////
 
 		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
-			"Create Square 1",
-			"Extruding side 1 to a square",
+			"CreateSquare1",
 			geometryFactory_,
 			mainField_,
 			createSquareDuration,
@@ -109,20 +108,20 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.AddStageToEnd(createSquare1_Stage);
 
 #if UNITY_EDITOR // temp pulse examples
-
+		/*
 		ProofStage_PulseDisplayElement pulse2 = new ProofStage_PulseDisplayElement(
-			"Pulse SQ", "Pulse SQ",
+			"PulseSQ", 
 			geometryFactory_, mainField_, 2f, HandleProofStageFinished,
 			new ElementProvider_Name( parallelogramNames_[0]),
 			1.5f );
 		proofEngine_.AddStageToEnd( pulse2 );
+		*/
 #endif
 
 		//////////////////////
 
 		ProofStage_ExtrudeLineToSquare createSquare2_Stage = new ProofStage_ExtrudeLineToSquare(
-			"Create Square 2",
-			"Extruding side 2 to a square",
+			"CreateSquare2",
 			geometryFactory_,
 			mainField_,
 			createSquareDuration,
@@ -147,8 +146,7 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.AddStageToEnd( createSquare2_Stage);
 		
 		ProofStage_CreateLineThroughPointAtAngleToLine createMainTriangleNormal_Stage = new ProofStage_CreateLineThroughPointAtAngleToLine(
-			"Create Main Triangle Normal",
-			"Create Main Triangle Normal",
+			"CreateMainTriangleNormal",
 			geometryFactory_,
 			mainField_,
 			createNormalDuration,
@@ -168,8 +166,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////
 
 		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
-			"Create Shadow Square 1",
-			"Creating shadow square 1",
+			"CreateShadowSquare1",
 			geometryFactory_,
 			mainField_,
 			0f,
@@ -188,8 +185,7 @@ public partial class SceneControllerProof : SceneController_Base
 		////////////
 
 		ProofStage_CreatePolygonSide createShearSquareGuideline0_Stage = new ProofStage_CreatePolygonSide(
-			"Create Shear Square Guideline 0",
-			"Creating Shear Square Guideline 0",
+			"CreateShearSquareGuideline0",
 			geometryFactory_,
 			mainField_,
 			shearSquareGuidelineCreationDuration_,
@@ -213,8 +209,7 @@ public partial class SceneControllerProof : SceneController_Base
 		///////////////////////////////
 
 		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
-			"Shear Square 1",
-			"Shearing square 1",
+			"ShearSquare1",
 			geometryFactory_,
 			mainField_,
 			shearSquareDuration,
@@ -246,8 +241,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////////////////
 
 		ProofStage_HideElements hideShearSquare1Ancillaries_Stage = new ProofStage_HideElements(
-			"Hide Shear Square 1 ancillaries",
-			"Hiding Shear Square 1 ancillaries",
+			"HideShearSquareAncillaries1",
 			geometryFactory_,
 			mainField_,
 			removeShadowDuration,
@@ -266,8 +260,7 @@ public partial class SceneControllerProof : SceneController_Base
 		///////////////////////////////////
 
 		ProofStage_CreateTriangleFromSides createCongruentTriangle1_Stage = new ProofStage_CreateTriangleFromSides(
-			"Create Congruent Triangle 1",
-			"Creating Congruent Triangle 1",
+			"CreateCongruentTriangle1",
 			geometryFactory_,
 			mainField_,
 			createCongruentTriangleDuration,
@@ -287,8 +280,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////////////////
 
 		ProofStage_HideElement hideCongruentTriangle1_Stage = new ProofStage_HideElement(
-			"Remove Congruent Triangle 1",
-			"Removing Congruent Triangle 1",
+			"RemoveCongruentTriangle1",
 			geometryFactory_,
 			mainField_,
 			removeShadowDuration,
@@ -303,8 +295,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////////////
 
 		ProofStage_CloneElement createShadowSquare2_Stage = new ProofStage_CloneElement(
-			"Create Shadow Square 2",
-			"Creating shadow square 2",
+			"CreateShadowSquare2",
 			geometryFactory_,
 			mainField_,
 			0f,
@@ -323,8 +314,7 @@ public partial class SceneControllerProof : SceneController_Base
 		////////////
 
 		ProofStage_CreatePolygonSide createShearSquareGuideline1_Stage = new ProofStage_CreatePolygonSide(
-			"Create Shear Square Guideline 1",
-			"Creating Shear Square Guideline 1",
+			"CreateShearSquareGuideline1",
 			geometryFactory_,
 			mainField_,
 			shearSquareGuidelineCreationDuration_,
@@ -348,8 +338,7 @@ public partial class SceneControllerProof : SceneController_Base
 		/////////////////////////
 
 		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
-			"Shear Square 2",
-			"Shearing square 2",
+			"ShearSquare2",
 			geometryFactory_,
 			mainField_,
 			shearSquareDuration,
@@ -381,8 +370,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////
 
 		ProofStage_HideElements hideShearSquareAncillaries2_Stage = new ProofStage_HideElements(
-			"RemoveShadow Square 2",
-			"Removing shadow square 2",
+			"RemoveShadowSquare2",
 			geometryFactory_,
 			mainField_,
 			0.2f,
@@ -402,8 +390,7 @@ public partial class SceneControllerProof : SceneController_Base
 		///////////////////////////////////
 
 		ProofStage_CreateTriangleFromSides createCongruentTriangle2_Stage = new ProofStage_CreateTriangleFromSides(
-			"Create Congruent Triangle 2",
-			"Creating Congruent Triangle 2",
+			"CreateCongruentTriangle2",
 			geometryFactory_,
 			mainField_,
 			createCongruentTriangleDuration,
@@ -423,8 +410,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////////////////
 
 		ProofStage_HideElement hideCongruentTriangle2_Stage = new ProofStage_HideElement(
-			"Remove Congruent Triangle 2",
-			"Removing Congruent Triangle 2",
+			"RemoveCongruentTriangle2",
 			geometryFactory_,
 			mainField_,
 			removeShadowDuration,
@@ -439,8 +425,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////////////////
 
 		ProofStage_HideElement hideMainTriangleNormal_Stage = new ProofStage_HideElement(
-			"Remove Main Triangle Normal",
-			"Removing Main Triangle Normal",
+			"RemoveMainTriangleNormal",
 			geometryFactory_,
 			mainField_,
 			removeShadowDuration,
@@ -456,8 +441,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////////
 
 		ProofStage_ShearParallelogram shearParallelogram0_Stage = new ProofStage_ShearParallelogram(
-			"Shear Parallelogram 0",
-			"Shearing parallelogram 0",
+			"ShearParallelogram0",
 			geometryFactory_,
 			mainField_,
 			shearSquareDuration,
@@ -479,8 +463,7 @@ public partial class SceneControllerProof : SceneController_Base
 		//////////////////////////////
 
 		ProofStage_ShearParallelogram shearParallelogram1_Stage = new ProofStage_ShearParallelogram(
-			"Shear Parallelogram 1",
-			"Shearing parallelogram 1",
+			"ShearParallelogram1",
 			geometryFactory_,
 			mainField_,
 			shearSquareDuration,

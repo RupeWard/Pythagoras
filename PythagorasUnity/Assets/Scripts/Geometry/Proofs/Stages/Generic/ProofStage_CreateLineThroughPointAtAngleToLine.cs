@@ -36,7 +36,7 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_CreateLineThroughPointAtAngleToLine(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IPointProvider pp,
 			IStraightLineProvider slp,
 			float a,
@@ -44,13 +44,13 @@ namespace RJWard.Geometry
 			float lw,
 			Color c,
 			string ln
-		): base( n, descn, gf, f, durn, ac )
+		): base( n, gf, f, durn, ac )
 		{
 			Init( pp, slp, a, d, lw, c, ln );
 		}
 
 		public ProofStage_CreateLineThroughPointAtAngleToLine(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n,  GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IPointProvider pp,
 			IStraightLineProvider slp,
 			float a,
@@ -59,7 +59,7 @@ namespace RJWard.Geometry
 			Color c,
 			string ln,
             ILineExtender le
-            ) : base (n, descn, gf, f, durn, ac )
+            ) : base (n, gf, f, durn, ac )
 		{
 			Init( pp, slp, a, d, lw, c, ln );
 
@@ -67,7 +67,7 @@ namespace RJWard.Geometry
 		}
 
 		public ProofStage_CreateLineThroughPointAtAngleToLine(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IPointProvider pp,
 			IStraightLineProvider slp,
 			float a,
@@ -76,7 +76,7 @@ namespace RJWard.Geometry
 			Color c,
 			string ln,
 			List < ILineExtender > le
-		) : base( n, descn, gf, f, durn, ac )
+		) : base( n, gf, f, durn, ac )
 		{
 			Init( pp, slp, a, d, lw, c, ln );
 

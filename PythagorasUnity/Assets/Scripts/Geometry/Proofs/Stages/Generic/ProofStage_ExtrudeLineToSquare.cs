@@ -27,13 +27,13 @@ namespace RJWard.Geometry
 		#region setup
 
 		public ProofStage_ExtrudeLineToSquare(
-			string n, string descn, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			IStraightLineProvider ilp,
 			float relDepth,
 			float a,
 			Color c,
 			string pn) 
-			: base (n, descn, gf, f, durn, ac )
+			: base (n, gf, f, durn, ac )
 		{
 			parallelogramColour_ = c;
 			parallelogramName_ = pn;
