@@ -5,7 +5,8 @@ namespace RJWard.Geometry
 {
 	abstract public class ElementDecoratorBase : RJWard.Core.IDebugDescribable
 	{
-		public static bool DEBUG_DECORATORS = true;
+//		public static bool DEBUG_DECORATORS = true;
+		public static bool DEBUG_DECORATOR_CALLBACKS = false;
 
 		#region Setup
 
@@ -95,7 +96,7 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				if (DEBUG_DECORATORS)
+				if (DEBUG_DECORATOR_CALLBACKS)
 				{
 					Debug.LogWarning( "No colourChangedAction" );
 				}
@@ -130,7 +131,7 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				if (DEBUG_DECORATORS)
+				if (DEBUG_DECORATOR_CALLBACKS)
 				{
 					Debug.LogWarning( "No alphaChangedAction" );
 				}

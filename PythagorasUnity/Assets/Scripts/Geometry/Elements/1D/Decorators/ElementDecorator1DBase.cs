@@ -83,7 +83,10 @@ namespace RJWard.Geometry
 			}
 			else
 			{
-				Debug.LogWarning( "No widthChangedAction" );
+				if (DEBUG_DECORATOR_CALLBACKS)
+				{
+					Debug.LogWarning( "No widthChangedAction" );
+				}
 			}
 		}
 
