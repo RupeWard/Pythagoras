@@ -82,7 +82,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		//////////////////
 
-		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
+		ProofStage_ExtrudeLineToSquare createSquare0_Stage = new ProofStage_ExtrudeLineToSquare(
 			"CreateSquare1",
 			geometryFactory_,
 			mainField_,
@@ -95,7 +95,7 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[0]
 			);
 
-		createSquare1_Stage.startReversedDestroyElementListDefinition
+		createSquare0_Stage.startReversedDestroyElementListDefinition
 			= new ElementListDefinition(
 				"CreateSquare1_Stage Reversed Start DestroyList",
 				new Dictionary< string, System.Type >( )
@@ -105,7 +105,7 @@ public partial class SceneControllerProof : SceneController_Base
 			);
 
 
-		proofEngine_.AddStageToEnd(createSquare1_Stage);
+		proofEngine_.AddStageToEnd(createSquare0_Stage);
 
 #if UNITY_EDITOR // temp pulse examples
 		/*
@@ -120,7 +120,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		//////////////////////
 
-		ProofStage_ExtrudeLineToSquare createSquare2_Stage = new ProofStage_ExtrudeLineToSquare(
+		ProofStage_ExtrudeLineToSquare createSquare1_Stage = new ProofStage_ExtrudeLineToSquare(
 			"CreateSquare2",
 			geometryFactory_,
 			mainField_,
@@ -133,7 +133,7 @@ public partial class SceneControllerProof : SceneController_Base
 			parallelogramNames_[1]
 			);
 
-		createSquare2_Stage.startReversedDestroyElementListDefinition
+		createSquare1_Stage.startReversedDestroyElementListDefinition
 			= new ElementListDefinition(
 				"CreateSquare2_Stage Reversed Start DestroyList",
 				new Dictionary< string, System.Type >( )
@@ -143,7 +143,7 @@ public partial class SceneControllerProof : SceneController_Base
 			);
 
 
-		proofEngine_.AddStageToEnd( createSquare2_Stage);
+		proofEngine_.AddStageToEnd( createSquare1_Stage);
 		
 		ProofStage_CreateLineThroughPointAtAngleToLine createMainTriangleNormal_Stage = new ProofStage_CreateLineThroughPointAtAngleToLine(
 			"CreateMainTriangleNormal",
@@ -165,7 +165,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		//////////////////
 
-		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
+		ProofStage_CloneElement createShadowSquare0_Stage = new ProofStage_CloneElement(
 			"CreateShadowSquare1",
 			geometryFactory_,
 			mainField_,
@@ -178,9 +178,9 @@ public partial class SceneControllerProof : SceneController_Base
 			shadowSquareNames_[0]
 			);
 
-		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		createShadowSquare0_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( createShadowSquare1_Stage);
+		proofEngine_.AddStageToEnd( createShadowSquare0_Stage);
 
 		////////////
 
@@ -208,7 +208,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		///////////////////////////////
 
-		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
+		ProofStage_ShearParallelogram shearSquare0_Stage = new ProofStage_ShearParallelogram(
 			"ShearSquare1",
 			geometryFactory_,
 			mainField_,
@@ -227,7 +227,7 @@ public partial class SceneControllerProof : SceneController_Base
 				)
 			);
 
-		shearSquare1_Stage.startReversedDestroyElementListDefinition
+		shearSquare0_Stage.startReversedDestroyElementListDefinition
 			= new ElementListDefinition(
 				"shearSquare1_Stage Reversed Start DestroyList",
 				new Dictionary<string, System.Type>( )
@@ -236,11 +236,11 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 		
-		proofEngine_.AddStageToEnd( shearSquare1_Stage );
+		proofEngine_.AddStageToEnd( shearSquare0_Stage );
 
 		//////////////////////////////////////////////
 
-		ProofStage_HideElements hideShearSquare1Ancillaries_Stage = new ProofStage_HideElements(
+		ProofStage_HideElements hideShearSquareAncillaries0_Stage = new ProofStage_HideElements(
 			"HideShearSquareAncillaries1",
 			geometryFactory_,
 			mainField_,
@@ -253,13 +253,13 @@ public partial class SceneControllerProof : SceneController_Base
 			}
 		 );
 
-		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries0_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( hideShearSquare1Ancillaries_Stage);
+		proofEngine_.AddStageToEnd( hideShearSquareAncillaries0_Stage);
 
 		///////////////////////////////////
 
-		ProofStage_CreateTriangleFromSides createCongruentTriangle1_Stage = new ProofStage_CreateTriangleFromSides(
+		ProofStage_CreateTriangleFromSides createCongruentTriangle0_Stage = new ProofStage_CreateTriangleFromSides(
 			"CreateCongruentTriangle1",
 			geometryFactory_,
 			mainField_,
@@ -275,11 +275,11 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[0]
 			);
 
-		proofEngine_.AddStageToEnd( createCongruentTriangle1_Stage);
+		proofEngine_.AddStageToEnd( createCongruentTriangle0_Stage);
 
 		//////////////////////////////////////////////
 
-		ProofStage_HideElement hideCongruentTriangle1_Stage = new ProofStage_HideElement(
+		ProofStage_HideElement hideCongruentTriangle0_Stage = new ProofStage_HideElement(
 			"RemoveCongruentTriangle1",
 			geometryFactory_,
 			mainField_,
@@ -288,13 +288,13 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[0],
 			typeof( Element_Triangle) );
 
-		hideShearSquare1Ancillaries_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries0_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( hideCongruentTriangle1_Stage);
+		proofEngine_.AddStageToEnd( hideCongruentTriangle0_Stage);
 
 		//////////////////////////////////////////
 
-		ProofStage_CloneElement createShadowSquare2_Stage = new ProofStage_CloneElement(
+		ProofStage_CloneElement createShadowSquare1_Stage = new ProofStage_CloneElement(
 			"CreateShadowSquare2",
 			geometryFactory_,
 			mainField_,
@@ -307,9 +307,9 @@ public partial class SceneControllerProof : SceneController_Base
 			shadowSquareNames_[1]
 		);
 
-		createShadowSquare2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		createShadowSquare1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( createShadowSquare2_Stage);
+		proofEngine_.AddStageToEnd( createShadowSquare1_Stage);
 
 		////////////
 
@@ -337,7 +337,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		/////////////////////////
 
-		ProofStage_ShearParallelogram shearSquare2_Stage = new ProofStage_ShearParallelogram(
+		ProofStage_ShearParallelogram shearSquare1_Stage = new ProofStage_ShearParallelogram(
 			"ShearSquare2",
 			geometryFactory_,
 			mainField_,
@@ -356,7 +356,7 @@ public partial class SceneControllerProof : SceneController_Base
 				)
 			);
 
-		shearSquare2_Stage.startReversedDestroyElementListDefinition
+		shearSquare1_Stage.startReversedDestroyElementListDefinition
 			= new ElementListDefinition(
 				"shearSquare2_Stage Reversed Start DestroyList",
 				new Dictionary<string, System.Type>( )
@@ -365,11 +365,11 @@ public partial class SceneControllerProof : SceneController_Base
 				}
 			);
 
-		proofEngine_.AddStageToEnd( shearSquare2_Stage);
+		proofEngine_.AddStageToEnd( shearSquare1_Stage);
 
 		//////////////////////////////
 
-		ProofStage_HideElements hideShearSquareAncillaries2_Stage = new ProofStage_HideElements(
+		ProofStage_HideElements hideShearSquareAncillaries1_Stage = new ProofStage_HideElements(
 			"RemoveShadowSquare2",
 			geometryFactory_,
 			mainField_,
@@ -382,14 +382,14 @@ public partial class SceneControllerProof : SceneController_Base
 			}
 		);
 
-		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
-		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Reverse);
+		hideShearSquareAncillaries1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( hideShearSquareAncillaries2_Stage);
+		proofEngine_.AddStageToEnd( hideShearSquareAncillaries1_Stage);
 
 		///////////////////////////////////
 
-		ProofStage_CreateTriangleFromSides createCongruentTriangle2_Stage = new ProofStage_CreateTriangleFromSides(
+		ProofStage_CreateTriangleFromSides createCongruentTriangle1_Stage = new ProofStage_CreateTriangleFromSides(
 			"CreateCongruentTriangle2",
 			geometryFactory_,
 			mainField_,
@@ -405,11 +405,11 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[1]
 			);
 
-		proofEngine_.AddStageToEnd( createCongruentTriangle2_Stage);
+		proofEngine_.AddStageToEnd( createCongruentTriangle1_Stage);
 
 		//////////////////////////////////////////////
 
-		ProofStage_HideElement hideCongruentTriangle2_Stage = new ProofStage_HideElement(
+		ProofStage_HideElement hideCongruentTriangle1_Stage = new ProofStage_HideElement(
 			"RemoveCongruentTriangle2",
 			geometryFactory_,
 			mainField_,
@@ -418,9 +418,9 @@ public partial class SceneControllerProof : SceneController_Base
 			congruentTriangleNames_[1],
 			typeof( Element_Triangle ) );
 
-		hideShearSquareAncillaries2_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
+		hideShearSquareAncillaries1_Stage.SetDontPauseOnFinish( ProofEngine.EDirection.Forward );
 
-		proofEngine_.AddStageToEnd( hideCongruentTriangle2_Stage);
+		proofEngine_.AddStageToEnd( hideCongruentTriangle1_Stage);
 		
 		//////////////////////////////////////////////
 
@@ -487,14 +487,14 @@ public partial class SceneControllerProof : SceneController_Base
 		proofEngine_.SkipStagesInReverse(
 			new List<ProofStageBase>( )
 			{
+				createShadowSquare0_Stage,
+				hideShearSquareAncillaries0_Stage,
 				createShadowSquare1_Stage,
-				hideShearSquare1Ancillaries_Stage,
-				createShadowSquare2_Stage,
-				hideShearSquareAncillaries2_Stage,
+				hideShearSquareAncillaries1_Stage,
+				createCongruentTriangle0_Stage,
+				hideCongruentTriangle0_Stage,
 				createCongruentTriangle1_Stage,
 				hideCongruentTriangle1_Stage,
-				createCongruentTriangle2_Stage,
-				hideCongruentTriangle2_Stage,
 				createMainTriangleNormal_Stage,
 				hideMainTriangleNormal_Stage,
 				createShearSquareGuideline0_Stage,
