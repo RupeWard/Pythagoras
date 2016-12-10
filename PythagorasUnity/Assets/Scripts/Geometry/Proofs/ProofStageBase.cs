@@ -38,7 +38,7 @@ namespace RJWard.Geometry
 			{ ProofEngine.EDirection.Reverse, false }
 		};
 
-		private bool isTimeRunning_ = false;
+		private bool isTimeRunning_ = false; // TODO: maybe change to isActive? This is an internal flag currently just set to true on start and false on complete, ProofEngine.isPaused is used for general pause/resume
 
 		protected ProofEngine proofEngine_ = null;
 		
