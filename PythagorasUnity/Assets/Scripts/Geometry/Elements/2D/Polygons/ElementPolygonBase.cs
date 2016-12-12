@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
@@ -176,6 +177,94 @@ namespace RJWard.Geometry
 			}
 		}
 
+		public int FindEdgeClosestToEdge( Element_StraightLine edgeIn, ref Element_StraightLine edgeOut )
+		{
+			return FindEdgeClosestToPoints( edgeIn.GetEnds( ), ref edgeOut );
+		}
+
+		private static readonly bool DEBUG_CLOSENESS = false;
+
+		public int FindEdgeClosestToPoints( Vector2[] points, ref Element_StraightLine edgeOut)
+		{
+			System.Text.StringBuilder debugsb = null;
+			if (DEBUG_CLOSENESS)
+			{
+				debugsb = new System.Text.StringBuilder( );
+				debugsb.Append( "Looking for closest edge in " ).Append( name ).Append( " to points " );
+				points.DebugDescribe( debugsb );
+			}
+
+			int result = -1;
+
+			float closestTotalDistanceSoFar = float.MaxValue;
+			
+			for (int i = 0; i < numVertices_; i++)
+			{
+				Element_StraightLine est = edgeElements_[i] as Element_StraightLine;
+				if (DEBUG_CLOSENESS)
+				{
+					debugsb.Append( "\n Edge " ).Append( i ).Append( " = " ).Append( est.name ).Append(" with ends ");
+					est.GetEnds( ).DebugDescribe( debugsb );
+				}
+				if (est == null)
+				{
+					Debug.LogError( "Polygon '" + name + "' has no edge #" + i );
+				} 
+				else
+				{
+					// FIXME this provides edge whose infinite extensiuon passes closest to the points, it does the job required so far but may need another version for when we want to know if the actual extent of the edge is close
+					StraightLineFormula slf = est.GetFormula( );
+					if (DEBUG_CLOSENESS)
+					{
+						debugsb.Append( "\n Formula = " );
+						slf.DebugDescribe( debugsb );
+					}
+					float totalDistance = 0f;
+					for (int j = 0; j < points.Length; j++)
+					{
+						float dist = slf.GetDistanceFromPoint( points[j] );
+						totalDistance += dist;
+						if (DEBUG_CLOSENESS)
+						{
+							debugsb.Append( "\n    Point " ).Append( j ).Append( " dist= " ).Append( dist );
+						}
+					}
+					if (DEBUG_CLOSENESS)
+					{
+						debugsb.Append( "\n  total = " ).Append( totalDistance );
+					}
+					if (result == -1 || totalDistance < closestTotalDistanceSoFar)
+					{
+						edgeOut = est;
+						closestTotalDistanceSoFar = totalDistance;
+						result = i;
+						if (DEBUG_CLOSENESS)
+						{
+							debugsb.Append( " NEW MIN" );
+						}
+					}
+
+				}
+			}
+			if (result == -1)
+			{
+				Debug.LogWarning( "Polygon '" + name + "' failed to find edge closest to points " );
+			}
+			else
+			{
+				if (DEBUG_CLOSENESS)
+				{
+					debugsb.Append( "Found edge #" ).Append( result ).Append( " = " ).Append( edgeOut.name ) ;
+				}
+			}
+			if (DEBUG_CLOSENESS)
+			{
+				Debug.LogError( debugsb.ToString( ) );
+			}
+			return result;
+		}
+
+		
 		#endregion edges
 
 		#region angles
