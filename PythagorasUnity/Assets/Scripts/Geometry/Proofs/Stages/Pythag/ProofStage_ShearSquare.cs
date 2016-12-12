@@ -19,6 +19,7 @@ namespace RJWard.Geometry
 
 		private IAngleProvider startAngleProvider_ = null;
 		private IAngleProvider targetAngleProvider_ = null;
+		private IStraightLineProvider baselineIdentifier_ = null;
 
 //		private float parallelogramTargetAngle_ = float.NaN;
 //		private float parallelogramStartAngle_ = float.NaN;
@@ -37,13 +38,31 @@ namespace RJWard.Geometry
 			int bn,
 			float sa,
 			IAngleProvider sap,
-			IAngleProvider tap
+			IAngleProvider tap,
+			IStraightLineProvider bsi
 			) 
 			: base (n, gf, f, durn, ac )
 		{
 			CtorSetup( pn, bn, sa, sap, tap );
+			baselineIdentifier_ = bsi;
 		}
 
+		public ProofStage_ShearSquare(
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string pn,
+			float sa,
+			IAngleProvider sap,
+			IAngleProvider tap,
+			IStraightLineProvider bsi
+			)
+		: base( n, gf, f, durn, ac )
+		{
+			CtorSetup( pn, -1, sa, sap, tap );
+			baselineIdentifier_ = bsi;
+		}
+
+
+		/*
 		public ProofStage_ShearSquare(
 			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
@@ -55,6 +74,7 @@ namespace RJWard.Geometry
 		{
 			CtorSetup( pn, 0, sa, sap, tap );
 		}
+		*/
 
 		private void CtorSetup(
 			string pn,
@@ -117,13 +137,27 @@ namespace RJWard.Geometry
 				{
 					Debug.Log( "'" + name + "': Creating internal shearparallelogram stage" );
 				}
-				shearStage_ = new ProofStage_ShearParallelogram(
-					"ShearParallelogram_"+name, geometryFactory, field, durationSeconds, HandleShearStageFinishedFromStage,
-					parallelogramName_,
-					baselineNumber_,
-					shearAlpha_,
-					startAngleProvider_,
-					targetAngleProvider_ );
+
+				if (baselineIdentifier_  != null)
+				{
+					shearStage_ = new ProofStage_ShearParallelogram(
+						"ShearParallelogram_" + name, geometryFactory, field, durationSeconds, HandleShearStageFinishedFromStage,
+						parallelogramName_,
+						shearAlpha_,
+						startAngleProvider_,
+						targetAngleProvider_,
+						baselineIdentifier_ );
+				}
+				else
+				{
+					shearStage_ = new ProofStage_ShearParallelogram(
+						"ShearParallelogram_" + name, geometryFactory, field, durationSeconds, HandleShearStageFinishedFromStage,
+						parallelogramName_,
+						baselineNumber_,
+						shearAlpha_,
+						startAngleProvider_,
+						targetAngleProvider_);
+				}
 			}
 			proofEngine_.RunSubStageAsCR( shearStage_, this, direction, elements, HandleShearStageFinishedFromEngine );
 		}
