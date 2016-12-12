@@ -370,7 +370,7 @@ namespace RJWard.Geometry
 					Debug.Log( "iteration " + numIterations );
 				}
 
-				//				if (isPaused_ == false)
+				if (isPaused_ == false)
 				{
 					if (numIterations > 0)
 					{
@@ -383,11 +383,12 @@ namespace RJWard.Geometry
 						stage.HandleSecondsElapsed( 0f );
 					}
 				}
+				/*
 				if (parentStage.IsTimeRunning == false || isPaused_ )
 				{
 					Debug.LogWarning( "SubStage CR for '"+stage.name+"' running while Parent stage timeRunning="+parentStage.IsTimeRunning+" and Engine.paused="+isPaused_ );
 				}
-				
+				*/
 				yield return null;
 			}
 
