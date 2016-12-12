@@ -6,7 +6,7 @@ namespace RJWard.Geometry
 {
 	class ProofStage_ShearParallelogram : ProofStageBase
 	{
-		static private readonly bool DEBUG_LOCAL = false;
+		static private readonly bool DEBUG_LOCAL = true;
 
 		#region private data
 
@@ -15,10 +15,11 @@ namespace RJWard.Geometry
 
 		// parallelogram settings for creation
 		private string parallelogramName_ = "[UNKNOWN PARALLELOGRAM]";
-		private int baselineNumber_ = 0;
+		private int baselineNumber_ = -1;
 
 		private IAngleProvider startAngleProvider_ = null;
 		private IAngleProvider targetAngleProvider_ = null;
+		private IStraightLineProvider baselineIdentifier_ = null;
 
 		private float parallelogramTargetAngle_ = float.NaN;
 		private float parallelogramStartAngle_ = float.NaN;
@@ -52,6 +53,20 @@ namespace RJWard.Geometry
 			: base( n, gf, f, durn, ac )
 		{
 			CtorSetup( pn, 0, sa, sap, tap );
+		}
+
+		public ProofStage_ShearParallelogram(
+			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
+			string pn,
+			float sa,
+			IAngleProvider sap,
+			IAngleProvider tap,
+			IStraightLineProvider bli
+			)
+		: base( n, gf, f, durn, ac )
+		{
+			CtorSetup( pn, -1, sa, sap, tap );
+			baselineIdentifier_ = bli;
 		}
 
 		private void CtorSetup(
@@ -106,6 +121,29 @@ namespace RJWard.Geometry
 			if (parallelogram_ == null)
 			{
 				parallelogram_ = elements.GetRequiredElementOfType<Element_Parallelogram>( parallelogramName_ );
+				if (baselineIdentifier_ != null)
+				{
+					Element_StraightLine baselineToMatch = baselineIdentifier_.GetLine( elements );
+					Element_StraightLine baseline = null;
+
+					int index = parallelogram_.FindEdgeClosestToEdge( baselineToMatch, ref baseline );
+					if (index < 0)
+					{
+						throw new System.Exception( "Failed to match baseline" );
+					}
+					else
+					{
+						if (DEBUG_LOCAL)
+						{
+							Debug.Log( "Found line matching "+baselineToMatch.name+" which has index #" + index +" and name "+baseline.name);
+						}
+						baselineNumber_ = index;
+					}
+				}
+				if (baselineNumber_ < 0)
+				{
+					throw new System.Exception( "BaselineNumber not set" );
+				}
 				if (direction == ProofEngine.EDirection.Forward)
 				{
 					if (baselineNumber_ != 0)
