@@ -224,7 +224,8 @@ public partial class SceneControllerProof : SceneController_Base
 				mainTriangleName_,
 				0,
 				GeometryHelpers.EAngleModifier.Complementary
-				)
+				),
+			new StraightLineProvider_Polygon(mainTriangleName_, 1)
 			);
 
 		shearSquare0_Stage.startReversedDestroyElementListDefinition
@@ -353,7 +354,10 @@ public partial class SceneControllerProof : SceneController_Base
 				mainTriangleName_,
 				0,
 				GeometryHelpers.EAngleModifier.Supplementary
-				)
+				),
+			new StraightLineProvider_Polygon(
+				mainTriangleName_,
+				2 )
 			);
 
 		shearSquare1_Stage.startReversedDestroyElementListDefinition
