@@ -362,7 +362,7 @@ namespace RJWard.Geometry
 
 			int numIterations = 0;
 
-			while (elapsed < stage.durationSeconds)
+			while (stage.IsTimeRunning)
 			{
 				numIterations++;
 				if (DEBUG_CR_VERBOSE)
