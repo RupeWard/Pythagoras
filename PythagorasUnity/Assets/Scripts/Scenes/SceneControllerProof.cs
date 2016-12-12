@@ -73,6 +73,8 @@ public partial class SceneControllerProof : SceneController_Base
 	public Sprite loopButtonSprite_On;
 	public Sprite loopButtonSprite_Off;
 
+	public UnityEngine.UI.Text subTitleText;
+
 	#endregion inspector hooks
 
 	#region private hooks
@@ -141,6 +143,8 @@ public partial class SceneControllerProof : SceneController_Base
 		changeDirectionButton.gameObject.SetActive( false );
 		fastForwardButton.gameObject.SetActive( false );
 		loopButton.gameObject.SetActive( false );
+
+		subTitleText.text = "(" + mode_.ToString( ) + ")";
 	}
 
 	protected override void PostStart( )
