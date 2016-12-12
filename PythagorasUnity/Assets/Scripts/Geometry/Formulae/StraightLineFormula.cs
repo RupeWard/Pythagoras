@@ -39,6 +39,7 @@ namespace RJWard.Geometry
 			Init( p, p1 );
 		}
 
+		// FIXME need to handle same x
 		private void Init( Vector2 p0, Vector2 p1 )
 		{
 			gradient_ = (p1.y - p0.y) / (p1.x - p0.x);
@@ -49,6 +50,14 @@ namespace RJWard.Geometry
 	
 		#region computation
 
+		// For converting to form Ax + By + C = 0
+		public void GetABCRepresentation(out float A, out float B, out float C)
+		{
+			A = -1f * gradient;
+			B = 1f;
+			C = -1f * intersept;
+		}
+
 		public float GetY(float x)
 		{
 			return gradient_ * x + intersept_;
@@ -57,6 +66,13 @@ namespace RJWard.Geometry
 		public float GetX(float y)
 		{
 			return (y - intersept_) / gradient;
+		}
+
+		public float GetDistanceFromPoint(Vector2 pt)
+		{
+			float A, B, C;
+			GetABCRepresentation( out A, out B, out C );
+			return Mathf.Abs( A * pt.x + B * pt.y + C ) / Mathf.Sqrt( A * A + B * B );
 		}
 
 		static public bool GetIntersection( StraightLineFormula l0, StraightLineFormula l1, ref Vector2 intersection)
@@ -70,6 +86,7 @@ namespace RJWard.Geometry
 			return true;
 		}
 
+
 		#endregion computation
 
 		#region IDebugDescribable
@@ -77,6 +94,9 @@ namespace RJWard.Geometry
 		public void DebugDescribe(System.Text.StringBuilder sb)
 		{
 			sb.Append( "[ gradient = " ).Append( gradient_ ).Append( ", intersept = " ).Append( intersept_ ).Append( " ]" );
+			float A, B, C;
+			GetABCRepresentation( out A, out B, out C );
+			sb.Append( " (A, B, C) = ( " ).Append( A ).Append( ", " ).Append( B ).Append( ", " ).Append( C ).Append( " )" );
 		}
 		#endregion IDebugDescribable
 
