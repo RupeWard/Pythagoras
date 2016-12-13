@@ -103,13 +103,13 @@ public partial class SceneControllerProof : SceneController_Base
 
 	private ElementList elements_ = new ElementList( "Elements" );
 
-	private readonly string mainTriangleName_ = "Main Triangle";
-	private readonly string[] parallelogramNames_ = { "Parallelogram 0", "Parallelogram 1" };
-	private readonly string[] shadowSquareNames_ = { "Shadow Square 0", "Shadow Square 1" };
-	private readonly string[] shadowParallelogramNames_ = { "Shadow Parallelogram 0", "Shadow Parallelogram 1" };
-	private readonly string[] congruentTriangleNames_ = new string[] { "congruentTriangle1", "congruentTriangle2" };
+	private readonly string mainTriangleName_ = "MainTriangle";
+	private readonly string[] parallelogramNames_ = { "Parallelogram0", "Parallelogram1" };
+	private readonly string[] shadowSquareNames_ = { "ShadowSquare0", "ShadowSquare1" };
+	private readonly string[] shadowParallelogramNames_ = { "ShadowParallelogram0", "ShadowParallelogram1" };
+	private readonly string[] congruentTriangleNames_ = new string[] { "CongruentTriangle1", "CongruentTriangle2" };
 	private readonly string mainTriangleNormalName_ = "MainTriangleNormal";
-	private readonly string[] shearSquareGuidelineNames_ = new string[] { "ShearSquareGuideline 0", "ShearSquareGuideline 1" };
+	private readonly string[] shearSquareGuidelineNames_ = new string[] { "ShearSquareGuideline0", "ShearSquareGuideline1" };
 
 	#endregion private elements
 

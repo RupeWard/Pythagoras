@@ -178,7 +178,7 @@ namespace RJWard.Geometry
 				{
 					edgeElement = geometryFactory.AddStraightLineToField(
 					  field,
-					  name + " Edge_" + i.ToString( ),
+					  name + "_Edge_" + i.ToString( ),
 					  depth-GeometryHelpers.internalLayerSeparation,
 					  new Vector2[]
 					  {

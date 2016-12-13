@@ -390,7 +390,7 @@ namespace RJWard.Geometry
 				else
 				{
 					angleElement = geometryFactory.AddSectorBetweenLines(
-						name + " Angle_" + i.ToString( ),
+						name + "_Angle_" + i.ToString( ),
 						GeometryHelpers.internalLayerSeparation,
 						lines,
 						0.1f,
