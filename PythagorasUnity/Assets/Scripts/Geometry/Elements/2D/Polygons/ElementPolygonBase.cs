@@ -259,7 +259,7 @@ namespace RJWard.Geometry
 			}
 			if (DEBUG_CLOSENESS)
 			{
-				Debug.LogError( debugsb.ToString( ) );
+				Debug.Log( debugsb.ToString( ) );
 			}
 			return result;
 		}
