@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RJWard.Geometry
 {
-	class ProofStage_ShearSquare : ProofStageBase
+	class ProofStage_PythagShearSquare : ProofStageBase
 	{
 		static private bool DEBUG_LOCAL = true;
 
@@ -32,7 +32,7 @@ namespace RJWard.Geometry
 
 		#region setup
 
-		public ProofStage_ShearSquare(
+		public ProofStage_PythagShearSquare(
 			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
 			int bn,
@@ -47,7 +47,7 @@ namespace RJWard.Geometry
 			baselineIdentifier_ = bsi;
 		}
 
-		public ProofStage_ShearSquare(
+		public ProofStage_PythagShearSquare(
 			string n, GeometryFactory gf, Field f, float durn, System.Action<ProofStageBase> ac,
 			string pn,
 			float sa,

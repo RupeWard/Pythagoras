@@ -208,7 +208,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		///////////////////////////////
 
-		ProofStage_ShearSquare shearSquare0_Stage = new ProofStage_ShearSquare(
+		ProofStage_PythagShearSquare shearSquare0_Stage = new ProofStage_PythagShearSquare(
 			"ShearSquare1",
 			geometryFactory_,
 			mainField_,
@@ -338,7 +338,7 @@ public partial class SceneControllerProof : SceneController_Base
 
 		/////////////////////////
 
-		ProofStage_ShearSquare shearSquare1_Stage = new ProofStage_ShearSquare(
+		ProofStage_PythagShearSquare shearSquare1_Stage = new ProofStage_PythagShearSquare(
 			"ShearSquare2",
 			geometryFactory_,
 			mainField_,
