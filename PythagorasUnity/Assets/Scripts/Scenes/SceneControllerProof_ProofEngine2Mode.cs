@@ -216,10 +216,7 @@ public partial class SceneControllerProof : SceneController_Base
 			HandleProofStageFinished,
 			parallelogramNames_[0],
 			shearAlpha,
-			new AngleProvider_Parallelogram(
-				parallelogramNames_[0],
-				0,
-				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Constant(90f),
 			new AngleProvider_Polygon(
 				mainTriangleName_,
 				0,
@@ -346,10 +343,7 @@ public partial class SceneControllerProof : SceneController_Base
 			HandleProofStageFinished,
 			parallelogramNames_[1],
 			shearAlpha,
-			new AngleProvider_Parallelogram(
-				parallelogramNames_[1],
-				0,
-				GeometryHelpers.EAngleModifier.Raw ),
+			new AngleProvider_Constant( 90f ),
 			new AngleProvider_Polygon(
 				mainTriangleName_,
 				0,

@@ -172,6 +172,7 @@ namespace RJWard.Geometry
 			SetDontPauseOnFinish( d, true );
 		}
 
+		// TODO May be able to simplify logic here (esp with regard to "changedAtEnd")
 		public bool ChangeDirection()
 		{
 			if (DEBUG_PROOFSTAGE)
@@ -180,6 +181,8 @@ namespace RJWard.Geometry
 			}
 
 			bool changed = false;
+			bool changedAtEnd = false;
+
 			switch (direction_)
 			{
 				case ProofEngine.EDirection.Forward:
@@ -191,6 +194,14 @@ namespace RJWard.Geometry
 							if (DEBUG_PROOFSTAGE)
 							{
 								Debug.Log( "ProofStage '" + name + "' changed direction to Reverse because not at start" );
+							}
+							if (!IsTimeRunning)
+							{
+								if (DEBUG_PROOFSTAGE)
+								{
+									Debug.Log( "...And ProofStage '" + name + "' changed direction to Reverse when not active" );
+								}
+								changedAtEnd = true;
 							}
 						}
 						else if (previousStage_ != null)
@@ -222,6 +233,14 @@ namespace RJWard.Geometry
 							{
 								Debug.Log( "ProofStage '" + name + "' changed direction to Forward because not at end" );
 							}
+							if (!IsTimeRunning)
+							{
+								changedAtEnd = true;
+								if (DEBUG_PROOFSTAGE)
+								{
+									Debug.Log( "ProofStage '" + name + "' changed direction to Forward when not active" );
+								}
+							}
 						}
 						else if (nextStage_ != null)
 						{
@@ -243,12 +262,16 @@ namespace RJWard.Geometry
 						break;
 					}
 			}
-			if (changed)
+			if (changedAtEnd)
 			{
-				// TODO not necessary when changing direction in middlle. It's here to make sure we do initialisation stuff when changing direction at end. 
-				// Perhaps makes more sense to re-init in that case?
-				initNotUpdated_ = true;
-			}
+				if (DEBUG_PROOFSTAGE)
+				{
+					Debug.LogWarning( "ProofStage '" + name + "' changed direction to "+direction_+" at end, calling Init..." );
+				}
+				Init( direction_, elements );
+			} 
+			// Call stage-specific direction change handler
+			HandleDirectionChanged( );
 			return changed;
 		}
 
@@ -381,7 +404,8 @@ namespace RJWard.Geometry
 		abstract protected void DoUpdateView( ); // derived class defines to set up view according to current time
 		abstract protected void HandleInit( );  // derived class overrides to handle any initialisation work
 		abstract protected void HandleFinished( ); // derived class overrides to handle anything needs doing on finish (in either direction) 
-		abstract protected void HandleFirstUpdateAfterInit( ); 
+		abstract protected void HandleFirstUpdateAfterInit( );
+		virtual protected void HandleDirectionChanged( ) { }
 
 		/* This is the main direction-dependent updating function. 
 

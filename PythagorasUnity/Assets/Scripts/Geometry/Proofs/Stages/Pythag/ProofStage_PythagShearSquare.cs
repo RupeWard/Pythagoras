@@ -122,6 +122,18 @@ namespace RJWard.Geometry
 			{
 				Debug.Log( "'" + name + "': HandleInit" );
 			}
+			if (shearStage_ != null)
+			{
+				shearStage_.ChangeDirection( );
+			}
+		}
+
+		override protected void HandleDirectionChanged( )
+		{
+			if (shearStage_ != null)
+			{
+				shearStage_.ChangeDirection( );
+			}
 		}
 
 		override protected void HandleFirstUpdateAfterInit( )
@@ -156,8 +168,12 @@ namespace RJWard.Geometry
 						baselineNumber_,
 						shearAlpha_,
 						startAngleProvider_,
-						targetAngleProvider_);
+						targetAngleProvider_ );
 				}
+			}
+			else
+			{
+				Debug.LogError( "shear stage should be null in HandleFirstUpdateAfterInit" );
 			}
 			proofEngine_.RunSubStageAsCR( shearStage_, this, direction, elements, HandleShearStageFinishedFromEngine );
 		}
@@ -188,7 +204,8 @@ namespace RJWard.Geometry
 			{
 				Debug.Log( "'" + name + "': HandleFinished "+Time.time );
 			}
-
+			// Force internal stages to be re-created each time
+			shearStage_ = null;
 		}
 
 		#endregion ProofStageBase 
